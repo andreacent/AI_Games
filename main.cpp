@@ -5,7 +5,7 @@
 */    
 #include "header.h"
 #include "draw.cpp"
-#include "movements/KinematicSeek.cpp"
+#include "movements/KinematicSeek.h"
 
 GLfloat ang = 1.0,
         trans = 0.3,
@@ -59,23 +59,6 @@ void kinematicSeekMovement(){
 
     KinematicSteeringOutput kso = kinematicSeek.getSteering();
     kinematicSeek.character.update(kso.velocity,kso.rotation,getDeltaTime());
-}
-
-void kinematicMovement(){ 
-//usa la funcion en vez de la clase 
-    glColor3f(0,0.6,0.6);
-    drawFace(target.position
-            ,target.orientation
-            ,pointSize);
-
-    glColor3f(0.4,0.2,0.8);
-    drawFace(character.position
-            ,character.orientation
-            ,pointSize);
-
-    
-    KinematicSteeringOutput kso = getSteering(character,target);
-    character.update(kso.velocity,kso.rotation,getDeltaTime());
 }
 
 /************************** Display **************************/
