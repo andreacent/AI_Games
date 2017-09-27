@@ -17,6 +17,8 @@ using namespace glm;
 using namespace std;
 
 GLfloat getNewOrientation(GLfloat currentOrientation, vec2 velocity);
+GLfloat randomBinomial();
+vec2 getVectorOrientation(GLfloat orientation);
 
 struct Static {
 	vec2 position;
@@ -73,4 +75,13 @@ GLfloat getNewOrientation(GLfloat currentOrientation, vec2 velocity){
 	else{ //Otherwise use the current orientation
 		return currentOrientation;
 	}
+};
+
+GLfloat randomBinomial(){
+	return rand() - rand();
+}
+
+vec2 getVectorOrientation(GLfloat orientation){
+	vec2 vecOrientation = {sin(orientation),cos(orientation)};
+	return vecOrientation;
 };

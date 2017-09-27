@@ -8,6 +8,7 @@
 #include "movements/KinematicSeek.h"
 #include "movements/KinematicFlee.h"
 #include "movements/KinematicArrive.h"
+#include "movements/KinematicWander.h"
 
 GLfloat ang = 1.0,
         trans = 0.3,
@@ -19,6 +20,7 @@ Static character = {{12.0f,8.0f},0.0f};
 KinematicSeek kinematicSeek = {character,target};
 KinematicFlee kinematicFlee = {character,target};
 KinematicArrive kinematicArrive = {character,target};
+KinematicWander kinematicWander = {character};
 
 GLfloat oldTimeSinceStart = 0;
 
@@ -66,6 +68,11 @@ void kinematicArriveMovement(){
     }
 }
 
+void kinematicWanderMovement(){  
+    KinematicSteeringOutput kso = kinematicWander.getSteering();
+    character.update(kso.velocity,kso.rotation,getDeltaTime());
+}
+
 /************************** Display **************************/
 void display(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -87,7 +94,8 @@ void display(){
 
     //kinematicSeekMovement();
     //kinematicFleeMovement();
-    kinematicArriveMovement();
+    //kinematicArriveMovement();
+    kinematicWanderMovement();
   
 
     glFlush();
