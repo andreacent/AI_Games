@@ -6,6 +6,8 @@
 #include "header.h"
 #include "draw.cpp"
 #include "movements/KinematicSeek.h"
+#include "movements/KinematicFlee.h"
+#include "movements/KinematicArrive.h"
 
 GLfloat ang = 1.0,
         trans = 0.3,
@@ -15,9 +17,10 @@ Static target = {{-16.0f,-4.0f},0.0f};
 Static character = {{12.0f,8.0f},0.0f};
 
 KinematicSeek kinematicSeek = {character,target};
+KinematicFlee kinematicFlee = {character,target};
+KinematicArrive kinematicArrive = {character,target};
 
 GLfloat oldTimeSinceStart = 0;
-bool moving = false;
 
 /************************* KEYBOARD **************************/
 void controlKey (unsigned char key, int xmouse, int ymouse){   
@@ -33,7 +36,7 @@ void controlKey (unsigned char key, int xmouse, int ymouse){
         case 'z': //Rotar anti horario.  
             target.orientation -=ang; break;
         case 'c': //Rotar horario. 
-            target.orientation +=ang; break; 
+            target.orientation +=ang; break;
         default: break;
     }
     //glutPostRedisplay(); 
@@ -47,18 +50,20 @@ GLfloat getDeltaTime(){
 }
 
 void kinematicSeekMovement(){  
-    glColor3f(0,0.6,0.6);
-    drawFace(kinematicSeek.target.position
-            ,kinematicSeek.target.orientation
-            ,pointSize);
-
-    glColor3f(0.4,0.2,0.8);
-    drawFace(kinematicSeek.character.position
-            ,kinematicSeek.character.orientation
-            ,pointSize);
-
     KinematicSteeringOutput kso = kinematicSeek.getSteering();
-    kinematicSeek.character.update(kso.velocity,kso.rotation,getDeltaTime());
+    character.update(kso.velocity,kso.rotation,getDeltaTime());
+}
+
+void kinematicFleeMovement(){  
+    KinematicSteeringOutput kso = kinematicFlee.getSteering();
+    character.update(kso.velocity,kso.rotation,getDeltaTime());
+}
+
+void kinematicArriveMovement(){  
+    KinematicSteeringOutput kso = kinematicArrive.getSteering();
+    if(distance(kso.velocity,{0,0}) != 0){
+        character.update(kso.velocity,kso.rotation,getDeltaTime());
+    }
 }
 
 /************************** Display **************************/
@@ -75,8 +80,15 @@ void display(){
     gluLookAt(0, 0, 1, 0, 10, 0, 0, 1, 0);
 
     glLineWidth(pointSize);
+    glColor3f(0,0.6,0.6);
+    drawFace(target.position,target.orientation,pointSize);
+    glColor3f(0.4,0.2,0.8);
+    drawFace(character.position,character.orientation,pointSize);
 
-    kinematicSeekMovement();    
+    //kinematicSeekMovement();
+    //kinematicFleeMovement();
+    kinematicArriveMovement();
+  
 
     glFlush();
     glutPostRedisplay();

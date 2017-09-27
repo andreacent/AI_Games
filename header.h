@@ -58,15 +58,19 @@ struct Kinematic{
 	}
 };
 
+struct KinematicSteeringOutput{
+	vec2 velocity;
+	GLfloat rotation;
+};
+
 GLfloat getNewOrientation(GLfloat currentOrientation, vec2 velocity){
 	//Make sure we have a velocity
-	if (velocity.length() > 0){
+	if (distance(velocity,{0,0}) > 0){
 		//Calculate orientation using an arc tangent of
 		//the velocity components.
 		return atan2(-velocity.x, velocity.y);
 	}	
-	else{
-		//Otherwise use the current orientation
+	else{ //Otherwise use the current orientation
 		return currentOrientation;
 	}
 };
