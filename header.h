@@ -25,14 +25,12 @@ struct Static {
 	GLfloat orientation;
 
 	void update(vec2 velocity,GLfloat rotation) { 
-		position.x += velocity.x;
-		position.y += velocity.y;
+		position += velocity;
 		orientation += rotation;
 	}
 
 	void update(vec2 velocity,GLfloat rotation,GLfloat deltaTime) { 
-		position.x += velocity.x * deltaTime;
-		position.y += velocity.y * deltaTime;
+		position += velocity * deltaTime;
 		orientation += rotation * deltaTime;
 	}
 };
@@ -50,13 +48,26 @@ struct Kinematic{
 
 	void update (SteeringOutput steering,GLfloat deltaTime) { 
 		// Update the position and orientation
-		position.x += velocity.x * deltaTime;
-		position.y += velocity.y * deltaTime;
+		position += velocity * deltaTime;
 		orientation += rotation * deltaTime;
 		// and the velocity and rotation
-		velocity.x += steering.linear.x * deltaTime;
-		velocity.y += steering.linear.y * deltaTime;
+		velocity += steering.linear * deltaTime;
 		orientation += steering.angular * deltaTime;
+	}
+
+	void update(SteeringOutput steering,GLfloat maxSpeed,GLfloat deltaTime){
+		// Update the position and orientation
+		position += velocity * deltaTime;
+		orientation += rotation * deltaTime;
+
+		// and the velocity and rotation
+		velocity += steering.linear * deltaTime;
+		orientation += steering.angular * deltaTime;
+
+		// Check for speeding and clip
+		if (distance(velocity,{0,0}) > maxSpeed){
+			velocity = normalize(velocity) * maxSpeed;
+		}
 	}
 };
 

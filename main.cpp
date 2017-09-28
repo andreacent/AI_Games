@@ -9,36 +9,51 @@
 #include "movements/KinematicFlee.h"
 #include "movements/KinematicArrive.h"
 #include "movements/KinematicWander.h"
+#include "movements/Seek.h"
+#include "movements/Flee.h"
+#include "movements/Arrive.h"
+//#include "movements/Align.h"
 
 GLfloat ang = 1.0,
         trans = 0.3,
         pointSize=3.0;
 
-Static target = {{-16.0f,-4.0f},0.0f};
-Static character = {{12.0f,8.0f},0.0f};
+GLfloat maxSpeed = 0.1;
+GLfloat maxAcceleration = 0.1;
 
-KinematicSeek kinematicSeek = {character,target};
-KinematicFlee kinematicFlee = {character,target};
-KinematicArrive kinematicArrive = {character,target};
-KinematicWander kinematicWander = {character};
+Static static_target = {{-16.0f,-4.0f},0.0f};
+Static static_character = {{12.0f,8.0f},0.0f};
 
-GLfloat oldTimeSinceStart = 0;
+KinematicSeek kinematicSeek = {static_character,static_target};
+KinematicFlee kinematicFlee = {static_character,static_target};
+KinematicArrive kinematicArrive = {static_character,static_target};
+KinematicWander kinematicWander = {static_character};
+
+//dinamico
+Kinematic target = {{-16.0f,-4.0f},0.0f,{0.0,0.0},0.0};
+Kinematic character = {{12.0f,8.0f},0.0f,{0.0,0.0},0.0};
+Seek seek = {character,target,maxAcceleration};
+Flee flee = {character,target,maxAcceleration};
+Arrive arrive = {character,target,3,6,maxAcceleration,maxSpeed};
+//Align align = {character,target};
+
+GLfloat oldTimeSinceStart = 0.0;
 
 /************************* KEYBOARD **************************/
 void controlKey (unsigned char key, int xmouse, int ymouse){   
     switch (key){
         case 'a': //Trasladarse a la izquierda.  
-            target.position.x-=trans; break;
+            static_target.position.x-=trans; break;
         case 'd': //Trasladarse a la derecha.  
-            target.position.x+=trans; break;
+            static_target.position.x+=trans; break;
         case 'w': //Trasladarse arriba. 
-            target.position.y+=trans; break;
+            static_target.position.y+=trans; break;
         case 's': //Trasladarse abajo.   
-            target.position.y-=trans; break;
+            static_target.position.y-=trans; break;
         case 'z': //Rotar anti horario.  
-            target.orientation -=ang; break;
+            static_target.orientation -=ang; break;
         case 'c': //Rotar horario. 
-            target.orientation +=ang; break;
+            static_target.orientation +=ang; break;
         default: break;
     }
     //glutPostRedisplay(); 
@@ -53,24 +68,42 @@ GLfloat getDeltaTime(){
 
 void kinematicSeekMovement(){  
     KinematicSteeringOutput kso = kinematicSeek.getSteering();
-    character.update(kso.velocity,kso.rotation,getDeltaTime());
+    static_character.update(kso.velocity,kso.rotation,getDeltaTime());
 }
 
 void kinematicFleeMovement(){  
     KinematicSteeringOutput kso = kinematicFlee.getSteering();
-    character.update(kso.velocity,kso.rotation,getDeltaTime());
+    static_character.update(kso.velocity,kso.rotation,getDeltaTime());
 }
 
 void kinematicArriveMovement(){  
     KinematicSteeringOutput kso = kinematicArrive.getSteering();
     if(distance(kso.velocity,{0,0}) != 0){
-        character.update(kso.velocity,kso.rotation,getDeltaTime());
+        static_character.update(kso.velocity,kso.rotation,getDeltaTime());
     }
 }
 
 void kinematicWanderMovement(){  
     KinematicSteeringOutput kso = kinematicWander.getSteering();
-    character.update(kso.velocity,kso.rotation,getDeltaTime());
+    static_character.update(kso.velocity,kso.rotation,getDeltaTime());
+}
+
+void SeekMovement(){  
+    SteeringOutput so = seek.getSteering();
+    character.update(so,maxSpeed,getDeltaTime());
+}
+
+void FleeMovement(){  
+    SteeringOutput so = flee.getSteering();
+    character.update(so,maxSpeed,getDeltaTime());
+}
+
+void ArriveMovement(){  
+    SteeringOutput so = arrive.getSteering();
+    
+    if(distance(so.linear,{0,0}) != 0){
+        character.update(so,maxSpeed,getDeltaTime());
+    }
 }
 
 /************************** Display **************************/
@@ -86,17 +119,29 @@ void display(){
     glLoadIdentity();
     gluLookAt(0, 0, 1, 0, 10, 0, 0, 1, 0);
 
+    /*
+    glLineWidth(pointSize);
+    glColor3f(0,0.6,0.6);
+    drawFace(static_target.position,static_target.orientation,pointSize);
+    glColor3f(0.4,0.2,0.8);
+    drawFace(static_character.position,static_character.orientation,pointSize);
+    */
+    //kinematicSeekMovement();
+    //kinematicFleeMovement();
+    //kinematicArriveMovement();
+    //kinematicWanderMovement();
+
+    //DYNAMICO
+
     glLineWidth(pointSize);
     glColor3f(0,0.6,0.6);
     drawFace(target.position,target.orientation,pointSize);
     glColor3f(0.4,0.2,0.8);
     drawFace(character.position,character.orientation,pointSize);
 
-    //kinematicSeekMovement();
-    //kinematicFleeMovement();
-    //kinematicArriveMovement();
-    kinematicWanderMovement();
-  
+    //SeekMovement();
+    //FleeMovement();
+    ArriveMovement();
 
     glFlush();
     glutPostRedisplay();
