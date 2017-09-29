@@ -12,14 +12,14 @@
 #include "movements/Seek.h"
 #include "movements/Flee.h"
 #include "movements/Arrive.h"
-//#include "movements/Align.h"
+#include "movements/Align.h"
 
-GLfloat ang = 1.0,
+GLfloat ang = glm::radians(1.0),
         trans = 0.3,
-        pointSize=3.0;
+        pointSize=2.0;
 
-GLfloat maxSpeed = 0.1;
-GLfloat maxAcceleration = 0.1;
+GLfloat maxSpeed = 0.05;
+GLfloat maxAcceleration = 0.05;
 
 Static static_target = {{-16.0f,-4.0f},0.0f};
 Static static_character = {{12.0f,8.0f},0.0f};
@@ -30,16 +30,18 @@ KinematicArrive kinematicArrive = {static_character,static_target};
 KinematicWander kinematicWander = {static_character};
 
 //dinamico
-Kinematic target = {{-16.0f,-4.0f},0.0f,{0.0,0.0},0.0};
-Kinematic character = {{12.0f,8.0f},0.0f,{0.0,0.0},0.0};
+Kinematic target = {{-16.0f,-4.0f},glm::radians(60.0f),{0.0,0.0},0.0};
+Kinematic character = {{20.0f,8.0f},0.0f,{0.0,0.0},0.0};
+
 Seek seek = {character,target,maxAcceleration};
 Flee flee = {character,target,maxAcceleration};
-Arrive arrive = {character,target,3,6,maxAcceleration,maxSpeed};
-//Align align = {character,target};
+Arrive arrive = {character,target,3,5,maxAcceleration,maxSpeed};
+Align align = {character,target,25,15,0.001,30};//GLfloat sr, GLfloat tr, GLfloat maa, GLfloat mr
 
 GLfloat oldTimeSinceStart = 0.0;
 
 /************************* KEYBOARD **************************/
+/*
 void controlKey (unsigned char key, int xmouse, int ymouse){   
     switch (key){
         case 'a': //Trasladarse a la izquierda.  
@@ -54,6 +56,26 @@ void controlKey (unsigned char key, int xmouse, int ymouse){
             static_target.orientation -=ang; break;
         case 'c': //Rotar horario. 
             static_target.orientation +=ang; break;
+        default: break;
+    }
+    //glutPostRedisplay(); 
+}
+*/
+
+void controlKey (unsigned char key, int xmouse, int ymouse){   
+    switch (key){
+        case 'a': //Trasladarse a la izquierda.  
+            target.position.x-=trans; break;
+        case 'd': //Trasladarse a la derecha.  
+            target.position.x+=trans; break;
+        case 'w': //Trasladarse arriba. 
+            target.position.y+=trans; break;
+        case 's': //Trasladarse abajo.   
+            target.position.y-=trans; break;
+        case 'z': //Rotar anti horario.  
+            target.orientation -=ang; break;
+        case 'c': //Rotar horario. 
+            target.orientation +=ang; break;
         default: break;
     }
     //glutPostRedisplay(); 
@@ -78,7 +100,7 @@ void kinematicFleeMovement(){
 
 void kinematicArriveMovement(){  
     KinematicSteeringOutput kso = kinematicArrive.getSteering();
-    if(distance(kso.velocity,{0,0}) != 0){
+    if(length(kso.velocity) != 0){
         static_character.update(kso.velocity,kso.rotation,getDeltaTime());
     }
 }
@@ -100,9 +122,20 @@ void FleeMovement(){
 
 void ArriveMovement(){  
     SteeringOutput so = arrive.getSteering();
-    
-    if(distance(so.linear,{0,0}) != 0){
+
+    if(length(so.linear) != 0){
         character.update(so,maxSpeed,getDeltaTime());
+    }
+}
+
+
+void AlignMovement(){  
+    SteeringOutput so = align.getSteering();
+
+    if( so.angular != 0.0 ){
+        cout<<so.angular <<endl;
+        character.update(so,maxSpeed,getDeltaTime());
+        cout<<character.orientation<<endl;
     }
 }
 
@@ -133,15 +166,17 @@ void display(){
 
     //DYNAMICO
 
+    
     glLineWidth(pointSize);
     glColor3f(0,0.6,0.6);
     drawFace(target.position,target.orientation,pointSize);
     glColor3f(0.4,0.2,0.8);
     drawFace(character.position,character.orientation,pointSize);
-
+    
     //SeekMovement();
     //FleeMovement();
-    ArriveMovement();
+    //ArriveMovement();
+    AlignMovement();
 
     glFlush();
     glutPostRedisplay();
@@ -150,7 +185,7 @@ void display(){
 /************************* Viewport **************************/
 void reshape(int w, int h) {
     GLfloat aspectratio = (GLfloat) w / (GLfloat) h;
-    GLfloat zoom = 20.0;
+    GLfloat zoom = 30.0;
 
     glMatrixMode(GL_PROJECTION);   
     glLoadIdentity(); 

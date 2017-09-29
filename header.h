@@ -42,9 +42,9 @@ struct SteeringOutput {
 
 struct Kinematic{
 	vec2 position;
-	GLfloat orientation; 
+	GLfloat orientation; //radian
 	vec2 velocity;
-	GLfloat rotation;
+	GLfloat rotation;//radian
 
 	void update (SteeringOutput steering,GLfloat deltaTime) { 
 		// Update the position and orientation
@@ -81,7 +81,7 @@ GLfloat getNewOrientation(GLfloat currentOrientation, vec2 velocity){
 	if (distance(velocity,{0,0}) > 0){
 		//Calculate orientation using an arc tangent of
 		//the velocity components.
-		return atan2(-velocity.x, velocity.y);
+		return atan2(velocity.x, velocity.y);
 	}	
 	else{ //Otherwise use the current orientation
 		return currentOrientation;
@@ -96,3 +96,9 @@ vec2 getVectorOrientation(GLfloat orientation){
 	vec2 vecOrientation = {sin(orientation),cos(orientation)};
 	return vecOrientation;
 };
+
+GLfloat mapToRange(GLfloat orientation){
+	if (orientation > M_PI) orientation -= 2*M_PI;
+	else if (orientation < -M_PI) orientation += 2*M_PI;
+	return orientation;
+}

@@ -21,7 +21,7 @@ public:
 		// Get the direction to the target
 		steering.velocity = target.position - character.position;
 
-		GLfloat length = distance(steering.velocity,{0,0});
+		GLfloat length = glm::length(steering.velocity);
 		// Check if we’re within radius
 		if(length < radius){ // We can return no steering request
 			steering.velocity = {0.0,0.0};

@@ -6,7 +6,7 @@ private:
 	// Holds the max angular acceleration and rotation
 	// of the character
 	GLfloat maxAngularAcceleration;
-	GLfloat maxRotation;
+	GLfloat maxRotation; 
 
 	// Holds the radius for beginning to slow down
 	GLfloat slowRadius;
@@ -18,8 +18,11 @@ private:
 	GLfloat timeToTarget = 0.1;
 
 public:
-	Align(Kinematic &c, Kinematic &t, GLfloat sr=5, GLfloat tr=2, GLfloat maa=0.01, GLfloat mr=0.02) : 
-		character(c), target(t),slowRadius(sr), targetRadius(tr), maxAngularAcceleration(maa), maxRotation(mr){}
+	//maxRotation, slowRadius, targetRadius to radians
+	Align(Kinematic &c, Kinematic &t, GLfloat sr, GLfloat tr, GLfloat maa, GLfloat mr) : 
+		character(c), target(t)
+		,slowRadius(glm::radians(sr)), targetRadius(glm::radians(tr))
+		,maxAngularAcceleration(maa), maxRotation(glm::radians(mr)){}
 
 	SteeringOutput getSteering(){
 		GLfloat rotation,rotationSize,targetRotation,angularAcceleration;
@@ -31,11 +34,15 @@ public:
 
 		// Map the result to the (-pi, pi) interval
 		rotation = mapToRange(rotation);
-		rotationSize = abs(rotationDirection);
+		rotationSize = abs(rotation);
 
 		// Check if we are there, return no steering
 		if (rotationSize < targetRadius){
+			steering.angular=0.0;
 			return steering;
+		}
+		else{
+			cout<<"rotationSize < targetRadius "<<rotationSize<<" < "<<targetRadius<<endl;
 		}
 
 		// If we are outside the slowRadius, then use

@@ -27,7 +27,7 @@ public:
 		SteeringOutput steering;
 		// Get the direction to the target
 		direction = target.position - character.position;
-		targetDistance = distance(direction,{0.0,0.0});
+		targetDistance =glm::length(direction);
 
 		// Check if we are there, return no steering
 		if (targetDistance < targetRadius){
@@ -43,15 +43,15 @@ public:
 		}
 
 		// The target velocity combines speed and direction
-		targetVelocity = normalize(direction) * targetSpeed;
+		targetVelocity = glm::normalize(direction) * targetSpeed;
 
 		// Acceleration tries to get to the target velocity
 		steering.linear = targetVelocity - character.velocity;
 		steering.linear /= timeToTarget;
 
 		// Check if the acceleration is too fast
-		if(distance(steering.linear,{0.0,0.0}) > maxAcceleration){
-			steering.linear = normalize(steering.linear) * maxAcceleration;
+		if(glm::length(steering.linear) > maxAcceleration){
+			steering.linear = glm::normalize(steering.linear) * maxAcceleration;
 		}
 		
 		// Output the steering
