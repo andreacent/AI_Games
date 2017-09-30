@@ -16,10 +16,11 @@
 #include "movements/LookWhereYoureGoing.h"
 #include "movements/Wander.h"
 #include "movements/Separation.h"
+#include "movements/CollisionAvoidance.h"
 
 
 GLfloat oldTimeSinceStart = 0.0;
-GLfloat pointSize=2.0;
+GLfloat pointSize=1.5;
 
 GLfloat targetRotation = glm::radians(10.0);
 GLfloat targetVelocity = 10;
@@ -29,7 +30,7 @@ GLfloat maxAcceleration = 15;
 GLfloat maxPrediction = 1.2;
 
 Kinematic target = {{-16.0f,-4.0f}};
-Kinematic character = {{10.0f,-4.0f}};
+Kinematic character = {{10.0f,-5.0f}};
 
 bool iniListTargets = false;
 list<Kinematic*> targets;
@@ -47,15 +48,30 @@ Evade evade = {character,target,maxAcceleration,maxPrediction};
 Face face = {character,target,10,30,5,2}; // Align()
 LookWhereYoureGoing lookWhereYoureGoing = {character,target,10,30,5,2}; // Align()
 //Wander -> {Face(),wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration}
-Wander wander = {character,20,30,5,2, -1,6,2,30,maxAcceleration}; 
+Wander wander = {character,20,30,5,2, -1,6,2,30,10}; 
 //Separatio -> {character,targets,threshold,decayCoefficient,maxAcceleration}
 Separation separation = {character,targets,6,10,30};
+//CollisionAvoidance -> {character,targets,maxAcceleration,radius}
+CollisionAvoidance collisionAvoidance = {character,targets,4,2};
 
 void initializeListTargets(){
-    targets.push_back(&target);
+    for(int i ; i< 10; i++){
+        targets.push_back(new Kinematic({-30.0 + i*7,8.0f},0.0,{0.0,1}));
+    }
     iniListTargets = true;
 }
 
+void moveListTargets(GLfloat deltaTime){
+    for (list<Kinematic*>::iterator t=targets.begin(); t != targets.end(); ++t){
+        glColor3f(0,0.6,0.6);
+        drawFace((*t)->position,(*t)->orientation,pointSize);
+    }
+
+    for (list<Kinematic*>::iterator t=targets.begin(); t != targets.end(); ++t){
+        if((*t)->position.y > 10 || (*t)->position.y < -10) (*t)->velocity.y *= (-1);
+        (*t)->updatePosition(deltaTime);
+    }
+}
 
 /******************************* MOVEMENTS *****************************/
 void SeekMovement(GLfloat deltaTime){  
@@ -110,6 +126,11 @@ void WanderMovement(GLfloat deltaTime){
 
 void SeparationMovement(GLfloat deltaTime){  
     SteeringOutput so = separation.getSteering();
+    if(length(so.linear) != 0) character.update(so,maxSpeed,deltaTime);
+}
+
+void CollisionAvoidance(GLfloat deltaTime){  
+    SteeringOutput so = collisionAvoidance.getSteering();
     if(length(so.linear) != 0) character.update(so,maxSpeed,deltaTime);
 }
 
@@ -180,17 +201,20 @@ void display(){
     gluLookAt(0, 0, 1, 0, 10, 0, 0, 1, 0);
     
     glLineWidth(pointSize);
-    glColor3f(0,0.6,0.6);
+    glColor3f(0.6,0.6,0.6);
     drawFace(target.position,target.orientation,pointSize);
     glColor3f(0.4,0.2,0.8);
     drawFace(character.position,character.orientation,pointSize);
-    
+   
     GLfloat timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
     GLfloat deltaTime = (timeSinceStart - oldTimeSinceStart) * 0.001;
     oldTimeSinceStart = timeSinceStart;
 
+    moveListTargets(deltaTime);
+
     target.updatePosition(deltaTime);
     target.updateOrientation(deltaTime);
+    character.updatePosition(deltaTime);
     //SeekMovement(deltaTime);
     //FleeMovement(deltaTime);
     //ArriveMovement(deltaTime);
@@ -201,7 +225,8 @@ void display(){
     //FaceMovement(deltaTime);
     //LookWhereYoureGoing(deltaTime);
     //WanderMovement(deltaTime);
-    SeparationMovement(deltaTime);
+    //SeparationMovement(deltaTime);
+    //CollisionAvoidance(deltaTime);
 
     glFlush();
     glutPostRedisplay();
@@ -210,7 +235,7 @@ void display(){
 /************************* Viewport **************************/
 void reshape(int w, int h) {
     GLfloat aspectratio = (GLfloat) w / (GLfloat) h;
-    GLfloat zoom = 30.0;
+    GLfloat zoom = 35.0;
 
     glMatrixMode(GL_PROJECTION);   
     glLoadIdentity(); 
