@@ -11,7 +11,6 @@ private:
 	GLfloat timeToTarget = 0.1;
 
 public:
-	//maxRotation, slowRadius, targetRadius to radians
 	VelocityMatch(Kinematic &c, Kinematic &t, GLfloat ma) : character(c), target(t),maxAcceleration(ma){}
 
 	SteeringOutput getSteering(){

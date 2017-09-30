@@ -15,8 +15,13 @@
 #include "movements/Face.h"
 #include "movements/LookWhereYoureGoing.h"
 #include "movements/Wander.h"
+#include "movements/Separation.h"
 
-GLfloat targetRotation = glm::radians(10.0), pointSize=2.0;
+
+GLfloat oldTimeSinceStart = 0.0;
+GLfloat pointSize=2.0;
+
+GLfloat targetRotation = glm::radians(10.0);
 GLfloat targetVelocity = 10;
 
 GLfloat maxSpeed = 8;
@@ -26,10 +31,13 @@ GLfloat maxPrediction = 1.2;
 Kinematic target = {{-16.0f,-4.0f}};
 Kinematic character = {{10.0f,-4.0f}};
 
+bool iniListTargets = false;
+list<Kinematic*> targets;
+
 Seek seek = {character,target,maxAcceleration};
 Flee flee = {character,target,maxAcceleration};
 Arrive arrive = {character,target,3,5,maxAcceleration,maxSpeed};
-//Align -> &character,&target,maxAngularAcceleration,maxRotation,slowRadius,targetRadius
+//Align -> {&character,&target,maxAngularAcceleration,maxRotation,slowRadius,targetRadius}
 Align align = {character,target,20,30,5,2};
 VelocityMatch velocityMatch = {character,target,maxAcceleration};
 
@@ -38,10 +46,16 @@ Pursue pursue = {character,target,maxAcceleration,maxPrediction};
 Evade evade = {character,target,maxAcceleration,maxPrediction};
 Face face = {character,target,10,30,5,2}; // Align()
 LookWhereYoureGoing lookWhereYoureGoing = {character,target,10,30,5,2}; // Align()
-//Wander -> Face(),wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration
-Wander wander = {character,2,30,5,2, -10,3,10,40,maxAcceleration}; 
+//Wander -> {Face(),wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration}
+Wander wander = {character,20,30,5,2, -1,6,2,30,maxAcceleration}; 
+//Separatio -> {character,targets,threshold,decayCoefficient,maxAcceleration}
+Separation separation = {character,targets,6,10,30};
 
-GLfloat oldTimeSinceStart = 0.0;
+void initializeListTargets(){
+    targets.push_back(&target);
+    iniListTargets = true;
+}
+
 
 /******************************* MOVEMENTS *****************************/
 void SeekMovement(GLfloat deltaTime){  
@@ -92,6 +106,11 @@ void LookWhereYoureGoing(GLfloat deltaTime){
 void WanderMovement(GLfloat deltaTime){  
     SteeringOutput so = wander.getSteering();
     if(so.angular != 0.0) character.update(so,maxSpeed,deltaTime);
+}
+
+void SeparationMovement(GLfloat deltaTime){  
+    SteeringOutput so = separation.getSteering();
+    if(length(so.linear) != 0) character.update(so,maxSpeed,deltaTime);
 }
 
 /******************************* KEYBOARD *****************************/
@@ -181,7 +200,8 @@ void display(){
     //EvadeMovement(deltaTime);
     //FaceMovement(deltaTime);
     //LookWhereYoureGoing(deltaTime);
-    WanderMovement(deltaTime);
+    //WanderMovement(deltaTime);
+    SeparationMovement(deltaTime);
 
     glFlush();
     glutPostRedisplay();
@@ -216,6 +236,8 @@ int main (int argc, char** argv) {
     glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE | GLUT_DEPTH);
     glutInitWindowSize(800,600);
     glutCreateWindow("AI VideoGame");
+
+    if(!iniListTargets) initializeListTargets();
 
     glutReshapeFunc(reshape);
     glutDisplayFunc(display);

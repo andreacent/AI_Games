@@ -1,5 +1,3 @@
-//NO FUNCIONA
-
 class Wander: public Face{
 	// Holds the radius and forward offset of the wander
 	// circle.
