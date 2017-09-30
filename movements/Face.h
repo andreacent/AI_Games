@@ -23,7 +23,6 @@ public:
 		// Put the target together
 		target.orientation = atan2(-direction.x, direction.y);//atan2(-direction.x, direction.y);
 
-		cout<<"   target.orientation "<<target.orientation<<endl;
 		// 2. Delegate to align
 		steering = Align::getSteering();
 

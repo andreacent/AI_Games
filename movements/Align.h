@@ -38,7 +38,6 @@ public:
 
 		// Check if we are there, return no steering
 		if (rotationSize < targetRadius){
-			cout<<"   rotationSize < targetRadius "<<rotationSize<<" "<<targetRadius<<endl;
 			steering.angular=0.0;
 			return steering;
 		}

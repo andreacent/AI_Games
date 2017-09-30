@@ -23,8 +23,8 @@ GLfloat maxSpeed = 8;
 GLfloat maxAcceleration = 15;
 GLfloat maxPrediction = 1.2;
 
-Kinematic target = {{-16.0f,-4.0f},0.0f,{0.0,0.0},0.0};
-Kinematic character = {{10.0f,-4.0f},0.0f,{0.0,0.0},0.0};
+Kinematic target = {{-16.0f,-4.0f}};
+Kinematic character = {{10.0f,-4.0f}};
 
 Seek seek = {character,target,maxAcceleration};
 Flee flee = {character,target,maxAcceleration};
@@ -39,7 +39,7 @@ Evade evade = {character,target,maxAcceleration,maxPrediction};
 Face face = {character,target,10,30,5,2}; // Align()
 LookWhereYoureGoing lookWhereYoureGoing = {character,target,10,30,5,2}; // Align()
 //Wander -> Face(),wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration
-Wander wander = {character,target,10,30,5,2, 5,3,0.1,30,maxAcceleration}; 
+Wander wander = {character,2,30,5,2, -10,3,10,40,maxAcceleration}; 
 
 GLfloat oldTimeSinceStart = 0.0;
 

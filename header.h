@@ -47,6 +47,9 @@ struct Kinematic{
 	vec2 velocity;
 	GLfloat rotation;//radian
 
+	Kinematic(vec2 p={0.0,0.0}, GLfloat o=0.0, vec2 v={0.0,0.0}, GLfloat r=0.0) 
+		: position(p), orientation(o), velocity(v), rotation(r) {}
+
 	void updatePosition(GLfloat deltaTime){
 		position += velocity * deltaTime;
 	}
