@@ -5,137 +5,145 @@
 */    
 #include "header.h"
 #include "draw.cpp"
-#include "movements/KinematicSeek.h"
-#include "movements/KinematicFlee.h"
-#include "movements/KinematicArrive.h"
-#include "movements/KinematicWander.h"
 #include "movements/Seek.h"
 #include "movements/Flee.h"
 #include "movements/Arrive.h"
 #include "movements/Align.h"
+#include "movements/VelocityMatch.h"
+#include "movements/Pursue.h"
+#include "movements/Evade.h"
+#include "movements/Face.h"
+#include "movements/LookWhereYoureGoing.h"
+#include "movements/Wander.h"
 
-GLfloat ang = glm::radians(1.0),
-        trans = 0.3,
-        pointSize=2.0;
+GLfloat targetRotation = glm::radians(10.0), pointSize=2.0;
+GLfloat targetVelocity = 10;
 
-GLfloat maxSpeed = 0.05;
-GLfloat maxAcceleration = 0.05;
+GLfloat maxSpeed = 8;
+GLfloat maxAcceleration = 15;
+GLfloat maxPrediction = 1.2;
 
-Static static_target = {{-16.0f,-4.0f},0.0f};
-Static static_character = {{12.0f,8.0f},0.0f};
-
-KinematicSeek kinematicSeek = {static_character,static_target};
-KinematicFlee kinematicFlee = {static_character,static_target};
-KinematicArrive kinematicArrive = {static_character,static_target};
-KinematicWander kinematicWander = {static_character};
-
-//dinamico
-Kinematic target = {{-16.0f,-4.0f},glm::radians(60.0f),{0.0,0.0},0.0};
-Kinematic character = {{20.0f,8.0f},0.0f,{0.0,0.0},0.0};
+Kinematic target = {{-16.0f,-4.0f},0.0f,{0.0,0.0},0.0};
+Kinematic character = {{10.0f,-4.0f},0.0f,{0.0,0.0},0.0};
 
 Seek seek = {character,target,maxAcceleration};
 Flee flee = {character,target,maxAcceleration};
 Arrive arrive = {character,target,3,5,maxAcceleration,maxSpeed};
-Align align = {character,target,25,15,0.001,30};//GLfloat sr, GLfloat tr, GLfloat maa, GLfloat mr
+//Align -> &character,&target,maxAngularAcceleration,maxRotation,slowRadius,targetRadius
+Align align = {character,target,20,30,5,2};
+VelocityMatch velocityMatch = {character,target,maxAcceleration};
+
+/**************** Delegated Behaviors ****************/
+Pursue pursue = {character,target,maxAcceleration,maxPrediction};
+Evade evade = {character,target,maxAcceleration,maxPrediction};
+Face face = {character,target,10,30,5,2}; // Align()
+LookWhereYoureGoing lookWhereYoureGoing = {character,target,10,30,5,2}; // Align()
+//Wander -> Face(),wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration
+Wander wander = {character,target,10,30,5,2, 5,3,0.1,30,maxAcceleration}; 
 
 GLfloat oldTimeSinceStart = 0.0;
 
-/************************* KEYBOARD **************************/
-/*
-void controlKey (unsigned char key, int xmouse, int ymouse){   
-    switch (key){
-        case 'a': //Trasladarse a la izquierda.  
-            static_target.position.x-=trans; break;
-        case 'd': //Trasladarse a la derecha.  
-            static_target.position.x+=trans; break;
-        case 'w': //Trasladarse arriba. 
-            static_target.position.y+=trans; break;
-        case 's': //Trasladarse abajo.   
-            static_target.position.y-=trans; break;
-        case 'z': //Rotar anti horario.  
-            static_target.orientation -=ang; break;
-        case 'c': //Rotar horario. 
-            static_target.orientation +=ang; break;
-        default: break;
-    }
-    //glutPostRedisplay(); 
-}
-*/
-
-void controlKey (unsigned char key, int xmouse, int ymouse){   
-    switch (key){
-        case 'a': //Trasladarse a la izquierda.  
-            target.position.x-=trans; break;
-        case 'd': //Trasladarse a la derecha.  
-            target.position.x+=trans; break;
-        case 'w': //Trasladarse arriba. 
-            target.position.y+=trans; break;
-        case 's': //Trasladarse abajo.   
-            target.position.y-=trans; break;
-        case 'z': //Rotar anti horario.  
-            target.orientation -=ang; break;
-        case 'c': //Rotar horario. 
-            target.orientation +=ang; break;
-        default: break;
-    }
-    //glutPostRedisplay(); 
-}
-
-GLfloat getDeltaTime(){    
-    GLfloat timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
-    GLfloat deltaTime = timeSinceStart - oldTimeSinceStart;
-    oldTimeSinceStart = timeSinceStart;
-    return deltaTime;
-}
-
-void kinematicSeekMovement(){  
-    KinematicSteeringOutput kso = kinematicSeek.getSteering();
-    static_character.update(kso.velocity,kso.rotation,getDeltaTime());
-}
-
-void kinematicFleeMovement(){  
-    KinematicSteeringOutput kso = kinematicFlee.getSteering();
-    static_character.update(kso.velocity,kso.rotation,getDeltaTime());
-}
-
-void kinematicArriveMovement(){  
-    KinematicSteeringOutput kso = kinematicArrive.getSteering();
-    if(length(kso.velocity) != 0){
-        static_character.update(kso.velocity,kso.rotation,getDeltaTime());
-    }
-}
-
-void kinematicWanderMovement(){  
-    KinematicSteeringOutput kso = kinematicWander.getSteering();
-    static_character.update(kso.velocity,kso.rotation,getDeltaTime());
-}
-
-void SeekMovement(){  
+/******************************* MOVEMENTS *****************************/
+void SeekMovement(GLfloat deltaTime){  
     SteeringOutput so = seek.getSteering();
-    character.update(so,maxSpeed,getDeltaTime());
+    character.update(so,maxSpeed,deltaTime);
 }
 
-void FleeMovement(){  
+void FleeMovement(GLfloat deltaTime){  
     SteeringOutput so = flee.getSteering();
-    character.update(so,maxSpeed,getDeltaTime());
+    character.update(so,maxSpeed,deltaTime);
 }
 
-void ArriveMovement(){  
+void ArriveMovement(GLfloat deltaTime){  
     SteeringOutput so = arrive.getSteering();
+    if(length(so.linear) != 0) character.update(so,maxSpeed,deltaTime);
+}
 
-    if(length(so.linear) != 0){
-        character.update(so,maxSpeed,getDeltaTime());
+void AlignMovement(GLfloat deltaTime){  
+    SteeringOutput so = align.getSteering();
+    if( so.angular != 0.0 ) character.update(so,maxSpeed,deltaTime);
+}
+
+void VelocityMatchMovement(GLfloat deltaTime){  
+    SteeringOutput so = velocityMatch.getSteering();
+    character.update(so,maxSpeed,deltaTime);
+}
+
+void PursueMovement(GLfloat deltaTime){  
+    SteeringOutput so = pursue.getSteering();
+    character.update(so,maxSpeed,deltaTime);
+}
+
+void EvadeMovement(GLfloat deltaTime){  
+    SteeringOutput so = evade.getSteering();
+    character.update(so,maxSpeed,deltaTime);
+}
+
+void FaceMovement(GLfloat deltaTime){  
+    SteeringOutput so = face.getSteering();
+    if(so.angular != 0.0) character.update(so,maxSpeed,deltaTime);
+}
+
+void LookWhereYoureGoing(GLfloat deltaTime){  
+    SteeringOutput so = lookWhereYoureGoing.getSteering();
+    if(so.angular != 0.0) character.update(so,maxSpeed,deltaTime);
+}
+
+void WanderMovement(GLfloat deltaTime){  
+    SteeringOutput so = wander.getSteering();
+    if(so.angular != 0.0) character.update(so,maxSpeed,deltaTime);
+}
+
+/******************************* KEYBOARD *****************************/
+void controlKey (unsigned char key, int xmouse, int ymouse){  
+    switch (key){
+        case 'a': 
+            target.rotation = targetRotation;
+        break;
+        case 'd': 
+            target.rotation = -targetRotation;
+        break;
+        default: break;
+    }  
+}
+
+void controlKeyReleased (unsigned char key, int xmouse, int ymouse){   
+    switch (key){
+        case 'a': 
+        case 'd': 
+            target.rotation = 0.0;
+        break;
+        default: break;
+    } 
+}
+
+void handleSpecialKeypress(int key, int x, int y) {
+    switch (key) {
+        case GLUT_KEY_LEFT:
+            target.velocity = {-targetVelocity,0.0};
+        break;
+        case GLUT_KEY_RIGHT:
+            target.velocity = {targetVelocity,0.0};
+        break;
+        case GLUT_KEY_UP:
+            target.velocity = {0.0,targetVelocity};
+        break;
+        case GLUT_KEY_DOWN:
+            target.velocity = {0.0,-targetVelocity};
+        break;
+        default: break;
     }
 }
 
-
-void AlignMovement(){  
-    SteeringOutput so = align.getSteering();
-
-    if( so.angular != 0.0 ){
-        cout<<so.angular <<endl;
-        character.update(so,maxSpeed,getDeltaTime());
-        cout<<character.orientation<<endl;
+void handleSpecialKeyReleased(int key, int x, int y){
+    switch (key) {
+        case GLUT_KEY_LEFT:
+        case GLUT_KEY_RIGHT:
+        case GLUT_KEY_UP:
+        case GLUT_KEY_DOWN:
+            target.velocity = {0.0,0.0};
+        break;
+        default: break;
     }
 }
 
@@ -151,21 +159,6 @@ void display(){
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(0, 0, 1, 0, 10, 0, 0, 1, 0);
-
-    /*
-    glLineWidth(pointSize);
-    glColor3f(0,0.6,0.6);
-    drawFace(static_target.position,static_target.orientation,pointSize);
-    glColor3f(0.4,0.2,0.8);
-    drawFace(static_character.position,static_character.orientation,pointSize);
-    */
-    //kinematicSeekMovement();
-    //kinematicFleeMovement();
-    //kinematicArriveMovement();
-    //kinematicWanderMovement();
-
-    //DYNAMICO
-
     
     glLineWidth(pointSize);
     glColor3f(0,0.6,0.6);
@@ -173,10 +166,22 @@ void display(){
     glColor3f(0.4,0.2,0.8);
     drawFace(character.position,character.orientation,pointSize);
     
-    //SeekMovement();
-    //FleeMovement();
-    //ArriveMovement();
-    AlignMovement();
+    GLfloat timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
+    GLfloat deltaTime = (timeSinceStart - oldTimeSinceStart) * 0.001;
+    oldTimeSinceStart = timeSinceStart;
+
+    target.updatePosition(deltaTime);
+    target.updateOrientation(deltaTime);
+    //SeekMovement(deltaTime);
+    //FleeMovement(deltaTime);
+    //ArriveMovement(deltaTime);
+    //AlignMovement(deltaTime);
+    //VelocityMatchMovement(deltaTime);
+    //PursueMovement(deltaTime);
+    //EvadeMovement(deltaTime);
+    //FaceMovement(deltaTime);
+    //LookWhereYoureGoing(deltaTime);
+    WanderMovement(deltaTime);
 
     glFlush();
     glutPostRedisplay();
@@ -215,7 +220,11 @@ int main (int argc, char** argv) {
     glutReshapeFunc(reshape);
     glutDisplayFunc(display);
 
-    glutKeyboardFunc(controlKey);
+    glutSpecialFunc(handleSpecialKeypress);
+    glutSpecialUpFunc(handleSpecialKeyReleased);
+
+    glutKeyboardFunc(controlKey); 
+    glutKeyboardUpFunc(controlKeyReleased); 
     
     glutMainLoop();
     return 0;

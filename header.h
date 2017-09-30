@@ -19,6 +19,7 @@ using namespace std;
 GLfloat getNewOrientation(GLfloat currentOrientation, vec2 velocity);
 GLfloat randomBinomial();
 vec2 getVectorOrientation(GLfloat orientation);
+GLfloat mapToRange(GLfloat orientation);
 
 struct Static {
 	vec2 position;
@@ -45,6 +46,14 @@ struct Kinematic{
 	GLfloat orientation; //radian
 	vec2 velocity;
 	GLfloat rotation;//radian
+
+	void updatePosition(GLfloat deltaTime){
+		position += velocity * deltaTime;
+	}
+
+	void updateOrientation(GLfloat deltaTime){
+		orientation += rotation * deltaTime;
+	}
 
 	void update (SteeringOutput steering,GLfloat deltaTime) { 
 		// Update the position and orientation
@@ -93,7 +102,7 @@ GLfloat randomBinomial(){
 }
 
 vec2 getVectorOrientation(GLfloat orientation){
-	vec2 vecOrientation = {sin(orientation),cos(orientation)};
+	vec2 vecOrientation = {-sin(orientation),cos(orientation)};//{-sin(orientation),cos(orientation)};
 	return vecOrientation;
 };
 

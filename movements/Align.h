@@ -1,5 +1,5 @@
 class Align{
-private:
+protected:
 	// Holds the Kinematic data for the character and target
 	Kinematic &character;
 	Kinematic &target;
@@ -19,7 +19,7 @@ private:
 
 public:
 	//maxRotation, slowRadius, targetRadius to radians
-	Align(Kinematic &c, Kinematic &t, GLfloat sr, GLfloat tr, GLfloat maa, GLfloat mr) : 
+	Align(Kinematic &c, Kinematic &t, GLfloat maa, GLfloat mr, GLfloat sr, GLfloat tr) : 
 		character(c), target(t)
 		,slowRadius(glm::radians(sr)), targetRadius(glm::radians(tr))
 		,maxAngularAcceleration(maa), maxRotation(glm::radians(mr)){}
@@ -38,11 +38,9 @@ public:
 
 		// Check if we are there, return no steering
 		if (rotationSize < targetRadius){
+			cout<<"   rotationSize < targetRadius "<<rotationSize<<" "<<targetRadius<<endl;
 			steering.angular=0.0;
 			return steering;
-		}
-		else{
-			cout<<"rotationSize < targetRadius "<<rotationSize<<" < "<<targetRadius<<endl;
 		}
 
 		// If we are outside the slowRadius, then use
@@ -61,7 +59,6 @@ public:
 		// Acceleration tries to get to the target rotation
 		steering.angular = targetRotation - character.rotation;
 		steering.angular /= timeToTarget;
-
 
 		// Check if the acceleration is too great
 		angularAcceleration = abs(steering.angular);
