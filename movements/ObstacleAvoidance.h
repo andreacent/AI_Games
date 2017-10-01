@@ -1,41 +1,4 @@
-struct Collision{
-	vec3 position;
-	vec3 normal;
-};
-
-class CollisionDetector{
-protected:
-	list<Mesh*> &meshs;
-
-public:
-	CollisionDetector(list<Mesh*> &ms) : meshs(ms) {}
-
-	Collision *getCollision(vec3 position, vec3 moveAmount){
-		Collision *collision;
-
-		for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m){
-			vector<vec3> vertexes = (*m)->getTriangles();
-			vec3 intersect;
-			vec3 p1,p2,p3;
-			for(int i=0;i<12;i++){
-				p1 = vertexes.at(i);
-				p2 = vertexes.at(i+1);
-				p3 = vertexes.at(i+2);
-
-				if(glm::intersectRayTriangle(position,moveAmount,p1,p2,p3,intersect)){
-					float z = 1.0 - intersect.x - intersect.y;
-					collision->position = p1 * z + p2 * intersect.x + p3 * intersect.y;
-					collision->normal = glm::normalize(glm::cross(p3 - p1, p2 - p1)); 
-					cout<< "collision->normal"<<collision->normal.x<<","<<collision->normal.y<<endl;
-					return collision;
-				}
-			}
-		}
-
-		return NULL;
-	}
-};
-
+// #include "Collision.h"
 
 class ObstacleAvoidance: public Seek{
 protected:
@@ -66,6 +29,8 @@ public:
 		// Calculate the collision ray vector
 		rayVector = normalize(character.velocity) * lookahead;
 
+		drawRay(character.position, rayVector);
+
 		// Find the collision
 		collision = collisionDetector.getCollision(character.position, rayVector);
 
@@ -74,7 +39,7 @@ public:
 
 			// Otherwise create a target
 		target.position = collision->position + collision->normal * avoidDistance;
-		cout<<"target.position "<<target.position.x<<","<<target.position.y<<endl;
+		//cout<<"target.position "<<target.position.x<<","<<target.position.z<<endl;
 
 		// 2. Delegate to seek
 		return Seek::getSteering();

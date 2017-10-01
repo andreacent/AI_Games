@@ -3,6 +3,16 @@
     sep-dic 2017
 */
 
+void drawRay(vec3 position, vec3 direction) {
+    glPushMatrix();
+        glTranslatef(position.x,position.y,position.z);
+        glBegin(GL_LINES);
+            glVertex3f(0.0,0.0, 0.0);
+            glVertex3f(direction.x,direction.y, direction.z);
+        glEnd();
+    glPopMatrix();
+}
+
 void drawCircle(float px, float pz, float radio, float pointSize) {
     float x,z;
     glPointSize(pointSize);

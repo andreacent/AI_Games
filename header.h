@@ -20,6 +20,7 @@ using namespace glm;
 using namespace std;
 
 #include "Mesh.h"
+#include "Collision.h"
 
 GLfloat getNewOrientation(GLfloat currentOrientation, vec3 velocity);
 GLfloat randomBinomial();

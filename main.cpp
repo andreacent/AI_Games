@@ -31,10 +31,11 @@ GLfloat maxAcceleration = 15;
 GLfloat maxPrediction = 0.7;
 
 Kinematic target = {{-16.0f,0.0,-4.0f}};
-Kinematic character = {{10.0f,0.0,-5.0f},0.0,{-1,0.0,0.8}};
+Kinematic character = {{10.0f,0.0,-5.0f},0.0};
 
 bool iniListTargets = false, iniMesh = false;
 list<Kinematic*> targets;
+list<Mesh*> meshs;
 
 Seek seek = {character,target,maxAcceleration};
 Flee flee = {character,target,maxAcceleration};
@@ -55,11 +56,8 @@ Separation separation = {character,targets,6,10,30};
 //CollisionAvoidance -> {character,targets,maxAcceleration,radius}
 CollisionAvoidance collisionAvoidance = {character,targets,4,2};
 
-list<Mesh*> meshs;
-
 CollisionDetector collisionDetector = {meshs};
-
-ObstacleAvoidance  obstacleAvoidance = {character,maxAcceleration,collisionDetector,1,10};
+ObstacleAvoidance obstacleAvoidance = {character,maxAcceleration,collisionDetector,1,10};
 
 void initializeMesh(){
     // WALLS
@@ -240,7 +238,6 @@ void display(){
     target.updatePosition(deltaTime);
     target.updateOrientation(deltaTime);
 
-    character.updatePosition(deltaTime);
 
     //SeekMovement(deltaTime);
     //FleeMovement(deltaTime);
@@ -256,6 +253,8 @@ void display(){
     //CollisionAvoidance(deltaTime);
     ObstacleAvoidance(deltaTime);
 
+    character.updatePosition(deltaTime);
+    
     glFlush();
     glutPostRedisplay();
 }
