@@ -3,7 +3,7 @@ public:
 	Face(Kinematic &c, Kinematic &t, GLfloat sr, GLfloat tr, GLfloat maa, GLfloat mr) : Align(c, t, sr, tr, maa, mr) {}
 
 	SteeringOutput getSteering(){
-		vec2 direction;
+		vec3 direction;
 		GLfloat lastOrientation;
 
 		SteeringOutput steering;
@@ -21,7 +21,7 @@ public:
 		lastOrientation = target.orientation;
 
 		// Put the target together
-		target.orientation = atan2(-direction.x, direction.y);//atan2(-direction.x, direction.y);
+		target.orientation = atan2(-direction.x, direction.z);//atan2(-direction.x, direction.y);
 
 		// 2. Delegate to align
 		steering = Align::getSteering();

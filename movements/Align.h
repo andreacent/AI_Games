@@ -67,7 +67,7 @@ public:
 		}
 
 		// Output the steering
-		steering.linear = {0.0,0.0};
+		steering.linear = {0.0,0.0,0.0};
 
 		return steering;
 	}

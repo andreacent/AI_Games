@@ -20,7 +20,7 @@ public:
 		: character(c), targets(ts), threshold(t), decayCoefficient(d), maxAcceleration(ma) {}
 
 	SteeringOutput getSteering(){
-		vec2 direction;
+		vec3 direction;
 		GLfloat distance,strength;
 
 		// The steering variable holds the output

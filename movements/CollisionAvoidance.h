@@ -20,7 +20,7 @@ public:
 		SteeringOutput steering;
 
 		GLfloat distance, relativeSpeed, timeToCollision, minSeparation;
-		vec2 relativePos,relativeVel;
+		vec3 relativePos,relativeVel;
 
 		//1. Find the target that’s closest to collision
 
@@ -31,7 +31,7 @@ public:
 		// that we will need and can avoid recalculating
 		Kinematic *firstTarget;
 		GLfloat firstMinSeparation, firstDistance;
-		vec2 firstRelativePos, firstRelativeVel;
+		vec3 firstRelativePos, firstRelativeVel;
 
 		// Loop through each target
 		for (list<Kinematic*>::iterator target=targets.begin(); target != targets.end(); ++target){

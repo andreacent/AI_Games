@@ -21,7 +21,7 @@ public:
 		character(c), target(t), targetRadius(tr), slowRadius(sr), maxAcceleration(ma), maxSpeed(ms){}
 
 	SteeringOutput getSteering(){
-		vec2 direction,targetVelocity;
+		vec3 direction,targetVelocity;
 		GLfloat targetSpeed,targetDistance;
 
 		SteeringOutput steering;

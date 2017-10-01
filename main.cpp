@@ -5,6 +5,7 @@
 */    
 #include "header.h"
 #include "draw.cpp"
+
 #include "movements/Seek.h"
 #include "movements/Flee.h"
 #include "movements/Arrive.h"
@@ -17,7 +18,7 @@
 #include "movements/Wander.h"
 #include "movements/Separation.h"
 #include "movements/CollisionAvoidance.h"
-
+#include "movements/ObstacleAvoidance.h"
 
 GLfloat oldTimeSinceStart = 0.0;
 GLfloat pointSize=1.5;
@@ -27,12 +28,12 @@ GLfloat targetVelocity = 10;
 
 GLfloat maxSpeed = 8;
 GLfloat maxAcceleration = 15;
-GLfloat maxPrediction = 1.2;
+GLfloat maxPrediction = 0.7;
 
-Kinematic target = {{-16.0f,-4.0f}};
-Kinematic character = {{10.0f,-5.0f}};
+Kinematic target = {{-16.0f,0.0,-4.0f}};
+Kinematic character = {{10.0f,0.0,-5.0f},0.0,{-1,0.0,0.8}};
 
-bool iniListTargets = false;
+bool iniListTargets = false, iniMesh = false;
 list<Kinematic*> targets;
 
 Seek seek = {character,target,maxAcceleration};
@@ -54,9 +55,26 @@ Separation separation = {character,targets,6,10,30};
 //CollisionAvoidance -> {character,targets,maxAcceleration,radius}
 CollisionAvoidance collisionAvoidance = {character,targets,4,2};
 
+list<Mesh*> meshs;
+
+CollisionDetector collisionDetector = {meshs};
+
+ObstacleAvoidance  obstacleAvoidance = {character,maxAcceleration,collisionDetector,1,10};
+
+void initializeMesh(){
+    // WALLS
+    meshs.push_back(new Mesh({{0.0,0.0,11},0.2,70,{1,0,0},'W'}));
+    meshs.push_back(new Mesh({{0.0,0.0,-9},0.2,70,{1,0,0},'W'}));
+    meshs.push_back(new Mesh({{6,0.0,7.5},7,0.2,{1,0,0},'W'}));
+    meshs.push_back(new Mesh({{-10,0.0,-5.5},7,0.2,{1,0,0},'W'}));
+    // OBSTACLE
+    meshs.push_back(new Mesh({{-10,0.0,8},4,4,{1,0,1},'O'}));
+    iniMesh = true;
+}
+
 void initializeListTargets(){
     for(int i ; i< 10; i++){
-        targets.push_back(new Kinematic({-30.0 + i*7,8.0f},0.0,{0.0,1}));
+        targets.push_back(new Kinematic({-30.0 + i*7,0.0,8.0f},0.0,{0.0,0.0,1}));
     }
     iniListTargets = true;
 }
@@ -68,7 +86,7 @@ void moveListTargets(GLfloat deltaTime){
     }
 
     for (list<Kinematic*>::iterator t=targets.begin(); t != targets.end(); ++t){
-        if((*t)->position.y > 10 || (*t)->position.y < -10) (*t)->velocity.y *= (-1);
+        if((*t)->position.y > 8 || (*t)->position.y < -6) (*t)->velocity.y *= (-1);
         (*t)->updatePosition(deltaTime);
     }
 }
@@ -134,6 +152,11 @@ void CollisionAvoidance(GLfloat deltaTime){
     if(length(so.linear) != 0) character.update(so,maxSpeed,deltaTime);
 }
 
+void ObstacleAvoidance(GLfloat deltaTime){  
+    SteeringOutput so = obstacleAvoidance.getSteering();
+    character.update(so,maxSpeed,deltaTime);
+}
+
 /******************************* KEYBOARD *****************************/
 void controlKey (unsigned char key, int xmouse, int ymouse){  
     switch (key){
@@ -160,16 +183,16 @@ void controlKeyReleased (unsigned char key, int xmouse, int ymouse){
 void handleSpecialKeypress(int key, int x, int y) {
     switch (key) {
         case GLUT_KEY_LEFT:
-            target.velocity = {-targetVelocity,0.0};
+            target.velocity = {-targetVelocity,0.0,0.0};
         break;
         case GLUT_KEY_RIGHT:
-            target.velocity = {targetVelocity,0.0};
+            target.velocity = {targetVelocity,0.0,0.0};
         break;
         case GLUT_KEY_UP:
-            target.velocity = {0.0,targetVelocity};
+            target.velocity = {0.0,0.0,targetVelocity};
         break;
         case GLUT_KEY_DOWN:
-            target.velocity = {0.0,-targetVelocity};
+            target.velocity = {0.0,0.0,-targetVelocity};
         break;
         default: break;
     }
@@ -181,7 +204,7 @@ void handleSpecialKeyReleased(int key, int x, int y){
         case GLUT_KEY_RIGHT:
         case GLUT_KEY_UP:
         case GLUT_KEY_DOWN:
-            target.velocity = {0.0,0.0};
+            target.velocity = {0.0,0.0,0.0};
         break;
         default: break;
     }
@@ -205,16 +228,20 @@ void display(){
     drawFace(target.position,target.orientation,pointSize);
     glColor3f(0.4,0.2,0.8);
     drawFace(character.position,character.orientation,pointSize);
+
+    for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
    
     GLfloat timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
     GLfloat deltaTime = (timeSinceStart - oldTimeSinceStart) * 0.001;
     oldTimeSinceStart = timeSinceStart;
 
-    moveListTargets(deltaTime);
+    //moveListTargets(deltaTime);
 
     target.updatePosition(deltaTime);
     target.updateOrientation(deltaTime);
+
     character.updatePosition(deltaTime);
+
     //SeekMovement(deltaTime);
     //FleeMovement(deltaTime);
     //ArriveMovement(deltaTime);
@@ -227,6 +254,7 @@ void display(){
     //WanderMovement(deltaTime);
     //SeparationMovement(deltaTime);
     //CollisionAvoidance(deltaTime);
+    ObstacleAvoidance(deltaTime);
 
     glFlush();
     glutPostRedisplay();
@@ -234,24 +262,16 @@ void display(){
 
 /************************* Viewport **************************/
 void reshape(int w, int h) {
-    GLfloat aspectratio = (GLfloat) w / (GLfloat) h;
-    GLfloat zoom = 35.0;
-
-    glMatrixMode(GL_PROJECTION);   
-    glLoadIdentity(); 
-    glViewport(0, 0, w, h);
-    /*
-    gluPerspective( 45 ,        // ángulo de visión
-      (float)h/(float)w, // Razón entre el largo y el ancho, para calcular la perspectiva
-      1,                        // Cuan cerca se puede ver
-      1000);
-    */
-    if (w <= h){
-        glOrtho(-zoom, zoom, -zoom/aspectratio, zoom/aspectratio, -1.0, 1.0); 
-    }else{
-        glOrtho(-zoom*aspectratio, zoom*aspectratio, -zoom, zoom, -1.0, 1.0);
-    }
-    
+    float aspectradio;
+    glViewport(0,0,w,h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    aspectradio = (float) w / (float) h;
+    GLfloat number = 30;
+    if (w <= h)
+        glOrtho(-number,number,-number/aspectradio,number/aspectradio,1.0,-1.0);
+    else
+        glOrtho(-number*aspectradio,number*aspectradio,-number,number,1.0,-1.0);
 }
 
 /*************************** MAIN ***************************/
@@ -259,10 +279,11 @@ int main (int argc, char** argv) {
     glutInit(&argc, argv);
     // glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE | GLUT_DEPTH);
-    glutInitWindowSize(800,600);
+    glutInitWindowSize(1000,600);
     glutCreateWindow("AI VideoGame");
 
     if(!iniListTargets) initializeListTargets();
+    if(!iniMesh) initializeMesh();
 
     glutReshapeFunc(reshape);
     glutDisplayFunc(display);

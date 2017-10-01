@@ -7,7 +7,7 @@ public:
 	Pursue(Kinematic &c, Kinematic &t, GLfloat ma, GLfloat mp) : Seek(c,t,ma), maxPrediction(mp) {}
 
 	SteeringOutput getSteering(){
-		vec2 direction,lastPosition;
+		vec3 direction,lastPosition;
 		GLfloat distance,speed,prediction;
 
 		//1. Calculate the target to delegate to seek

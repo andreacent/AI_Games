@@ -15,9 +15,9 @@ void drawCircle(float px, float pz, float radio, float pointSize) {
     glEnd();
 }
 
-void drawFace(vec2 position,float rot, float pointSize){
+void drawFace(vec3 position,float rot, float pointSize){
     float x = position.x;
-    float z = position.y;
+    float z = position.z;
     double deg = glm::degrees(-rot);//radianes a grados
     
     glPushMatrix();

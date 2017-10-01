@@ -17,7 +17,7 @@ public:
 
 		lastOrientation = target.orientation;
 		// Otherwise set the target based on the velocity
-		target.orientation = atan2(-character.velocity.x, character.velocity.y);
+		target.orientation = atan2(-character.velocity.x, character.velocity.z);
 
 		// 2. Delegate to align
 		steering = Align::getSteering();
