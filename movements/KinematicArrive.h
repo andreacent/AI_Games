@@ -24,7 +24,7 @@ public:
 		GLfloat length = glm::length(steering.velocity);
 		// Check if we’re within radius
 		if(length < radius){ // We can return no steering request
-			steering.velocity = {0.0,0.0};
+			steering.velocity = {0.0,0.0,0.0};
 			return steering;
 		}
 
