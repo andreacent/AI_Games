@@ -31,10 +31,11 @@ GLfloat maxAcceleration = 15;
 GLfloat maxPrediction = 0.7;
 
 Kinematic target = {{-16.0f,0.0,-4.0f}};
-Kinematic character = {{10.0f,0.0,-5.0f},0.0,{-1,0.0,0.8}};
+Kinematic character = {{10.0f,0.0,-5.0f},0.0,{-0.3,0.0,0.2}};
 
-bool iniListTargets = false, iniMesh = false;
+bool ini = false;
 list<Kinematic*> targets;
+list<Mesh*> meshs;
 
 Seek seek = {character,target,maxAcceleration};
 Flee flee = {character,target,maxAcceleration};
@@ -55,13 +56,11 @@ Separation separation = {character,targets,6,10,30};
 //CollisionAvoidance -> {character,targets,maxAcceleration,radius}
 CollisionAvoidance collisionAvoidance = {character,targets,4,2};
 
-list<Mesh*> meshs;
-
 CollisionDetector collisionDetector = {meshs};
+ObstacleAvoidance obstacleAvoidance = {character,maxAcceleration,collisionDetector,1,10};
 
-ObstacleAvoidance  obstacleAvoidance = {character,maxAcceleration,collisionDetector,1,10};
-
-void initializeMesh(){
+void initialize(){
+    ini = true;
     // WALLS
     meshs.push_back(new Mesh({{0.0,0.0,11},0.2,70,{1,0,0},'W'}));
     meshs.push_back(new Mesh({{0.0,0.0,-9},0.2,70,{1,0,0},'W'}));
@@ -69,14 +68,11 @@ void initializeMesh(){
     meshs.push_back(new Mesh({{-10,0.0,-5.5},7,0.2,{1,0,0},'W'}));
     // OBSTACLE
     meshs.push_back(new Mesh({{-10,0.0,8},4,4,{1,0,1},'O'}));
-    iniMesh = true;
-}
 
-void initializeListTargets(){
+    //ListTargets
     for(int i ; i< 10; i++){
-        targets.push_back(new Kinematic({-30.0 + i*7,0.0,8.0f},0.0,{0.0,0.0,1}));
+        targets.push_back(new Kinematic({-30.0 + i*7,0.0,8.0f},0.0,{0.0,0.0,-1}));
     }
-    iniListTargets = true;
 }
 
 void moveListTargets(GLfloat deltaTime){
@@ -89,72 +85,6 @@ void moveListTargets(GLfloat deltaTime){
         if((*t)->position.y > 8 || (*t)->position.y < -6) (*t)->velocity.y *= (-1);
         (*t)->updatePosition(deltaTime);
     }
-}
-
-/******************************* MOVEMENTS *****************************/
-void SeekMovement(GLfloat deltaTime){  
-    SteeringOutput so = seek.getSteering();
-    character.update(so,maxSpeed,deltaTime);
-}
-
-void FleeMovement(GLfloat deltaTime){  
-    SteeringOutput so = flee.getSteering();
-    character.update(so,maxSpeed,deltaTime);
-}
-
-void ArriveMovement(GLfloat deltaTime){  
-    SteeringOutput so = arrive.getSteering();
-    if(length(so.linear) != 0) character.update(so,maxSpeed,deltaTime);
-}
-
-void AlignMovement(GLfloat deltaTime){  
-    SteeringOutput so = align.getSteering();
-    if( so.angular != 0.0 ) character.update(so,maxSpeed,deltaTime);
-}
-
-void VelocityMatchMovement(GLfloat deltaTime){  
-    SteeringOutput so = velocityMatch.getSteering();
-    character.update(so,maxSpeed,deltaTime);
-}
-
-void PursueMovement(GLfloat deltaTime){  
-    SteeringOutput so = pursue.getSteering();
-    character.update(so,maxSpeed,deltaTime);
-}
-
-void EvadeMovement(GLfloat deltaTime){  
-    SteeringOutput so = evade.getSteering();
-    character.update(so,maxSpeed,deltaTime);
-}
-
-void FaceMovement(GLfloat deltaTime){  
-    SteeringOutput so = face.getSteering();
-    if(so.angular != 0.0) character.update(so,maxSpeed,deltaTime);
-}
-
-void LookWhereYoureGoing(GLfloat deltaTime){  
-    SteeringOutput so = lookWhereYoureGoing.getSteering();
-    if(so.angular != 0.0) character.update(so,maxSpeed,deltaTime);
-}
-
-void WanderMovement(GLfloat deltaTime){  
-    SteeringOutput so = wander.getSteering();
-    if(so.angular != 0.0) character.update(so,maxSpeed,deltaTime);
-}
-
-void SeparationMovement(GLfloat deltaTime){  
-    SteeringOutput so = separation.getSteering();
-    if(length(so.linear) != 0) character.update(so,maxSpeed,deltaTime);
-}
-
-void CollisionAvoidance(GLfloat deltaTime){  
-    SteeringOutput so = collisionAvoidance.getSteering();
-    if(length(so.linear) != 0) character.update(so,maxSpeed,deltaTime);
-}
-
-void ObstacleAvoidance(GLfloat deltaTime){  
-    SteeringOutput so = obstacleAvoidance.getSteering();
-    character.update(so,maxSpeed,deltaTime);
 }
 
 /******************************* KEYBOARD *****************************/
@@ -240,22 +170,22 @@ void display(){
     target.updatePosition(deltaTime);
     target.updateOrientation(deltaTime);
 
+    //seek.update(maxSpeed,deltaTime);
+    //flee.update(maxSpeed,deltaTime);
+    //arrive.update(maxSpeed,deltaTime);
+    //align.update(maxSpeed,deltaTime);
+    //velocityMatch.update(maxSpeed,deltaTime);
+    //pursue.update(maxSpeed,deltaTime);
+    //evade.update(maxSpeed,deltaTime);
+    //face.update(maxSpeed,deltaTime);
+    //lookWhereYoureGoing.update(maxSpeed,deltaTime);
+    //wander.update(maxSpeed,deltaTime);
+    //separation.update(maxSpeed,deltaTime);
+    //collisionAvoidance.update(maxSpeed,deltaTime);
+    obstacleAvoidance.update(maxSpeed,deltaTime);
+
     character.updatePosition(deltaTime);
-
-    //SeekMovement(deltaTime);
-    //FleeMovement(deltaTime);
-    //ArriveMovement(deltaTime);
-    //AlignMovement(deltaTime);
-    //VelocityMatchMovement(deltaTime);
-    //PursueMovement(deltaTime);
-    //EvadeMovement(deltaTime);
-    //FaceMovement(deltaTime);
-    //LookWhereYoureGoing(deltaTime);
-    //WanderMovement(deltaTime);
-    //SeparationMovement(deltaTime);
-    //CollisionAvoidance(deltaTime);
-    ObstacleAvoidance(deltaTime);
-
+    
     glFlush();
     glutPostRedisplay();
 }
@@ -282,8 +212,7 @@ int main (int argc, char** argv) {
     glutInitWindowSize(1000,600);
     glutCreateWindow("AI VideoGame");
 
-    if(!iniListTargets) initializeListTargets();
-    if(!iniMesh) initializeMesh();
+    if(!ini) initialize();
 
     glutReshapeFunc(reshape);
     glutDisplayFunc(display);

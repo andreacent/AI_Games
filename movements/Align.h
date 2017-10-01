@@ -71,4 +71,8 @@ public:
 
 		return steering;
 	}
+
+	void update(GLfloat maxSpeed,GLfloat deltaTime){
+    	character.update(getSteering(),maxSpeed,deltaTime);
+	}
 };

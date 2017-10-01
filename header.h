@@ -20,26 +20,12 @@ using namespace glm;
 using namespace std;
 
 #include "Mesh.h"
+#include "Collision.h"
 
 GLfloat getNewOrientation(GLfloat currentOrientation, vec3 velocity);
 GLfloat randomBinomial();
 vec3 getVectorOrientation(GLfloat orientation);
 GLfloat mapToRange(GLfloat orientation);
-
-struct Static {
-	vec3 position;
-	GLfloat orientation;
-
-	void update(vec3 velocity,GLfloat rotation) { 
-		position += velocity;
-		orientation += rotation;
-	}
-
-	void update(vec3 velocity,GLfloat rotation,GLfloat deltaTime) { 
-		position += velocity * deltaTime;
-		orientation += rotation * deltaTime;
-	}
-};
 
 struct SteeringOutput {
 	vec3 linear;
@@ -79,11 +65,6 @@ struct Kinematic{
 			velocity = glm::normalize(velocity) * maxSpeed;
 		}
 	}
-};
-
-struct KinematicSteeringOutput{
-	vec3 velocity;
-	GLfloat rotation;
 };
 
 GLfloat getNewOrientation(GLfloat currentOrientation, vec3 velocity){

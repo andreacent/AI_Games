@@ -44,4 +44,9 @@ public:
 		// We’ve gone through all targets, return the result
 		return steering;
 	}
+
+	void update(GLfloat maxSpeed,GLfloat deltaTime){
+    	SteeringOutput so = getSteering();
+    	if(length(so.linear) != 0) character.update(so,maxSpeed,deltaTime);
+	}
 };

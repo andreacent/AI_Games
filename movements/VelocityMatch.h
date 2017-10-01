@@ -29,4 +29,8 @@ public:
 		steering.angular = 0;
 		return steering;
 	}
+
+	void update(GLfloat maxSpeed,GLfloat deltaTime){
+    	character.update(getSteering(),maxSpeed,deltaTime);
+	}
 };

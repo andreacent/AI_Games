@@ -81,6 +81,10 @@ public:
 
 		// Return the steering
 		return steering;
+	}
 
+	void update(GLfloat maxSpeed,GLfloat deltaTime){
+    	SteeringOutput so = getSteering();
+    	if(length(so.linear) != 0) character.update(so,maxSpeed,deltaTime);
 	}
 };

@@ -48,4 +48,9 @@ public:
 
 		return steering;
 	}
+
+	void update(GLfloat maxSpeed,GLfloat deltaTime){
+    	SteeringOutput so = getSteering();
+    	if(so.angular != 0.0) character.update(so,maxSpeed,deltaTime);
+	}
 };
