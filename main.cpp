@@ -19,6 +19,7 @@
 #include "movements/Separation.h"
 #include "movements/CollisionAvoidance.h"
 #include "movements/ObstacleAvoidance.h"
+#include "movements/BlendedSteering.h"
 
 GLfloat oldTimeSinceStart = 0.0;
 GLfloat pointSize=1.5;
@@ -202,7 +203,7 @@ void display(){
     //wander->update(maxSpeed,deltaTime);
     //separation->update(maxSpeed,deltaTime);
     //collisionAvoidance->update(maxSpeed,deltaTime);
-    //obstacleAvoidance->update(maxSpeed,deltaTime);
+    obstacleAvoidance->update(maxSpeed,deltaTime);
 
     
     glFlush();

@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <math.h>
+#include <algorithm>
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -67,7 +68,10 @@ struct Kinematic{
 	}
 };
 
-class Behavior{};
+class Behavior{
+public:
+	virtual SteeringOutput getSteering() = 0;
+};
 
 GLfloat getNewOrientation(GLfloat currentOrientation, vec3 velocity){
 	//Make sure we have a velocity
