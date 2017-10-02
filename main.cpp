@@ -28,34 +28,37 @@ GLfloat targetVelocity = 10;
 
 GLfloat maxSpeed = 8;
 GLfloat maxAcceleration = 30;
-GLfloat maxPrediction = 0.7;
+GLfloat maxPrediction = 0.4;
 
 Kinematic target = {{-16.0f,0.0,-4.0f}};
-Kinematic character = {{10.0f,0.0,-5.0f},0.0,{-0.01,0.0,0.02}};
+Kinematic character = {{10.0f,0.0,-5.0f},0.0};//,{-0.01,0.0,0.02}
 
 bool ini = false;
 list<Kinematic*> targets;
 list<Mesh*> meshs;
 
 /**************** Behaviors ****************/
-Seek seek = {character,target,maxAcceleration};
-Flee flee = {character,target,maxAcceleration};
-Arrive arrive = {character,target,3,5,maxAcceleration,maxSpeed};
-Align align = {character,target,20,30,5,2};//{&character,&target,maxAngularAcceleration,maxRotation,slowRadius,targetRadius}
-VelocityMatch velocityMatch = {character,target,maxAcceleration};
+Seek* seek = new Seek(character,target,maxAcceleration);
+Flee* flee = new Flee(character,target,maxAcceleration); 
+Arrive* arrive = new Arrive(character,target,3,5,maxAcceleration,maxSpeed); 
+Align* align = new Align(character,target,20,30,5,2);//{&character,&target,maxAngularAcceleration,maxRotation,slowRadius,targetRadius} 
+VelocityMatch* velocityMatch = new VelocityMatch(character,target,maxAcceleration); 
 
 /**************** Delegated Behaviors ****************/
-Pursue pursue = {character,target,maxAcceleration,maxPrediction};
-Evade evade = {character,target,maxAcceleration,maxPrediction};
-Face face = {character,target,10,30,5,2}; // Align()
-LookWhereYoureGoing lookWhereYoureGoing = {character,target,10,30,5,2}; // Align()
-Wander wander = {character,20,30,5,2, -1,6,2,30,10};//{Face(),wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration}
-Separation separation = {character,targets,6,10,30};//{character,targets,threshold,decayCoefficient,maxAcceleration}
+Pursue* pursue = new Pursue(character,target,20,maxPrediction); 
+Evade* evade = new Evade(character,target,maxAcceleration,maxPrediction); 
+Face* face = new Face(character,target,10,30,5,2); // Align() 
+LookWhereYoureGoing* lookWhereYoureGoing = new LookWhereYoureGoing(character,target,10,30,5,2); // Align() 
+Wander* wander = new Wander(character,20,30,5,2, -1,6,2,30,10);//{Face(),wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration} 
+Separation* separation = new Separation(character,targets,6,10,30);//{character,targets,threshold,decayCoefficient,maxAcceleration} 
 
 /**************** Collisions ****************/
-CollisionAvoidance collisionAvoidance = {character,targets,4,2};//{character,targets,maxAcceleration,radius}
+CollisionAvoidance* collisionAvoidance = new CollisionAvoidance(character,targets,4,2);//{character,targets,maxAcceleration,radius}
 CollisionDetector collisionDetector = {meshs};
-ObstacleAvoidance obstacleAvoidance = {character,32,collisionDetector,4,10};
+ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(character,50,collisionDetector,4,10);
+
+
+list<Behavior*> behaviors;
 
 void initialize(){
     ini = true;
@@ -73,6 +76,21 @@ void initialize(){
     for(int i ; i< 10; i++){
         targets.push_back(new Kinematic({-30.0 + i*7,0.0,8.0f},0.0,{0.0,0.0,-1}));
     }
+
+    //BEHAVIORS
+    behaviors.push_back(seek);
+    behaviors.push_back(flee);
+    behaviors.push_back(arrive);
+    behaviors.push_back(align); 
+    behaviors.push_back(velocityMatch);                           
+    behaviors.push_back(pursue);
+    behaviors.push_back(evade);
+    behaviors.push_back(face);
+    behaviors.push_back(lookWhereYoureGoing);
+    behaviors.push_back(wander);    
+    behaviors.push_back(separation);
+    behaviors.push_back(collisionAvoidance);
+    behaviors.push_back(obstacleAvoidance);
 }
 
 void moveListTargets(GLfloat deltaTime){
@@ -170,21 +188,21 @@ void display(){
     target.updatePosition(deltaTime);
     target.updateOrientation(deltaTime);
 
-    character.updatePosition(deltaTime);
+    //character.updatePosition(deltaTime);
 
-    //seek.update(maxSpeed,deltaTime);
-    //flee.update(maxSpeed,deltaTime);
-    //arrive.update(maxSpeed,deltaTime);
-    //align.update(maxSpeed,deltaTime);
-    //velocityMatch.update(maxSpeed,deltaTime);
-    //pursue.update(maxSpeed,deltaTime);
-    //evade.update(maxSpeed,deltaTime);
-    //face.update(maxSpeed,deltaTime);
-    //lookWhereYoureGoing.update(maxSpeed,deltaTime);
-    //wander.update(maxSpeed,deltaTime);
-    //separation.update(maxSpeed,deltaTime);
-    //collisionAvoidance.update(maxSpeed,deltaTime);
-    obstacleAvoidance.update(maxSpeed,deltaTime);
+    //seek->update(maxSpeed,deltaTime);
+    //flee->update(maxSpeed,deltaTime);
+    //arrive->update(maxSpeed,deltaTime);
+    //align->update(maxSpeed,deltaTime);
+    //velocityMatch->update(maxSpeed,deltaTime);
+    pursue->update(maxSpeed,deltaTime);
+    //evade->update(maxSpeed,deltaTime);
+    //face->update(maxSpeed,deltaTime);
+    lookWhereYoureGoing->update(maxSpeed,deltaTime);
+    //wander->update(maxSpeed,deltaTime);
+    //separation->update(maxSpeed,deltaTime);
+    //collisionAvoidance->update(maxSpeed,deltaTime);
+    //obstacleAvoidance->update(maxSpeed,deltaTime);
 
     
     glFlush();

@@ -67,6 +67,8 @@ struct Kinematic{
 	}
 };
 
+class Behavior{};
+
 GLfloat getNewOrientation(GLfloat currentOrientation, vec3 velocity){
 	//Make sure we have a velocity
 	if (glm::length(velocity) > 0){

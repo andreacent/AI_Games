@@ -1,4 +1,4 @@
-class VelocityMatch{
+class VelocityMatch: public Behavior{
 private:
 	// Holds the Kinematic data for the character and target
 	Kinematic &character;

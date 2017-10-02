@@ -1,4 +1,4 @@
-class CollisionAvoidance{
+class CollisionAvoidance: public Behavior{
 protected:
 	// Holds the kinematic data for the character
 	Kinematic &character;

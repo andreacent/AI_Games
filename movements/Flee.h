@@ -1,4 +1,4 @@
-class Flee{
+class Flee: public Behavior{
 protected:
 	// Holds the Kinematic data for the character and target
 	Kinematic &character;

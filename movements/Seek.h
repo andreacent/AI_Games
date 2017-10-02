@@ -1,4 +1,4 @@
-class Seek{
+class Seek: public Behavior{
 protected:
 	// Holds the Kinematic data for the character and target
 	Kinematic &character;
