@@ -53,5 +53,6 @@ public:
 
 	void update(GLfloat maxSpeed,GLfloat deltaTime){
     	character.update(getSteering(),maxSpeed,deltaTime);
+		//cout<<"character velocity "<<character.velocity.x<<","<<character.velocity.z<<endl<<endl;
 	}
 };

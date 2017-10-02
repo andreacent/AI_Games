@@ -27,11 +27,11 @@ GLfloat targetRotation = glm::radians(10.0);
 GLfloat targetVelocity = 10;
 
 GLfloat maxSpeed = 8;
-GLfloat maxAcceleration = 15;
+GLfloat maxAcceleration = 30;
 GLfloat maxPrediction = 0.7;
 
 Kinematic target = {{-16.0f,0.0,-4.0f}};
-Kinematic character = {{10.0f,0.0,-5.0f},0.0,{-0.3,0.0,0.2}};
+Kinematic character = {{10.0f,0.0,-5.0f},0.0,{-0.01,0.0,0.02}};
 
 bool ini = false;
 list<Kinematic*> targets;
@@ -55,7 +55,7 @@ Separation separation = {character,targets,6,10,30};//{character,targets,thresho
 /**************** Collisions ****************/
 CollisionAvoidance collisionAvoidance = {character,targets,4,2};//{character,targets,maxAcceleration,radius}
 CollisionDetector collisionDetector = {meshs};
-ObstacleAvoidance obstacleAvoidance = {character,maxAcceleration,collisionDetector,3,10};
+ObstacleAvoidance obstacleAvoidance = {character,32,collisionDetector,4,10};
 
 void initialize(){
     ini = true;
@@ -64,6 +64,8 @@ void initialize(){
     meshs.push_back(new Mesh({{0.0,0.0,-9},0.2,70,{1,0,0},'W'}));
     meshs.push_back(new Mesh({{6,0.0,7.5},7,0.2,{1,0,0},'W'}));
     meshs.push_back(new Mesh({{-10,0.0,-5.5},7,0.2,{1,0,0},'W'}));
+    meshs.push_back(new Mesh({{-35,0.0,0},22,0.2,{1,0,0},'W'}));
+    meshs.push_back(new Mesh({{35,0.0,0},22,0.2,{1,0,0},'W'}));
     // OBSTACLE
     meshs.push_back(new Mesh({{-10,0.0,8},4,4,{1,0,1},'O'}));
 
@@ -168,6 +170,8 @@ void display(){
     target.updatePosition(deltaTime);
     target.updateOrientation(deltaTime);
 
+    character.updatePosition(deltaTime);
+
     //seek.update(maxSpeed,deltaTime);
     //flee.update(maxSpeed,deltaTime);
     //arrive.update(maxSpeed,deltaTime);
@@ -182,7 +186,6 @@ void display(){
     //collisionAvoidance.update(maxSpeed,deltaTime);
     obstacleAvoidance.update(maxSpeed,deltaTime);
 
-    character.updatePosition(deltaTime);
     
     glFlush();
     glutPostRedisplay();
