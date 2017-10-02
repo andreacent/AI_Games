@@ -37,11 +37,11 @@ bool ini = false;
 list<Kinematic*> targets;
 list<Mesh*> meshs;
 
+/**************** Behaviors ****************/
 Seek seek = {character,target,maxAcceleration};
 Flee flee = {character,target,maxAcceleration};
 Arrive arrive = {character,target,3,5,maxAcceleration,maxSpeed};
-//Align -> {&character,&target,maxAngularAcceleration,maxRotation,slowRadius,targetRadius}
-Align align = {character,target,20,30,5,2};
+Align align = {character,target,20,30,5,2};//{&character,&target,maxAngularAcceleration,maxRotation,slowRadius,targetRadius}
 VelocityMatch velocityMatch = {character,target,maxAcceleration};
 
 /**************** Delegated Behaviors ****************/
@@ -49,15 +49,13 @@ Pursue pursue = {character,target,maxAcceleration,maxPrediction};
 Evade evade = {character,target,maxAcceleration,maxPrediction};
 Face face = {character,target,10,30,5,2}; // Align()
 LookWhereYoureGoing lookWhereYoureGoing = {character,target,10,30,5,2}; // Align()
-//Wander -> {Face(),wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration}
-Wander wander = {character,20,30,5,2, -1,6,2,30,10}; 
-//Separatio -> {character,targets,threshold,decayCoefficient,maxAcceleration}
-Separation separation = {character,targets,6,10,30};
-//CollisionAvoidance -> {character,targets,maxAcceleration,radius}
-CollisionAvoidance collisionAvoidance = {character,targets,4,2};
+Wander wander = {character,20,30,5,2, -1,6,2,30,10};//{Face(),wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration}
+Separation separation = {character,targets,6,10,30};//{character,targets,threshold,decayCoefficient,maxAcceleration}
 
+/**************** Collisions ****************/
+CollisionAvoidance collisionAvoidance = {character,targets,4,2};//{character,targets,maxAcceleration,radius}
 CollisionDetector collisionDetector = {meshs};
-ObstacleAvoidance obstacleAvoidance = {character,maxAcceleration,collisionDetector,1,10};
+ObstacleAvoidance obstacleAvoidance = {character,maxAcceleration,collisionDetector,3,10};
 
 void initialize(){
     ini = true;

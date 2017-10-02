@@ -27,7 +27,9 @@ public:
 				if(glm::intersectRayTriangle(position,moveAmount,p1,p2,p3,intersect)){
 					float z = 1.0 - intersect.x - intersect.y;
 					collision->position = p1 * z + p2 * intersect.x + p3 * intersect.y;
-					collision->normal = glm::normalize(glm::cross(p3 - p1, p2 - p1));
+					collision->normal = glm::normalize(glm::cross(p2 - p1,p3 - p1));
+					//collision->normal = glm::normalize(glm::cross(p3 - p1, p2 - p1));
+					//N = ( (V2 – V1) x (V3 – V1) ) / | (V2 – V1) x (V3 – V1) |
 					return collision;
 				}
 			}

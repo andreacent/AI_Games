@@ -36,10 +36,15 @@ public:
 
 		// If have no collision, do nothing
 		if (!collision) return steering;
+		/*
+		else {
+			cout<<"Collision position "<<collision->position.x<<","<<collision->position.z<<endl;
+			cout<<"Collision normal "<<collision->normal.x<<","<<collision->normal.z<<endl;
+		}
+		*/
 
-			// Otherwise create a target
+		// Otherwise create a target
 		target.position = collision->position + collision->normal * avoidDistance;
-		//cout<<"target.position "<<target.position.x<<","<<target.position.z<<endl;
 
 		// 2. Delegate to seek
 		return Seek::getSteering();
