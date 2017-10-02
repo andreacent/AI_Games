@@ -33,8 +33,8 @@ public:
 		};
 
 		// Crop the result and return
-		if( steering.linear > maxAcceleration ){
-			steering.linear  = maxAcceleration;
+		if(glm::length(steering.linear) > maxAcceleration){
+			steering.linear = glm::normalize(steering.linear) * maxAcceleration;
 		}
 		if( steering.angular > maxRotation ){
 			steering.angular  = maxRotation;
