@@ -95,3 +95,7 @@ GLfloat mapToRange(GLfloat orientation){
 	else if (orientation < -M_PI) orientation += 2*M_PI;
 	return orientation;
 }
+
+vec3 rotateVectorZ(vec3 v, GLfloat ang){
+	return vec3(v.x * cos(ang) + v.z * sin(ang), v.y, v.z * cos(ang) - v.x * sin(ang) );
+}

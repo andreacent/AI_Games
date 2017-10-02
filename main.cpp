@@ -27,11 +27,11 @@ GLfloat targetRotation = glm::radians(10.0);
 GLfloat targetVelocity = 10;
 
 GLfloat maxSpeed = 8;
-GLfloat maxAcceleration = 30;
+GLfloat maxAcceleration = 40;
 GLfloat maxPrediction = 0.4;
 
 Kinematic target = {{-16.0f,0.0,-4.0f}};
-Kinematic character = {{10.0f,0.0,-5.0f},0.0};//,{-0.01,0.0,0.02}
+Kinematic character = {{10.0f,0.0,-5.0f},0.0,{-3,0.0,0}};//,
 
 bool ini = false;
 list<Kinematic*> targets;
@@ -55,20 +55,19 @@ Separation* separation = new Separation(character,targets,6,10,30);//{character,
 /**************** Collisions ****************/
 CollisionAvoidance* collisionAvoidance = new CollisionAvoidance(character,targets,4,2);//{character,targets,maxAcceleration,radius}
 CollisionDetector collisionDetector = {meshs};
-ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(character,50,collisionDetector,4,10);
-
+ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(character,30,collisionDetector,5,3);//Seek(),collisionDetector,avoidDistance,lookahead
 
 list<Behavior*> behaviors;
 
 void initialize(){
     ini = true;
     // WALLS
-    meshs.push_back(new Mesh({{0.0,0.0,11},0.2,70,{1,0,0},'W'}));
-    meshs.push_back(new Mesh({{0.0,0.0,-9},0.2,70,{1,0,0},'W'}));
+    meshs.push_back(new Mesh({{0.0,0.0,11},0.2,70,{1,0,0},'W'}));//up
+    meshs.push_back(new Mesh({{0.0,0.0,-9},0.2,70,{1,0,0},'W'}));//down
     meshs.push_back(new Mesh({{6,0.0,7.5},7,0.2,{1,0,0},'W'}));
     meshs.push_back(new Mesh({{-10,0.0,-5.5},7,0.2,{1,0,0},'W'}));
-    meshs.push_back(new Mesh({{-35,0.0,0},22,0.2,{1,0,0},'W'}));
-    meshs.push_back(new Mesh({{35,0.0,0},22,0.2,{1,0,0},'W'}));
+    meshs.push_back(new Mesh({{-35,0.0,0},22,0.2,{1,0,0},'W'}));//left
+    meshs.push_back(new Mesh({{35,0.0,0},22,0.2,{1,0,0},'W'}));//right
     // OBSTACLE
     meshs.push_back(new Mesh({{-10,0.0,8},4,4,{1,0,1},'O'}));
 
@@ -171,13 +170,14 @@ void display(){
     glLoadIdentity();
     gluLookAt(0, 0, 1, 0, 10, 0, 0, 1, 0);
     
+    for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
+
     glLineWidth(pointSize);
-    glColor3f(0.6,0.6,0.6);
-    drawFace(target.position,target.orientation,pointSize);
+    //glColor3f(0.6,0.6,0.6);
+    //drawFace(target.position,target.orientation,pointSize);
     glColor3f(0.4,0.2,0.8);
     drawFace(character.position,character.orientation,pointSize);
 
-    for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
    
     GLfloat timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
     GLfloat deltaTime = (timeSinceStart - oldTimeSinceStart) * 0.001;
@@ -188,21 +188,19 @@ void display(){
     target.updatePosition(deltaTime);
     target.updateOrientation(deltaTime);
 
-    //character.updatePosition(deltaTime);
-
     //seek->update(maxSpeed,deltaTime);
     //flee->update(maxSpeed,deltaTime);
     //arrive->update(maxSpeed,deltaTime);
     //align->update(maxSpeed,deltaTime);
     //velocityMatch->update(maxSpeed,deltaTime);
-    pursue->update(maxSpeed,deltaTime);
+    //pursue->update(maxSpeed,deltaTime);
     //evade->update(maxSpeed,deltaTime);
     //face->update(maxSpeed,deltaTime);
-    lookWhereYoureGoing->update(maxSpeed,deltaTime);
+    //lookWhereYoureGoing->update(maxSpeed,deltaTime);
     //wander->update(maxSpeed,deltaTime);
     //separation->update(maxSpeed,deltaTime);
     //collisionAvoidance->update(maxSpeed,deltaTime);
-    //obstacleAvoidance->update(maxSpeed,deltaTime);
+    obstacleAvoidance->update(maxSpeed,deltaTime);
 
     
     glFlush();
