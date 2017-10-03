@@ -9,7 +9,7 @@
 
 #include <iostream>
 #include <math.h>
-#include <algorithm>
+#include <queue>
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>

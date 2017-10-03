@@ -20,6 +20,7 @@
 #include "movements/CollisionAvoidance.h"
 #include "movements/ObstacleAvoidance.h"
 #include "movements/BlendedSteering.h"
+#include "movements/PrioritySteering.h"
 
 GLfloat oldTimeSinceStart = 0.0;
 GLfloat pointSize=1.5;
