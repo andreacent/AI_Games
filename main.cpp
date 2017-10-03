@@ -19,6 +19,7 @@
 #include "movements/Separation.h"
 #include "movements/CollisionAvoidance.h"
 #include "movements/ObstacleAvoidance.h"
+#include "movements/Jump.h"
 
 GLfloat oldTimeSinceStart = 0.0;
 GLfloat pointSize=1.5;
@@ -173,8 +174,8 @@ void display(){
     for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
 
     glLineWidth(pointSize);
-    //glColor3f(0.6,0.6,0.6);
-    //drawFace(target.position,target.orientation,pointSize);
+    glColor3f(0.6,0.6,0.6);
+    drawFace(target.position,target.orientation,pointSize);
     glColor3f(0.4,0.2,0.8);
     drawFace(character.position,character.orientation,pointSize);
 
@@ -188,12 +189,13 @@ void display(){
     target.updatePosition(deltaTime);
     target.updateOrientation(deltaTime);
 
+    obstacleAvoidance->update(maxSpeed,deltaTime);
     //seek->update(maxSpeed,deltaTime);
     //flee->update(maxSpeed,deltaTime);
     //arrive->update(maxSpeed,deltaTime);
     //align->update(maxSpeed,deltaTime);
     //velocityMatch->update(maxSpeed,deltaTime);
-    //pursue->update(maxSpeed,deltaTime);
+    pursue->update(maxSpeed,deltaTime);
     //evade->update(maxSpeed,deltaTime);
     //face->update(maxSpeed,deltaTime);
     //lookWhereYoureGoing->update(maxSpeed,deltaTime);

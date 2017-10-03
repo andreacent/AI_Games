@@ -48,14 +48,14 @@ public:
 		// Otherwise create a target
 		target.position = collision.position + collision.normal * avoidDistance;
 
-		cout<<"-- Collision position "<<collision.position.x<<","<<collision.position.z<<endl;
-		cout<<"Collision normal "<<collision.normal.x<<","<<collision.normal.z<<endl;
-		cout<<"target position "<<target.position.x<<","<<target.position.z<<endl;
+		//cout<<"-- Collision position "<<collision.position.x<<","<<collision.position.z<<endl;
+		//cout<<"Collision normal "<<collision.normal.x<<","<<collision.normal.z<<endl;
+		//cout<<"target position "<<target.position.x<<","<<target.position.z<<endl;
 
 		// 2. Delegate to seek
 		steering = Seek::getSteering();
 
-		cout<<"steering.linear "<<steering.linear.x<<","<<steering.linear.z<<endl;
+		//cout<<"steering.linear "<<steering.linear.x<<","<<steering.linear.z<<endl;
 		return true;
 
 	}
@@ -63,6 +63,5 @@ public:
 	void update(GLfloat maxSpeed,GLfloat deltaTime){
 		SteeringOutput steering;
 		if(ObstacleAvoidance::getSteering(steering)) character.update(steering,maxSpeed,deltaTime);
-		else character.updatePosition(deltaTime); //esto se debe quitar
 	}
 };
