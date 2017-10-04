@@ -43,17 +43,16 @@ list<Mesh*> meshs;
 /**************** Priority Steering ****************/
 //PrioritySteering* enemy = new PrioritySteering();
 
+
 /**************** Behaviors ****************/
-/*
 Seek* seek = new Seek(enemy,target,maxAcceleration);
 Flee* flee = new Flee(enemy,target,maxAcceleration); 
 Arrive* arrive = new Arrive(enemy,target,3,5,maxAcceleration,maxSpeed); 
 Align* align = new Align(enemy,target,20,30,5,2);//{&enemy,&target,maxAngularAcceleration,maxRotation,slowRadius,targetRadius} 
 VelocityMatch* velocityMatch = new VelocityMatch(enemy,target,maxAcceleration); 
-*/
+
 
 /**************** Delegated Behaviors ****************/
-
 Pursue* pursue = new Pursue(enemy,target,20,maxPrediction); 
 Evade* evade = new Evade(enemy,target,maxAcceleration,maxPrediction); 
 Face* face = new Face(enemy,target,10,30,5,2); // Align() 
@@ -61,19 +60,17 @@ LookWhereYoureGoing* lookWhereYoureGoing = new LookWhereYoureGoing(enemy,target,
 Wander* wander = new Wander(enemy,20,30,5,2, -1,6,2,30,10);//{Face(),wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration} 
 Separation* separation = new Separation(enemy,targets,6,10,30);//{enemy,targets,threshold,decayCoefficient,maxAcceleration} 
 
-
 /**************** Collisions ****************/
-/*
 CollisionAvoidance* collisionAvoidance = new CollisionAvoidance(enemy,targets,4,2);//{enemy,targets,maxAcceleration,radius}
 CollisionDetector collisionDetector = {meshs};
 ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(enemy,50,collisionDetector,4,10);
-*/
-
-//list<Behavior*> behaviors;
 
 /**************** Blended Behaviors ****************/
-list<BehaviorAndWeight*> behaviorsW;
-BlendedSteering pursueEnemy = {target,enemy,maxAcceleration,30,maxSpeed,behaviorsW};
+list<BehaviorAndWeight*> behaviorsAvoid;
+BlendedSteering avoidHitsBl = {enemy,target,maxAcceleration,30,maxSpeed,behaviorsAvoid};
+
+list<BehaviorAndWeight*> behaviorsChase;
+BlendedSteering chaseTargetBl = {enemy,target,maxAcceleration,30,maxSpeed,behaviorsChase};
 
 void initialize(){
     ini = true;
@@ -92,25 +89,15 @@ void initialize(){
         targets.push_back(new Kinematic({-30.0 + i*7,0.0,8.0f},0.0,{0.0,0.0,-1}));
     }
 
-    behaviorsW.push_back(new BehaviorAndWeight(face,1.0));
+    // Blend Enemy Moves
+    // AVOID HITS
+    behaviorsAvoid.push_back(new BehaviorAndWeight(obstacleAvoidance,0.3));
+    behaviorsAvoid.push_back(new BehaviorAndWeight(collisionAvoidance,0.3));
 
+    // CHASE TARGET
+    behaviorsChase.push_back(new BehaviorAndWeight(lookWhereYoureGoing,0.5));
+    behaviorsChase.push_back(new BehaviorAndWeight(arrive,0.5));
 
-    //BEHAVIORS
-/*
-    behaviors.push_back(seek);
-    behaviors.push_back(flee);
-    behaviors.push_back(arrive);
-    behaviors.push_back(align); 
-    behaviors.push_back(velocityMatch);                           
-    behaviors.push_back(pursue);
-    behaviors.push_back(evade);
-    behaviors.push_back(face);
-    behaviors.push_back(lookWhereYoureGoing);
-    behaviors.push_back(wander);    
-    behaviors.push_back(separation);
-    behaviors.push_back(collisionAvoidance);
-    behaviors.push_back(obstacleAvoidance);
-*/
 }
 
 void moveListTargets(GLfloat deltaTime){
@@ -218,21 +205,9 @@ void display(){
 
     //enemy.updatePosition(deltaTime);
 
-    //seek->update(maxSpeed,deltaTime);
-    //flee->update(maxSpeed,deltaTime);
-    //arrive->update(maxSpeed,deltaTime);
-    //align->update(maxSpeed,deltaTime);
-    //velocityMatch->update(maxSpeed,deltaTime);
-    //pursue->update(maxSpeed,deltaTime);
-    //evade->update(maxSpeed,deltaTime);
-    //face->update(maxSpeed,deltaTime);
-    //lookWhereYoureGoing->update(maxSpeed,deltaTime);
-    //wander->update(maxSpeed,deltaTime);
-    //separation->update(maxSpeed,deltaTime);
-    //collisionAvoidance->update(maxSpeed,deltaTime);
-    //obstacleAvoidance->update(maxSpeed,deltaTime);
-    
-    pursueEnemy.update(maxSpeed,deltaTime);
+    // ENEMY BLENDED MOVES
+    avoidHitsBl.update(maxSpeed,deltaTime);
+    chaseTargetBl.update(maxSpeed,deltaTime);
 
     
     glFlush();
