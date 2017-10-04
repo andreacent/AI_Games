@@ -16,8 +16,7 @@ struct BehaviorAndWeight{
 class BlendedSteering{
 protected:
 
-	//Holds the character and the target in action
-	Kinematic &target;
+	//Holds the character in action
 	Kinematic &character;
 
 
@@ -31,8 +30,8 @@ protected:
 
 public:
 
-	BlendedSteering(Kinematic &c, Kinematic &t, GLfloat mr,GLfloat ma,GLfloat ms,list<BehaviorAndWeight*> &b) 
-		: character(c), target(t),maxRotation(glm::radians(mr)),maxAcceleration(ma),maxSpeed(ms),behaviors(b) {}
+	BlendedSteering(Kinematic &c, GLfloat mr,GLfloat ma,GLfloat ms,list<BehaviorAndWeight*> &b) 
+		: character(c),maxRotation(glm::radians(mr)),maxAcceleration(ma),maxSpeed(ms),behaviors(b) {}
 	
 
 	// Returns the acceleration required.
@@ -44,10 +43,8 @@ public:
 		// Accumulate all accelerations
 		for (list<BehaviorAndWeight*>::iterator behaviorI = behaviors.begin(); behaviorI != behaviors.end(); ++behaviorI ){
 			
-			GLfloat w = (*behaviorI)->weight;
-			
+			GLfloat w = (*behaviorI)->weight;			
 			SteeringOutput so = (*behaviorI)->behavior->getSteering();
-			//SteeringOutput so = {{1,1,1},1};
 
 			steering.linear  += w * so.linear;
 			steering.angular += w * so.angular;

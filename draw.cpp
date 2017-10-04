@@ -52,34 +52,34 @@ void drawFace(vec3 position,float rot, float pointSize){
         glRotatef(deg,0,1,0);
 
         //head
-        drawCircle(0.0,0.0,1.5,pointSize);
+        drawCircle(0.0,0.0,1.2,pointSize);
         //eyebrows
         glBegin(GL_LINES);
             glVertex3f(-0.3,0.0, 0.6);
-            glVertex3f(-1.0,0.0, 0.7);
+            glVertex3f(-0.8,0.0, 0.7);
             glVertex3f(0.3,0.0, 0.6);
-            glVertex3f(1.0,0.0, 0.7);
+            glVertex3f(0.8,0.0, 0.7);
         glEnd();
         //eyes
         glColor3f(1,1,1);
-        drawCircle(-0.6, 0.2, 0.2,pointSize);
-        drawCircle(0.6, 0.2, 0.2,pointSize);
+        drawCircle(-0.4, 0.2, 0.2,pointSize);
+        drawCircle(0.4, 0.2, 0.2,pointSize);
         //mouth
         glBegin(GL_POLYGON);
             glVertex3f(0.6,0.0,-0.4);
             glVertex3f(-0.6,0.0, -0.4);
             glVertex3f(-0.4,0.0, -0.6);
-            glVertex3f(-0.2,0.0, -1.0);
-            glVertex3f(0.2, 0.0,-1.0);
+            glVertex3f(-0.2,0.0, -0.8);
+            glVertex3f(0.2, 0.0,-0.8);
             glVertex3f(0.4, 0.0,-0.6);
         glEnd();
         //tongue
         glBegin(GL_POLYGON);
             glColor3f(1,0,0);
-            glVertex3f(0,0.0, -0.8);
-            glVertex3f(-0.3,0.0, -1.0);
-            glVertex3f(0.2,0.0, -1.0);
-            glVertex3f(0.4,0.0, -0.8);
+            glVertex3f(0,0.0, -0.6);
+            glVertex3f(-0.3,0.0, -0.8);
+            glVertex3f(0.2,0.0, -0.8);
+            glVertex3f(0.4,0.0, -0.6);
         glEnd();
 
     glPopMatrix();

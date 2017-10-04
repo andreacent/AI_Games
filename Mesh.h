@@ -71,7 +71,7 @@ public:	GLfloat width;
 		iZ = position.z-(height/2);
 		fX = position.x+(width/2);
 		fZ = position.z+(height/2);
-		iY = 0;
+		iY = -1;
 		fY = 1;
 
 		/* POINTS */
