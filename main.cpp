@@ -225,19 +225,22 @@ void display(){
     flocking1.update(maxSpeed,deltaTime);
     flocking2.update(maxSpeed,deltaTime);
 
-    //obstacleAvoidance->update(maxSpeed,deltaTime);
+    /*
+    obstacleAvoidance->update(maxSpeed,deltaTime);
+    pursue->update(4,deltaTime);
+    lookWhereYoureGoing->update(maxSpeed,deltaTime);
+    obstacleAvoidance->update(maxSpeed,deltaTime);
+    */
+
     //seek->update(maxSpeed,deltaTime);
     //flee->update(maxSpeed,deltaTime);
     //arrive->update(maxSpeed,deltaTime);
     //align->update(maxSpeed,deltaTime);
     //velocityMatch->update(maxSpeed,deltaTime);
-    //pursue->update(4,deltaTime);
     //evade->update(maxSpeed,deltaTime);
     //face->update(maxSpeed,deltaTime);
-    //lookWhereYoureGoing->update(maxSpeed,deltaTime);
     //wander->update(maxSpeed,deltaTime);
     //separation->update(maxSpeed,deltaTime);
-    //obstacleAvoidance->update(maxSpeed,deltaTime);
 
     
     glFlush();
