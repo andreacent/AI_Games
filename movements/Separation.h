@@ -25,7 +25,7 @@ public:
 
 		// Loop through each target
 		for (list<Kinematic*>::iterator target=targets.begin(); target != targets.end(); ++target){
-			cout<<"entra"<<endl;
+			
 			// Check if the target is close
 			direction = (*target)->position - character.position;
 			distance = glm::length(direction);

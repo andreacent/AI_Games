@@ -1,5 +1,5 @@
 class Arrive: public Behavior{
-private:
+protected:
 	// Holds the Kinematic data for the character and target
 	Kinematic &character;
 	Kinematic &target;

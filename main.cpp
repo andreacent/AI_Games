@@ -19,26 +19,24 @@
 #include "movements/LookWhereYoureGoing.h"
 #include "movements/Wander.h"
 #include "movements/Separation.h"
-#include "movements/CollisionAvoidance.h"
 #include "movements/ObstacleAvoidance.h"
 #include "movements/BlendedSteering.h"
-#include "movements/PrioritySteering.h"
 
 GLfloat oldTimeSinceStart = 0.0;
 GLfloat pointSize=1.5;
 
 GLfloat targetRotation = glm::radians(10.0);
-GLfloat targetVelocity = 10;
+GLfloat targetVelocity =10;
 
 GLfloat maxSpeed = 8;
 GLfloat maxAcceleration = 40;
 GLfloat maxPrediction = 0.4;
 
 Kinematic target = {{-16.0f,0.0,-4.0f}};
-Kinematic sidekick1 = {{-18.0f,0.0,-2.0f},0.0};//,{-0.01,0.0,0.02}
-Kinematic sidekick2 = {{-18.0f,0.0,-6.0f},0.0};//,{-0.01,0.0,0.02}
-Kinematic enemy = {{10.0f,0.0,-5.0f},0.0,{-3,0.0,0}};//,{-0.01,0.0,0.02}
-Kinematic sidekick = {{-16.0f,0.0,4.0f},0.0,{-3,0.0,0}};//,{-0.01,0.0,0.02}
+Kinematic sidekick1 = {{-18.0f,0.0,-2.0f},0.0};
+Kinematic sidekick2 = {{-18.0f,0.0,-6.0f},0.0};
+
+Kinematic enemy = {{-26.0f,0,-7.0f},0.0};
 
 bool ini = false;
 list<Kinematic*> targets;
@@ -51,58 +49,42 @@ Arrive* arrive = new Arrive(enemy,target,3,5,maxAcceleration,maxSpeed);
 Align* align = new Align(enemy,target,20,30,5,2);//{&enemy,&target,maxAngularAcceleration,maxRotation,slowRadius,targetRadius} 
 VelocityMatch* velocityMatch = new VelocityMatch(enemy,target,maxAcceleration); 
 
-
 /**************** Delegated Behaviors ****************/
 Pursue* pursue = new Pursue(enemy,target,20,maxPrediction); 
 Evade* evade = new Evade(enemy,target,maxAcceleration,maxPrediction); 
 Face* face = new Face(enemy,target,10,30,5,2); // Align() 
 LookWhereYoureGoing* lookWhereYoureGoing = new LookWhereYoureGoing(enemy,target,10,30,5,2); // Align() 
-Wander* wander = new Wander(enemy,20,30,5,2, -1,6,2,30,10);//{Face(),wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration} 
+Wander* wander = new Wander(enemy,20,30,5,2, 0,4,2,50,10);//{Face(),wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration} 
 Separation* separation = new Separation(enemy,targets,6,10,30);//{enemy,targets,threshold,decayCoefficient,maxAcceleration} 
 
 /**************** Collisions ****************/
-CollisionAvoidance* collisionAvoidance = new CollisionAvoidance(enemy,targets,4,2);//{enemy,targets,maxAcceleration,radius}
 CollisionDetector collisionDetector = {meshs};
-ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(enemy,30,collisionDetector,5,3);//Seek(),collisionDetector,avoidDistance,lookahead
+ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(enemy,30,collisionDetector,5,4);//Seek(),collisionDetector,avoidDistance,lookahead
 
 /**************** Blended Behaviors ****************/
-list<BehaviorAndWeight*> behaviorsAvoid;
-BlendedSteering avoidHitsBl = {enemy,maxAcceleration,30,maxSpeed,behaviorsAvoid};
+// Follow Target
+list<BehaviorAndWeight*> behaviorsFlocking1;
+BlendedSteering flocking1 = {sidekick1,maxAcceleration,30,maxSpeed,behaviorsFlocking1};
+list<Kinematic*> targets1;
 
-list<BehaviorAndWeight*> behaviorsChase;
-BlendedSteering chaseTargetBl = {enemy,maxAcceleration,30,maxSpeed,behaviorsChase};
+list<BehaviorAndWeight*> behaviorsFlocking2;
+BlendedSteering flocking2 = {sidekick2,maxAcceleration,30,maxSpeed,behaviorsFlocking2};
+list<Kinematic*> targets2;
 
-list<BehaviorAndWeight*> behaviorsWander;
-BlendedSteering wanderBl = {enemy,maxAcceleration,30,maxSpeed,behaviorsWander};
-
-
-
-/**************** flocking Behaviors ****************/
-list<BehaviorAndWeight*> behaviorsFlocking;
-BlendedSteering flocking = {sidekick1,maxAcceleration,30,maxSpeed,behaviorsFlocking};
-
-/**************** Priority Steering ****************/
-//PrioritySteering* enemy = new PrioritySteering();
-
-void createFlocking(Kinematic &target, Kinematic &sidekick,list<BehaviorAndWeight*> &behaviors){
+void followTarget(Kinematic &target, Kinematic &sidekick,list<BehaviorAndWeight*> &behaviors,list<Kinematic*> &targets){
     GLfloat maxPrediction = 0.4;
-    list<Kinematic*> targets;
-    targets.push_back(&target);
 
-    Pursue* pursue = new Pursue(sidekick,target,30,maxPrediction); 
-    Separation* separation = new Separation(sidekick,targets,3,10,30);
-    LookWhereYoureGoing* lookWhereYoureGoing = new LookWhereYoureGoing(sidekick,target,10,30,30,2);
-   // VelocityMatch* velocityMatch = new VelocityMatch(enemy,target,maxAcceleration); 
+    Separation* separation = new Separation(sidekick,targets,10,10,30);
+    Arrive* arrive = new Arrive(sidekick,target,3,5,maxAcceleration,maxSpeed);
+    Seek* seek = new Seek(sidekick,target,maxAcceleration);
+    LookWhereYoureGoing* lookWhereYoureGoing = new LookWhereYoureGoing(sidekick,target,10,30,5,2); // Align()  
 
-    CollisionDetector collisionDetector = {meshs};
     ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(sidekick,30,collisionDetector,6,4);
 
-    //behaviors.push_back(new BehaviorAndWeight(align,0.5));
-    behaviors.push_back(new BehaviorAndWeight(pursue,0.5));
-    behaviors.push_back(new BehaviorAndWeight(lookWhereYoureGoing,1));
-    behaviors.push_back(new BehaviorAndWeight(obstacleAvoidance,1));
-    //behaviors.push_back(new BehaviorAndWeight(velocityMatch,0.5));
-    //behaviors.push_back(new BehaviorAndWeight(separation,0.2));
+    behaviors.push_back(new BehaviorAndWeight(lookWhereYoureGoing,3));
+    behaviors.push_back(new BehaviorAndWeight(obstacleAvoidance,2));
+    behaviors.push_back(new BehaviorAndWeight(separation,2));
+    behaviors.push_back(new BehaviorAndWeight(arrive,0.5));
 }
 
 void initialize(){
@@ -111,30 +93,24 @@ void initialize(){
     meshs.push_back(new Mesh({{0.0,0.0,11},0.2,70,{1,0,0},'W'}));//up
     meshs.push_back(new Mesh({{0.0,0.0,-9},0.2,70,{1,0,0},'W'}));//down
     meshs.push_back(new Mesh({{6,0.0,7.5},7,0.2,{1,0,0},'W'}));
-    meshs.push_back(new Mesh({{-10,0.0,-5.5},7,0.2,{1,0,0},'W'}));
     meshs.push_back(new Mesh({{-35,0.0,0},22,0.2,{1,0,0},'W'}));//left
     meshs.push_back(new Mesh({{35,0.0,0},22,0.2,{1,0,0},'W'}));//right
     // OBSTACLE
-    meshs.push_back(new Mesh({{-10,0.0,8},4,4,{1,0,1},'O'}));
+    meshs.push_back(new Mesh({{-10,0.0,4},4,4,{1,0,1},'O'}));
+    meshs.push_back(new Mesh({{-18,0.0,4},4,4,{1,0,1},'O'}));
+    meshs.push_back(new Mesh({{20,0.0,-4},4,4,{1,0,1},'O'}));
+    meshs.push_back(new Mesh({{20,0.0,6},4,4,{1,0,1},'O'}));
+    meshs.push_back(new Mesh({{-5,0.0,-5},4,4,{1,0,1},'O'}));
 
-    //ListTargets
-    for(int i ; i< 10; i++){
-        targets.push_back(new Kinematic({-30.0 + i*7,0.0,8.0f},0.0,{0.0,0.0,-1}));
-    }
+    /* FOLLOW TARGET */
+    followTarget(target, sidekick1,behaviorsFlocking1,targets1);
+    followTarget(target, sidekick2,behaviorsFlocking2,targets2);
 
-    // Blend Enemy Moves
-    // AVOID HITS
-    behaviorsAvoid.push_back(new BehaviorAndWeight(obstacleAvoidance,0.5));
-    //behaviorsAvoid.push_back(new BehaviorAndWeight(collisionAvoidance,0.5));
+    targets1.push_back(&sidekick2);
+    targets1.push_back(&target);
 
-    // CHASE TARGET
-    behaviorsChase.push_back(new BehaviorAndWeight(lookWhereYoureGoing,0.1));
-    behaviorsChase.push_back(new BehaviorAndWeight(arrive,0.4));
-    
-    // WANDER
-    behaviorsWander.push_back(new BehaviorAndWeight(wander,0.5));
-
-    createFlocking(target, sidekick1,behaviorsFlocking);
+    targets2.push_back(&sidekick1);
+    targets2.push_back(&target);
 
 }
 
@@ -143,11 +119,12 @@ void moveListTargets(GLfloat deltaTime){
         glColor3f(0,0.6,0.6);
         drawFace((*t)->position,(*t)->orientation,pointSize);
     }
-
+/*
     for (list<Kinematic*>::iterator t=targets.begin(); t != targets.end(); ++t){
         if((*t)->position.y > 8 || (*t)->position.y < -6) (*t)->velocity.y *= (-1);
         (*t)->updatePosition(deltaTime);
     }
+    */
 }
 
 /******************************* KEYBOARD *****************************/
@@ -219,18 +196,20 @@ void display(){
     for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
 
     glLineWidth(pointSize);
+
+    // ENEMY
+    glColor3f(0.0,0.6,0.8);
+    drawFace(enemy.position,enemy.orientation,pointSize);
     
     // PROTAGONIST
     glColor3f(0.6,0.6,0.6);
     drawFace(target.position,target.orientation,pointSize);
-    
-    // ENEMY
-    glColor3f(0.9,0.2,0.2);
-    drawFace(enemy.position,enemy.orientation,pointSize);
 
     // SIDEKICK
     glColor3f(0.2,0.7,0.2);
     drawFace(sidekick1.position,sidekick1.orientation,pointSize);
+    glColor3f(0.2,0.7,0.2);
+    drawFace(sidekick2.position,sidekick2.orientation,pointSize);
 
     for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
    
@@ -238,20 +217,27 @@ void display(){
     GLfloat deltaTime = (timeSinceStart - oldTimeSinceStart) * 0.001;
     oldTimeSinceStart = timeSinceStart;
 
-    //moveListTargets(deltaTime);
+    moveListTargets(deltaTime);
 
     target.updatePosition(deltaTime);
     target.updateOrientation(deltaTime);
 
-    //enemy.updatePosition(deltaTime);
+    flocking1.update(maxSpeed,deltaTime);
+    flocking2.update(maxSpeed,deltaTime);
 
-    // ENEMY BLENDED MOVES
-    //avoidHitsBl.update(maxSpeed,deltaTime);
-    //chaseTargetBl.update(maxSpeed,deltaTime);
-    //wanderBl.update(maxSpeed,deltaTime);
-
-
-    flocking.update(maxSpeed,deltaTime);
+    //obstacleAvoidance->update(maxSpeed,deltaTime);
+    //seek->update(maxSpeed,deltaTime);
+    //flee->update(maxSpeed,deltaTime);
+    //arrive->update(maxSpeed,deltaTime);
+    //align->update(maxSpeed,deltaTime);
+    //velocityMatch->update(maxSpeed,deltaTime);
+    //pursue->update(4,deltaTime);
+    //evade->update(maxSpeed,deltaTime);
+    //face->update(maxSpeed,deltaTime);
+    //lookWhereYoureGoing->update(maxSpeed,deltaTime);
+    //wander->update(maxSpeed,deltaTime);
+    //separation->update(maxSpeed,deltaTime);
+    //obstacleAvoidance->update(maxSpeed,deltaTime);
 
     
     glFlush();

@@ -33,9 +33,9 @@ public:
 
 		//cout<<"-- distance(charPos, ray) "<<glm::distance(collision.position,rayVector)<<endl;
 
-		//drawRay(character.position, rayVector);
-		//drawRay(character.position, rayVectorR);
-		//drawRay(character.position, rayVectorL);
+		drawRay(character.position, rayVector);
+		drawRay(character.position, rayVectorR);
+		drawRay(character.position, rayVectorL);
 
 		// Find the collision
 		if(!collisionDetector.getCollision(character.position, rayVector, collision, lookahead)){
@@ -63,6 +63,5 @@ public:
 	void update(GLfloat maxSpeed,GLfloat deltaTime){
 		SteeringOutput steering;
 		if(ObstacleAvoidance::getSteering(steering)) character.update(steering,maxSpeed,deltaTime);
-		//else character.updatePosition(deltaTime); //esto se debe quitar
 	}
 };
