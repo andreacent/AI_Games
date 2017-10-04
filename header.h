@@ -71,6 +71,7 @@ struct Kinematic{
 class Behavior{
 public:
 	virtual SteeringOutput getSteering() = 0;
+	virtual void update(GLfloat maxSpeed,GLfloat deltaTime) = 0;
 };
 
 GLfloat getNewOrientation(GLfloat currentOrientation, vec3 velocity){
