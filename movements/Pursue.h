@@ -6,7 +6,7 @@ private:
 public:
 	Pursue(Kinematic &c, Kinematic &t, GLfloat ma, GLfloat mp) : Seek(c,t,ma), maxPrediction(mp) {}
 
-	SteeringOutput getSteering(){
+	bool getSteering(SteeringOutput &steering){
 		vec3 direction,lastPosition;
 		GLfloat distance,speed,prediction;
 
@@ -30,14 +30,16 @@ public:
 		lastPosition = target.position;
 
 		target.position += target.velocity * prediction;
-		SteeringOutput steering = Seek::getSteering(); //2. Delegate to seek
+		Seek::getSteering(steering); //2. Delegate to seek
 		
 		target.position = lastPosition;
 
-		return steering;
+		return true;
 	}
 
 	void update(GLfloat maxSpeed,GLfloat deltaTime){
-    	character.update(getSteering(),maxSpeed,deltaTime);
+		SteeringOutput steering;
+		getSteering(steering);
+    	character.update(steering,maxSpeed,deltaTime);
 	}
 };

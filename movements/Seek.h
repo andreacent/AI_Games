@@ -9,9 +9,7 @@ protected:
 public:
 	Seek(Kinematic &c, Kinematic &t, GLfloat ma) : character(c), target(t), maxAcceleration(ma){}
 
-	SteeringOutput getSteering(){
-
-		SteeringOutput steering;
+	bool getSteering(SteeringOutput &steering){
 		// Get the direction to the target
 		steering.linear = target.position - character.position;
 
@@ -21,10 +19,12 @@ public:
 		// Output the steering
 		steering.angular = 0;
 
-		return steering;
+		return true;
 	}
 
 	void update(GLfloat maxSpeed,GLfloat deltaTime){
-    	character.update(getSteering(),maxSpeed,deltaTime);
+		SteeringOutput steering;
+		getSteering(steering);
+    	character.update(steering,maxSpeed,deltaTime);
 	}
 };

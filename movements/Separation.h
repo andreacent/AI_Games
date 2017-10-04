@@ -19,15 +19,13 @@ public:
 	Separation(Kinematic &c, list<Kinematic*> &ts,GLfloat t,GLfloat d,GLfloat ma) 
 		: character(c), targets(ts), threshold(t), decayCoefficient(d), maxAcceleration(ma) {}
 
-	SteeringOutput getSteering(){
+	bool getSteering(SteeringOutput &steering){
 		vec3 direction;
 		GLfloat distance,strength;
 
-		// The steering variable holds the output
-		SteeringOutput steering;
-
 		// Loop through each target
 		for (list<Kinematic*>::iterator target=targets.begin(); target != targets.end(); ++target){
+			cout<<"entra"<<endl;
 			// Check if the target is close
 			direction = (*target)->position - character.position;
 			distance = glm::length(direction);
@@ -42,11 +40,11 @@ public:
 		}			
 
 		// We’ve gone through all targets, return the result
-		return steering;
+		return true;
 	}
 
 	void update(GLfloat maxSpeed,GLfloat deltaTime){
-    	SteeringOutput so = getSteering();
-    	if(length(so.linear) != 0) character.update(so,maxSpeed,deltaTime);
+    	SteeringOutput so;
+    	if(getSteering(so) && length(so.linear) != 0) character.update(so,maxSpeed,deltaTime);
 	}
 };

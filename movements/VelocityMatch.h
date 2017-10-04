@@ -13,9 +13,7 @@ private:
 public:
 	VelocityMatch(Kinematic &c, Kinematic &t, GLfloat ma) : character(c), target(t),maxAcceleration(ma){}
 
-	SteeringOutput getSteering(){
-		SteeringOutput steering;
-
+	bool getSteering(SteeringOutput &steering){
 		// Acceleration tries to get to the target velocity
 		steering.linear = target.velocity - character.velocity;
 		steering.linear /= timeToTarget;
@@ -27,10 +25,11 @@ public:
 
 		// Output the steering
 		steering.angular = 0;
-		return steering;
+		return true;
 	}
 
 	void update(GLfloat maxSpeed,GLfloat deltaTime){
-    	character.update(getSteering(),maxSpeed,deltaTime);
+		SteeringOutput so;
+    	if(getSteering(so)) character.update(so,maxSpeed,deltaTime);
 	}
 };

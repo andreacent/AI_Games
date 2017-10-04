@@ -70,7 +70,7 @@ struct Kinematic{
 
 class Behavior{
 public:
-	virtual SteeringOutput getSteering() = 0;
+	virtual bool getSteering(SteeringOutput &steering) = 0;
 	virtual void update(GLfloat maxSpeed,GLfloat deltaTime) = 0;
 };
 

@@ -24,10 +24,8 @@ public:
 		,slowRadius(glm::radians(sr)), targetRadius(glm::radians(tr))
 		,maxAngularAcceleration(maa), maxRotation(glm::radians(mr)){}
 
-	SteeringOutput getSteering(){
+	bool getSteering(SteeringOutput &steering){
 		GLfloat rotation,rotationSize,targetRotation,angularAcceleration;
-
-		SteeringOutput steering;
 
 		// Get the naive direction to the target
 		rotation = target.orientation - character.orientation;
@@ -37,10 +35,7 @@ public:
 		rotationSize = abs(rotation);
 
 		// Check if we are there, return no steering
-		if (rotationSize < targetRadius){
-			steering.angular=0.0;
-			return steering;
-		}
+		if (rotationSize < targetRadius) return false;
 
 		// If we are outside the slowRadius, then use
 		// maximum rotation
@@ -69,10 +64,11 @@ public:
 		// Output the steering
 		steering.linear = {0.0,0.0,0.0};
 
-		return steering;
+		return true;
 	}
 
 	void update(GLfloat maxSpeed,GLfloat deltaTime){
-    	character.update(getSteering(),maxSpeed,deltaTime);
+		SteeringOutput steering;
+    	if(getSteering(steering)) character.update(steering,maxSpeed,deltaTime);
 	}
 };

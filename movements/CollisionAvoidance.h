@@ -16,9 +16,7 @@ public:
 	CollisionAvoidance(Kinematic &c, list<Kinematic*> &ts, GLfloat ma, GLfloat r) 
 		: character(c), targets(ts), maxAcceleration(ma), radius(r) {}
 
-	SteeringOutput getSteering(){
-		SteeringOutput steering;
-
+	bool getSteering(SteeringOutput &steering){
 		GLfloat distance, relativeSpeed, timeToCollision, minSeparation;
 		vec3 relativePos,relativeVel;
 
@@ -62,9 +60,7 @@ public:
 		//2. Calculate the steering
 
 		// If we have no target, then exit
-		if (!firstTarget) {
-			return steering;
-		}
+		if (!firstTarget) return false;
 		
 		// If we’re going to hit exactly, or if we’re already
 		// colliding, then do the steering based on current
@@ -80,11 +76,11 @@ public:
 		steering.linear = glm::normalize(relativePos) * maxAcceleration;
 
 		// Return the steering
-		return steering;
+		return true;
 	}
 
 	void update(GLfloat maxSpeed,GLfloat deltaTime){
-    	SteeringOutput so = getSteering();
-    	if(length(so.linear) != 0) character.update(so,maxSpeed,deltaTime);
+    	SteeringOutput so;
+    	if(getSteering(so)) character.update(so,maxSpeed,deltaTime);
 	}
 };

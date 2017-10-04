@@ -44,10 +44,11 @@ public:
 		for (list<BehaviorAndWeight*>::iterator behaviorI = behaviors.begin(); behaviorI != behaviors.end(); ++behaviorI ){
 			
 			GLfloat w = (*behaviorI)->weight;			
-			SteeringOutput so = (*behaviorI)->behavior->getSteering();
-
-			steering.linear  += w * so.linear;
-			steering.angular += w * so.angular;
+			SteeringOutput so;
+			if((*behaviorI)->behavior->getSteering(so)){
+				steering.linear  += w * so.linear;
+				steering.angular += w * so.angular;
+			}
 		};
 		
 		// Crop the result and return

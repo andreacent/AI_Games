@@ -20,19 +20,16 @@ public:
 	Arrive(Kinematic &c, Kinematic &t, GLfloat tr, GLfloat sr, GLfloat ma, GLfloat ms) : 
 		character(c), target(t), targetRadius(tr), slowRadius(sr), maxAcceleration(ma), maxSpeed(ms){}
 
-	SteeringOutput getSteering(){
+	bool getSteering(SteeringOutput &steering){
 		vec3 direction,targetVelocity;
 		GLfloat targetSpeed,targetDistance;
 
-		SteeringOutput steering;
 		// Get the direction to the target
 		direction = target.position - character.position;
 		targetDistance =glm::length(direction);
 
 		// Check if we are there, return no steering
-		if (targetDistance < targetRadius){
-			return steering;
-		}
+		if (targetDistance < targetRadius) return false;
 
 		// If we are outside the slowRadius, then go max speed
 		if (targetDistance > slowRadius){
@@ -57,11 +54,11 @@ public:
 		// Output the steering
 		steering.angular = 0;
 
-		return steering;
+		return true;
 	}
 
 	void update(GLfloat maxSpeed,GLfloat deltaTime){
-    	SteeringOutput so = getSteering();
-    	if(length(so.linear) != 0) character.update(so,maxSpeed,deltaTime);
+    	SteeringOutput so ;
+    	if(getSteering(so)) character.update(so,maxSpeed,deltaTime);
 	}
 };

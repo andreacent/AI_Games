@@ -21,10 +21,8 @@ public:
 			,wanderRadius(glm::radians(wr)),wanderRate(glm::radians(wrate))
 			,wanderOrientation(glm::radians(wo)),maxAcceleration(ma){}
 
-	SteeringOutput getSteering(){
+	bool getSteering(SteeringOutput &steering){
 		GLfloat targetOrientation;
-
-		SteeringOutput steering;
 		
 		// Update the wander orientation
 		wanderOrientation += randomBinomial() * wanderRate;
@@ -39,18 +37,19 @@ public:
 		target.position += wanderRadius * getVectorOrientation(targetOrientation);
 
 		// 2. Delegate to face
-		steering = Face::getSteering();
+		Face::getSteering(steering);
 
 		// 3. Now set the linear acceleration to be at full
 		// acceleration in the direction of the orientation
 		steering.linear = maxAcceleration * getVectorOrientation(character.orientation);
 
 
-		return steering;
+		return true;
 	}
 
 	void update(GLfloat maxSpeed,GLfloat deltaTime){
-    	SteeringOutput so = getSteering();
-    	if(so.angular != 0.0) character.update(so,maxSpeed,deltaTime);
+    	SteeringOutput so;
+    	getSteering(so);
+    	character.update(so,maxSpeed,deltaTime);
 	}
 };

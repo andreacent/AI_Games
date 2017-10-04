@@ -35,6 +35,8 @@ GLfloat maxAcceleration = 40;
 GLfloat maxPrediction = 0.4;
 
 Kinematic target = {{-16.0f,0.0,-4.0f}};
+Kinematic sidekick1 = {{-18.0f,0.0,-2.0f},0.0};//,{-0.01,0.0,0.02}
+Kinematic sidekick2 = {{-18.0f,0.0,-6.0f},0.0};//,{-0.01,0.0,0.02}
 Kinematic enemy = {{10.0f,0.0,-5.0f},0.0,{-3,0.0,0}};//,{-0.01,0.0,0.02}
 Kinematic sidekick = {{-16.0f,0.0,4.0f},0.0,{-3,0.0,0}};//,{-0.01,0.0,0.02}
 
@@ -73,9 +75,35 @@ BlendedSteering chaseTargetBl = {enemy,maxAcceleration,30,maxSpeed,behaviorsChas
 list<BehaviorAndWeight*> behaviorsWander;
 BlendedSteering wanderBl = {enemy,maxAcceleration,30,maxSpeed,behaviorsWander};
 
+
+
+/**************** flocking Behaviors ****************/
+list<BehaviorAndWeight*> behaviorsFlocking;
+BlendedSteering flocking = {sidekick1,maxAcceleration,30,maxSpeed,behaviorsFlocking};
+
 /**************** Priority Steering ****************/
 //PrioritySteering* enemy = new PrioritySteering();
 
+void createFlocking(Kinematic &target, Kinematic &sidekick,list<BehaviorAndWeight*> &behaviors){
+    GLfloat maxPrediction = 0.4;
+    list<Kinematic*> targets;
+    targets.push_back(&target);
+
+    Pursue* pursue = new Pursue(sidekick,target,30,maxPrediction); 
+    Separation* separation = new Separation(sidekick,targets,3,10,30);
+    LookWhereYoureGoing* lookWhereYoureGoing = new LookWhereYoureGoing(sidekick,target,10,30,30,2);
+   // VelocityMatch* velocityMatch = new VelocityMatch(enemy,target,maxAcceleration); 
+
+    CollisionDetector collisionDetector = {meshs};
+    ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(sidekick,30,collisionDetector,6,4);
+
+    //behaviors.push_back(new BehaviorAndWeight(align,0.5));
+    behaviors.push_back(new BehaviorAndWeight(pursue,0.5));
+    behaviors.push_back(new BehaviorAndWeight(lookWhereYoureGoing,1));
+    behaviors.push_back(new BehaviorAndWeight(obstacleAvoidance,1));
+    //behaviors.push_back(new BehaviorAndWeight(velocityMatch,0.5));
+    //behaviors.push_back(new BehaviorAndWeight(separation,0.2));
+}
 
 void initialize(){
     ini = true;
@@ -97,7 +125,7 @@ void initialize(){
     // Blend Enemy Moves
     // AVOID HITS
     behaviorsAvoid.push_back(new BehaviorAndWeight(obstacleAvoidance,0.5));
-    behaviorsAvoid.push_back(new BehaviorAndWeight(collisionAvoidance,0.5));
+    //behaviorsAvoid.push_back(new BehaviorAndWeight(collisionAvoidance,0.5));
 
     // CHASE TARGET
     behaviorsChase.push_back(new BehaviorAndWeight(lookWhereYoureGoing,0.1));
@@ -105,6 +133,8 @@ void initialize(){
     
     // WANDER
     behaviorsWander.push_back(new BehaviorAndWeight(wander,0.5));
+
+    createFlocking(target, sidekick1,behaviorsFlocking);
 
 }
 
@@ -200,7 +230,7 @@ void display(){
 
     // SIDEKICK
     glColor3f(0.2,0.7,0.2);
-    drawFace(sidekick.position,sidekick.orientation,pointSize);
+    drawFace(sidekick1.position,sidekick1.orientation,pointSize);
 
     for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
    
@@ -216,9 +246,12 @@ void display(){
     //enemy.updatePosition(deltaTime);
 
     // ENEMY BLENDED MOVES
-    avoidHitsBl.update(maxSpeed,deltaTime);
-    chaseTargetBl.update(maxSpeed,deltaTime);
-    wanderBl.update(maxSpeed,deltaTime);
+    //avoidHitsBl.update(maxSpeed,deltaTime);
+    //chaseTargetBl.update(maxSpeed,deltaTime);
+    //wanderBl.update(maxSpeed,deltaTime);
+
+
+    flocking.update(maxSpeed,deltaTime);
 
     
     glFlush();
