@@ -19,13 +19,13 @@
 #include "movements/Separation.h"
 #include "movements/CollisionAvoidance.h"
 #include "movements/ObstacleAvoidance.h"
-#include "movements/Jump.h"
+//#include "movements/Jump.h"
 
 GLfloat oldTimeSinceStart = 0.0;
 GLfloat pointSize=1.5;
 
 GLfloat targetRotation = glm::radians(10.0);
-GLfloat targetVelocity = 10;
+GLfloat targetVelocity = 20;
 
 GLfloat maxSpeed = 8;
 GLfloat maxAcceleration = 40;
@@ -56,7 +56,7 @@ Separation* separation = new Separation(character,targets,6,10,30);//{character,
 /**************** Collisions ****************/
 CollisionAvoidance* collisionAvoidance = new CollisionAvoidance(character,targets,4,2);//{character,targets,maxAcceleration,radius}
 CollisionDetector collisionDetector = {meshs};
-ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(character,30,collisionDetector,5,3);//Seek(),collisionDetector,avoidDistance,lookahead
+ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(character,30,collisionDetector,5,4);//Seek(),collisionDetector,avoidDistance,lookahead
 
 list<Behavior*> behaviors;
 
@@ -66,11 +66,15 @@ void initialize(){
     meshs.push_back(new Mesh({{0.0,0.0,11},0.2,70,{1,0,0},'W'}));//up
     meshs.push_back(new Mesh({{0.0,0.0,-9},0.2,70,{1,0,0},'W'}));//down
     meshs.push_back(new Mesh({{6,0.0,7.5},7,0.2,{1,0,0},'W'}));
-    meshs.push_back(new Mesh({{-10,0.0,-5.5},7,0.2,{1,0,0},'W'}));
+    //meshs.push_back(new Mesh({{-10,0.0,-5.5},7,0.2,{1,0,0},'W'}));
     meshs.push_back(new Mesh({{-35,0.0,0},22,0.2,{1,0,0},'W'}));//left
     meshs.push_back(new Mesh({{35,0.0,0},22,0.2,{1,0,0},'W'}));//right
     // OBSTACLE
-    meshs.push_back(new Mesh({{-10,0.0,8},4,4,{1,0,1},'O'}));
+    meshs.push_back(new Mesh({{-10,0.0,4},4,4,{1,0,1},'O'}));
+    meshs.push_back(new Mesh({{-18,0.0,4},4,4,{1,0,1},'O'}));
+    meshs.push_back(new Mesh({{20,0.0,-4},4,4,{1,0,1},'O'}));
+    meshs.push_back(new Mesh({{20,0.0,6},4,4,{1,0,1},'O'}));
+    meshs.push_back(new Mesh({{-5,0.0,-5},4,4,{1,0,1},'O'}));
 
     //ListTargets
     for(int i ; i< 10; i++){
@@ -195,7 +199,7 @@ void display(){
     //arrive->update(maxSpeed,deltaTime);
     //align->update(maxSpeed,deltaTime);
     //velocityMatch->update(maxSpeed,deltaTime);
-    pursue->update(maxSpeed,deltaTime);
+    pursue->update(4,deltaTime);
     //evade->update(maxSpeed,deltaTime);
     //face->update(maxSpeed,deltaTime);
     //lookWhereYoureGoing->update(maxSpeed,deltaTime);

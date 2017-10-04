@@ -6,6 +6,9 @@ struct JumpPoint{
 	// The change in position from jump to landing
 	// This is calculated from the other values
 	vec3 deltaPosition;
+
+	JumpPoint(vec3 jl, vec3 ll) 
+		: jumpLocation(jl),landingLocation(ll) {}
 };
 
 class Jump : public VelocityMatch{
@@ -27,20 +30,22 @@ public:
 		: VelocityMatch(c, *new Kinematic(), ma), jumpPoint(jp), maxSpeed(ms), maxYVelocity(mvY) {}
 
 	SteeringOutput getSteering(){
-		// Check if we have a trajectory, and create
-		// one if not.
-		if (!target) calculateTarget();
+		SteeringOutput steering;
+
+		// Check if we have a trajectory, and create one if not.
+		if (glm::length(target.velocity)>0.0) calculateTarget();//if(!target )
 
 		// Check if the trajectory is zero
 		// If not, we have no acceleration
-		if (!canAchieve) return new SteeringOutput();
+		if (!canAchieve) return steering;
 
-		// Check if we’ve hit the jump point (character
-		// is inherited from the VelocityMatch base class)
-		if (character.position.near(target.position) && character.velocity.near(target.velocity)){
+		GLfloat near = 0.01;
+		// Check if we’ve hit the jump point (character is inherited from the VelocityMatch base class)
+		if (glm::distance(character.position,target.position) < 0.01 
+			&& glm::distance(character.velocity,target.velocity) < 0.01 ){
 			// Perform the jump, and return no steering (we’re airborne, no need to steer).
-			scheduleJumpAction()
-			return new SteeringOutput();
+			// scheduleJumpAction()
+			return steering;
 		}
 
 		// Delegate the steering
@@ -53,14 +58,16 @@ public:
 		target = *new Kinematic();
 		target.position = jumpPoint.jumpLocation;
 
+		GLfloat gravity = 0.1;
+
 		// Calculate the first jump time
-		GLfloat sqrtTerm = sqrt(2*gravity.y*jumpPoint.deltaPosition.y +	maxYVelocity*maxVelocity);
-		GLfloat jumpTime = (maxYVelocity - sqrtTerm) / gravity.y;
+		GLfloat sqrtTerm = sqrt(2*gravity * jumpPoint.deltaPosition.y +	maxYVelocity*maxYVelocity);//maxVelocity);
+		GLfloat jumpTime = (maxYVelocity - sqrtTerm) / gravity;
 
 		// Check if we can use it
 		if (!checkJumpTime(jumpTime)){
 			// Otherwise try the other time
-			jumpTime = (maxYVelocity + sqrtTerm) / gravity.y;
+			jumpTime = (maxYVelocity + sqrtTerm) / gravity;
 			checkJumpTime(jumpTime);
 		}
 	}
