@@ -43,9 +43,6 @@ list<Mesh*> meshs;
 /**************** Priority Steering ****************/
 //PrioritySteering* enemy = new PrioritySteering();
 
-/**************** Blended Behaviors ****************/
-BlendedSteering* pursueEnemy = new BlendedSteering(target,enemy,maxAcceleration,30,maxSpeed,'p');
-
 /**************** Behaviors ****************/
 /*
 Seek* seek = new Seek(enemy,target,maxAcceleration);
@@ -56,14 +53,14 @@ VelocityMatch* velocityMatch = new VelocityMatch(enemy,target,maxAcceleration);
 */
 
 /**************** Delegated Behaviors ****************/
-/*
+
 Pursue* pursue = new Pursue(enemy,target,20,maxPrediction); 
 Evade* evade = new Evade(enemy,target,maxAcceleration,maxPrediction); 
 Face* face = new Face(enemy,target,10,30,5,2); // Align() 
 LookWhereYoureGoing* lookWhereYoureGoing = new LookWhereYoureGoing(enemy,target,10,30,5,2); // Align() 
 Wander* wander = new Wander(enemy,20,30,5,2, -1,6,2,30,10);//{Face(),wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration} 
 Separation* separation = new Separation(enemy,targets,6,10,30);//{enemy,targets,threshold,decayCoefficient,maxAcceleration} 
-*/
+
 
 /**************** Collisions ****************/
 /*
@@ -72,7 +69,11 @@ CollisionDetector collisionDetector = {meshs};
 ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(enemy,50,collisionDetector,4,10);
 */
 
-list<Behavior*> behaviors;
+//list<Behavior*> behaviors;
+
+/**************** Blended Behaviors ****************/
+list<BehaviorAndWeight*> behaviorsW;
+BlendedSteering pursueEnemy = {target,enemy,maxAcceleration,30,maxSpeed,behaviorsW};
 
 void initialize(){
     ini = true;
@@ -90,6 +91,9 @@ void initialize(){
     for(int i ; i< 10; i++){
         targets.push_back(new Kinematic({-30.0 + i*7,0.0,8.0f},0.0,{0.0,0.0,-1}));
     }
+
+    behaviorsW.push_back(new BehaviorAndWeight(face,1.0));
+
 
     //BEHAVIORS
 /*
@@ -228,7 +232,7 @@ void display(){
     //collisionAvoidance->update(maxSpeed,deltaTime);
     //obstacleAvoidance->update(maxSpeed,deltaTime);
     
-    pursueEnemy->update(maxSpeed,deltaTime);
+    pursueEnemy.update(maxSpeed,deltaTime);
 
     
     glFlush();
