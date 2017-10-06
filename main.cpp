@@ -73,8 +73,10 @@ BlendedSteering chaseTargetBl = {enemy,maxAcceleration,30,maxSpeed,behaviorsChas
 list<BehaviorAndWeight*> behaviorsWander;
 BlendedSteering wanderBl = {enemy,maxAcceleration,30,maxSpeed,behaviorsWander};
 
+
 /**************** Priority Steering ****************/
-//PrioritySteering* enemy = new PrioritySteering();
+deque<BlendedSteering*> enemyBehaviors;
+//PrioritySteering enemyPS = {enemyBehaviors};
 
 
 void initialize(){
@@ -96,15 +98,20 @@ void initialize(){
 
     // Blend Enemy Moves
     // AVOID HITS
-    behaviorsAvoid.push_back(new BehaviorAndWeight(obstacleAvoidance,0.5));
-    behaviorsAvoid.push_back(new BehaviorAndWeight(collisionAvoidance,0.5));
+    behaviorsAvoid.push_back(new BehaviorAndWeight(obstacleAvoidance,0.05));
+    behaviorsAvoid.push_back(new BehaviorAndWeight(collisionAvoidance,0.05));
 
     // CHASE TARGET
-    behaviorsChase.push_back(new BehaviorAndWeight(lookWhereYoureGoing,0.1));
-    behaviorsChase.push_back(new BehaviorAndWeight(arrive,0.4));
+    behaviorsChase.push_back(new BehaviorAndWeight(lookWhereYoureGoing,0.01));
+    behaviorsChase.push_back(new BehaviorAndWeight(arrive,0.04));
     
     // WANDER
-    behaviorsWander.push_back(new BehaviorAndWeight(wander,0.5));
+    behaviorsWander.push_back(new BehaviorAndWeight(wander,0.05));
+
+    // Priority Steering Enemy
+    //enemyBehaviors.push_back(*avoidHitsBl);
+    //enemyBehaviors.push_back(chaseTargetBl);
+    //enemyBehaviors.push_back(wanderBl);
 
 }
 

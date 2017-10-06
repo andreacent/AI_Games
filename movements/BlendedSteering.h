@@ -23,7 +23,6 @@ protected:
 	// Holds the maximum acceleration and rotation
 	GLfloat maxRotation;
 	GLfloat maxAcceleration;
-	GLfloat maxSpeed;
 
 	// Holds a list of BehaviorAndWeight instances.
 	list<BehaviorAndWeight*> &behaviors;
@@ -31,7 +30,7 @@ protected:
 public:
 
 	BlendedSteering(Kinematic &c, GLfloat mr,GLfloat ma,GLfloat ms,list<BehaviorAndWeight*> &b) 
-		: character(c),maxRotation(glm::radians(mr)),maxAcceleration(ma),maxSpeed(ms),behaviors(b) {}
+		: character(c),maxRotation(glm::radians(mr)),maxAcceleration(ma),behaviors(b) {}
 	
 
 	// Returns the acceleration required.

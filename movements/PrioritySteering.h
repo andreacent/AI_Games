@@ -10,9 +10,12 @@ class PrioritySteering{
 	//  Holds a list of BlendedSteering instances, which in turn
 	//  contain sets of behaviors with their blending weights.
 	deque<BlendedSteering*> &groups;
-
+	
 	//  Holds the epsilon parameter, should be a small value
 	GLfloat epsilon = 10^(-27);
+
+	PrioritySteering(deque<BlendedSteering*> &g) 
+		: groups(g) {}
 
 	// Returns the acceleration required.
 	SteeringOutput getSteering(){
