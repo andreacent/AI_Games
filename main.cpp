@@ -22,11 +22,14 @@
 #include "movements/ObstacleAvoidance.h"
 #include "movements/BlendedSteering.h"
 
+#include "characters/Marlene.h"
+#include "characters/Novich.h"
+
 GLfloat oldTimeSinceStart = 0.0;
 GLfloat pointSize=1.5;
 
 GLfloat targetRotation = glm::radians(10.0);
-GLfloat targetVelocity =10;
+GLfloat targetVelocity =40;
 
 GLfloat maxSpeed = 8;
 GLfloat maxAcceleration = 40;
@@ -89,6 +92,9 @@ void followTarget(Kinematic &target, Kinematic &sidekick,list<BehaviorAndWeight*
 
 void initialize(){
     ini = true;
+
+    glClearColor(0.81960,0.81960,0.81960,1);
+
     // WALLS
     meshs.push_back(new Mesh({{0.0,0.0,11},0.2,70,{1,0,0},'W'}));//up
     meshs.push_back(new Mesh({{0.0,0.0,-9},0.2,70,{1,0,0},'W'}));//down
@@ -96,11 +102,11 @@ void initialize(){
     meshs.push_back(new Mesh({{-35,0.0,0},22,0.2,{1,0,0},'W'}));//left
     meshs.push_back(new Mesh({{35,0.0,0},22,0.2,{1,0,0},'W'}));//right
     // OBSTACLE
-    meshs.push_back(new Mesh({{-10,0.0,4},4,4,{1,0,1},'O'}));
-    meshs.push_back(new Mesh({{-18,0.0,4},4,4,{1,0,1},'O'}));
-    meshs.push_back(new Mesh({{20,0.0,-4},4,4,{1,0,1},'O'}));
-    meshs.push_back(new Mesh({{20,0.0,6},4,4,{1,0,1},'O'}));
-    meshs.push_back(new Mesh({{-5,0.0,-5},4,4,{1,0,1},'O'}));
+    meshs.push_back(new Mesh({{-10,0.0,4},4,4,{1,0,0},'O'}));
+    meshs.push_back(new Mesh({{-18,0.0,4},4,4,{1,1,1},'O'}));
+    meshs.push_back(new Mesh({{20,0.0,-4},4,4,{0,0,1},'O'}));
+    meshs.push_back(new Mesh({{20,0.0,6},4,4,{0,0,1},'O'}));
+    //meshs.push_back(new Mesh({{-5,0.0,-5},4,4,{1,1,0},'O'}));
 
     /* FOLLOW TARGET */
     followTarget(target, sidekick1,behaviorsFlocking1,targets1);
@@ -116,10 +122,10 @@ void initialize(){
 
 void moveListTargets(GLfloat deltaTime){
     for (list<Kinematic*>::iterator t=targets.begin(); t != targets.end(); ++t){
-        glColor3f(0,0.6,0.6);
+        glColor3f(1,0,0);
         drawFace((*t)->position,(*t)->orientation,pointSize);
     }
-/*
+    /*
     for (list<Kinematic*>::iterator t=targets.begin(); t != targets.end(); ++t){
         if((*t)->position.y > 8 || (*t)->position.y < -6) (*t)->velocity.y *= (-1);
         (*t)->updatePosition(deltaTime);
@@ -197,20 +203,27 @@ void display(){
 
     glLineWidth(pointSize);
 
+    //TEST CHARACTER
+    
+    Marlene* marlene = new Marlene(target.position,target.orientation,'p',target.velocity);
+    marlene->draw();
+
+    Marlene* novich = new Marlene(sidekick1.position,target.orientation,'s',sidekick1.velocity);
+    novich->draw();
+
     // ENEMY
-    glColor3f(0.0,0.6,0.8);
-    drawFace(enemy.position,enemy.orientation,pointSize);
+    //glColor3f(0.0,0.6,0.8);
+    //drawFace(enemy.position,enemy.orientation,pointSize);
     
     // PROTAGONIST
-    glColor3f(0.6,0.6,0.6);
-    drawFace(target.position,target.orientation,pointSize);
+    //glColor3f(0.6,0.6,0.6);
+    //drawFace(target.position,target.orientation,pointSize);
 
     // SIDEKICK
-    glColor3f(0.2,0.7,0.2);
-    drawFace(sidekick1.position,sidekick1.orientation,pointSize);
+    /*
     glColor3f(0.2,0.7,0.2);
     drawFace(sidekick2.position,sidekick2.orientation,pointSize);
-
+    */
     for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
    
     GLfloat timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
