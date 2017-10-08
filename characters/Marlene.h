@@ -185,7 +185,7 @@ public:
 	        //cabello
 	        drawHair({0*px,0,8*px});
 	        
-	        //drawGuide(7,9);
+	        drawGuide(7,9);
 
 
 	    glPopMatrix();
