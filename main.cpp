@@ -208,8 +208,8 @@ void display(){
     Marlene* marlene = new Marlene(target.position,target.orientation,'p',target.velocity);
     marlene->draw();
 
-    Marlene* novich = new Marlene(sidekick1.position,target.orientation,'s',sidekick1.velocity);
-    novich->draw();
+    //Marlene* novich = new Marlene(sidekick1.position,target.orientation,'s',sidekick1.velocity);
+    //novich->draw();
 
     // ENEMY
     //glColor3f(0.0,0.6,0.8);
