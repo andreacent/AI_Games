@@ -1,5 +1,5 @@
 
-    float px = 0.6;
+    float px = 0.2;
 
 void drawTile(vec3 position,vec3 colorSqr,vec3 colorLine){
     float x = position.x;
@@ -42,8 +42,8 @@ void drawFloor(){
 	glPushMatrix();
 
 	    glTranslatef(0.0,0.0,0.0);
-	    for(int i = -4 ; i < 4 ; i++){
-	    	for(int j = -18; j < 18; j++){
+	    for(int i = -9 ; i < 11 ; i++){
+	    	for(int j = -45; j < 45; j++){
 				drawTile({j*5.0*px,0.0,i*5.0*px+px*2.5},{0.7,0.7,0.7},{0.5,0.5,0.5});
 	    	}
 	    }

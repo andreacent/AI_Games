@@ -112,14 +112,14 @@ void initialize(){
     meshs.push_back(new Mesh({{0.0,0.0,11},0.4,40,{0.3,0.3,0.3},'W'}));//up
     meshs.push_back(new Mesh({{0.0,0.0,-9},0.4,90,{0.3,0.3,0.3},'W'}));//down
     meshs.push_back(new Mesh({{6,0.0,7.5},7,0.2,{0.6,0.2,0.3},'W'}));
-    meshs.push_back(new Mesh({{-45,0.0,0},22,0.4,{0.3,0.3,0.3},'W'}));//left
-    meshs.push_back(new Mesh({{45,0.0,0},22,0.4,{0.3,0.3,0.3},'W'}));//right
+    meshs.push_back(new Mesh({{-45,0.0,0.80},20,0.4,{0.3,0.3,0.3},'W'}));//left
+    meshs.push_back(new Mesh({{45,0.0,0.80},20,0.4,{0.3,0.3,0.3},'W'}));//right
     // OBSTACLE
     meshs.push_back(new Mesh({{-10,0.0,4},4,4,{1,0,0},'O'}));
     meshs.push_back(new Mesh({{-18,0.0,4},4,4,{1,1,1},'O'}));
     meshs.push_back(new Mesh({{20,0.0,-4},4,4,{0,0,1},'O'}));
     meshs.push_back(new Mesh({{20,0.0,6},4,4,{0,0,1},'O'}));
-    //meshs.push_back(new Mesh({{-5,0.0,-5},4,4,{1,1,0},'O'}));
+    meshs.push_back(new Mesh({{-5,0.0,-5},4,4,{1,1,0},'O'}));
 
     /* FOLLOW TARGET */
     followTarget(target, sidekick1,behaviorsFlocking1,targets1);
@@ -214,7 +214,7 @@ void display(){
     float x = target.position.x;
     float z = target.position.z;
     //gluLookAt(0,0,1,0,10,0,0,1,0);
-    gluLookAt(x,0,1,x,10,0,0,1,0);
+    gluLookAt(x,0,1,x,10,-2,0,1,0);
     //gluLookAt(target.position.x, 0, 1, target.position.x, 10, 0, 0, 1, 0);
     
     //for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
@@ -252,9 +252,7 @@ void display(){
 /************************* Viewport **************************/
 void reshape(GLsizei w, GLsizei h) {
 
-    //printf("%i,%i\n",w,h );
     float aspectradio;
-    //aspectradio = (float) w / (float) h;
     aspectradio = (float) w / (float) h;
     glViewport(0,0,w,h);
     
