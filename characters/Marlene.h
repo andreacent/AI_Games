@@ -17,7 +17,7 @@ public:
     vec3 dress = { 0, 0, 1};
 
 
-
+	/**************** HAIR ****************/
 	void drawFullHair(vec3 positionH,char dir){
 	    // Cabello
 	    drawMirrorX(positionH,0,-1,hairS,3, 1);
@@ -79,7 +79,6 @@ public:
 
     	if( dir == 'r'){w = -1;t = -2;tc=2;}
 
-
     	// Hair
     	drawSquare({   2*(x+-( 5+t        )*px),y,2*(z+  0*px) },hair, 2*8, 2* -3);
     	drawSquare({ w*2*(x+-(-3+t+ (tc/2))*px),y,2*(z+ -3*px) },hair, 2*1, 2* -3);
@@ -110,36 +109,57 @@ public:
     	drawSquare({ w*2*(x+-(-3+(t+(t/2)+  tc   ))*px),y,2*(z+ -6*px) },hairS, 2*1, 2* -2);
     	drawSquare({ w*2*(x+-(-1+(t+(t/2)+ (tc/2)))*px),y,2*(z+ -8*px) },hairS, 2*2, 2* -1);
     	drawSquare({ w*2*(x+-(-1+(t+(t/2)+  tc   ))*px),y,2*(z+ -9*px) },hairS, 2*1, 2* -1);
-
-
 	}
 
 	void drawHair(vec3 positionH){
-	if(facing.x < 0 && abs(facing.x) > abs(facing.z)){
+		if(facing.x < 0 && abs(facing.x) > abs(facing.z)){
+			
+	    	drawSideHair(positionH,'l');
 		
-		if(rol == 'p') printf("izquierda\n");
-    	drawSideHair(positionH,'l');
-	
-	}else if(facing.x > 0 && abs(facing.x) > abs(facing.z)){
+		}else if(facing.x > 0 && abs(facing.x) > abs(facing.z)){
+			
+	    	drawSideHair(positionH,'r');
 		
-		if(rol == 'p') printf("derecha\n");
-    	drawSideHair(positionH,'r');
-	
-	}else if(facing.z > 0 && abs(facing.x) < abs(facing.z)){
-	
-		if(rol == 'p') printf("arriba\n");
-    	drawFullHair(positionH,'u');
-	
-	}else{
-	
-		if(rol == 'p') printf("abajo\n");
-    	drawFullHair(positionH,'d');
-    	//drawSideHair(positionH,'r');
-	
-	}
+		}else if(facing.z > 0 && abs(facing.x) < abs(facing.z)){
+		
+	    	drawFullHair(positionH,'u');
+		
+		}else{
+		
+	    	//drawSideHair(positionH,'r');
+	    	drawFullHair(positionH,'d');
+		
+		}
 	}
 
-	void drawDress(vec3 positionD){
+	/**************** HAIR ****************/
+	void drawSideDress(vec3 positionD,char dir){
+
+    	float x = positionD.x;
+		float y = positionD.y;
+    	float z = positionD.z-1*px;
+
+    	float w = 1;
+    	float t = 0;
+    	float tc = 0;
+
+    	if( dir == 'r'){w = -1;t = -2;tc=2;}
+
+    	drawSquare({ w*2*(x+-( 2+t+    tc)*px),y,2*(z+  0*px) },line, 2*3*w, 2* 1);
+    	drawSquare({ w*2*(x+-( 2+t+(tc/2))*px),y,2*(z+  0*px) },line, 2*1, 2*-1);
+    	drawSquare({ w*2*(x+-( 3+t+(tc/2))*px),y,2*(z+ -1*px) },line, 2*1, 2*-2);
+    	
+    	drawSquare({ w*2*(x+-( 3      )*px),y,2*(z+ -2*px) },line, 2*8*w, 2*-1);
+    	drawSquare({ w*2*(x+-(-4+t+(tc/2))*px),y,2*(z+ -2*px) },line, 2*1, 2* 1);
+    	drawSquare({ w*2*(x+-(-3+t+(tc/2))*px),y,2*(z+ -1*px) },line, 2*1, 2* 1);
+
+    	drawSquare({ w*2*(x+-( 1      )*px),y,2*(z+ -3*px) },line, 2*4*w, 2*-1);
+    	
+    	drawSquare({ w*2*(x+-( 1      )*px),y,2*(z+ 0*px) },dress, 2*4*w, 2*-1);
+    	drawSquare({ w*2*(x+-( 2      )*px),y,2*(z+ -1*px) },dress, 2*6*w, 2*-1);
+	}
+	
+	void drawFullDress(vec3 positionD,char dir){
 	    // Dress
 	    drawMirrorX(positionD,0,0,dress,2, -2);
 	    drawMirrorX(positionD,2,1,dress,2, -4);
@@ -151,9 +171,28 @@ public:
 	    drawMirrorX(positionD,5,-3,line,1, 2);
 	    drawMirrorX(positionD,0,-3,line,1, 1);
 	    drawMirrorX(positionD,1,-4,line,4, 2);
+	}
+
+	void drawDress(vec3 positionD){
+
+		if(facing.x < 0 && abs(facing.x) > abs(facing.z)){			
+	    	drawSideDress(positionD,'l');
+		
+		}else if(facing.x > 0 && abs(facing.x) > abs(facing.z)){			
+	    	drawSideDress(positionD,'r');
+		
+		}else if(facing.z > 0 && abs(facing.x) < abs(facing.z)){		
+	    	drawFullDress(positionD,'u');
+		
+		}else{		
+	    	//drawSideDress(positionD,'r');
+	    	drawFullDress(positionD,'d');
+		
+		}
 
 	}
 
+	/**************** MAIN ****************/
 	void draw(){
 
 	    float x = position.x;
@@ -172,6 +211,7 @@ public:
 
 	    // Draw
 	    glPushMatrix();
+			glPointSize(px);
 	        glTranslatef(x,0.0,z);
 	        glRotatef(deg,0,1,0);
 
@@ -185,7 +225,7 @@ public:
 	        //cabello
 	        drawHair({0*px,0,8*px});
 	        
-	        drawGuide(7,9);
+	        //drawGuide(7,9);
 
 
 	    glPopMatrix();

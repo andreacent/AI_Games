@@ -21,6 +21,7 @@ using namespace glm;
 using namespace std;
 
 #include "Mesh.h"
+#include "map.h"
 #include "characters/Character.h"
 #include "Collision.h"
 

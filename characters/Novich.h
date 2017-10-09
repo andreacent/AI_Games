@@ -61,6 +61,7 @@ public:
 
 	    // Draw
 	    glPushMatrix();
+			glPointSize(px);
 	        glTranslatef(x,0.0,z);
 	        glRotatef(deg,0,1,0);
 
