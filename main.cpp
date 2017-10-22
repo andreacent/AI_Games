@@ -46,7 +46,6 @@ list<Kinematic*> targets;
 
 float x=target.position.x, z=target.position.z;
 // actual vector representing the camera's direction
-float lx=0.0f,lz=-1.0f;
 float deltaMove = 0;
 
 /**************** Behaviors ****************/
@@ -202,36 +201,23 @@ void display(){
     glEnable(GL_POINT_SMOOTH); 
     glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
-    float z = target.position.z;
-    if (deltaMove)
-    z += deltaMove *-10.1f;
-
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    //gluLookAt(0, 0, 1,
-    //          0, 10, 0, 
-    //          0, 1, 0);
-    
+
+    float z = target.position.z;
     float x = target.position.x;
-
-    //gluLookAt(x, 0 ,1,
-    //          x, 10,0,
-    //          0, 1 ,0);
-    gluLookAt(  x, 0 , z,
-                x, 10, z-1.0f,
-                0, 1 , 0);
-
-    drawMap();
+    gluLookAt(x,0,z,x,10,z-1.0f,0,1,0);
+    
+    list<Mesh*> meshs = drawMap();
 
     glLineWidth(pointSize);
 
     //TEST CHARACTER
-    
     Marlene* marlene = new Marlene(target.position,target.orientation,'p',target.velocity);
     marlene->draw();
-
-    Marlene* novich = new Marlene(sidekick1.position,target.orientation,'s',sidekick1.velocity);
-    novich->draw();
+    
+    // Marlene* novich = new Marlene(sidekick1.position,target.orientation,'s',sidekick1.velocity);
+    // novich->draw();
 
    
     GLfloat timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
