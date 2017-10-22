@@ -29,13 +29,13 @@ GLfloat oldTimeSinceStart = 0.0;
 GLfloat pointSize=1.5;
 
 GLfloat targetRotation = glm::radians(10.0);
-GLfloat targetVelocity =30;
+GLfloat targetVelocity =20;
 
 GLfloat maxSpeed = 8;
 GLfloat maxAcceleration = 40;
 GLfloat maxPrediction = 0.4;
 
-Kinematic target = {{-16.0f,0.0f,-4.0f}};
+Kinematic target = {{6.0f,0.0f,10.0f}};
 Kinematic sidekick1 = {{-18.0f,0.0,-2.0f},0.0};
 Kinematic sidekick2 = {{-18.0f,0.0,-6.0f},0.0};
 
@@ -43,108 +43,98 @@ Kinematic enemy = {{-26.0f,0,-7.0f},0.0};
 
 bool ini = false;
 list<Kinematic*> targets;
-list<Mesh*> meshs;
+
+float x=target.position.x, z=target.position.z;
+// actual vector representing the camera's direction
+float lx=0.0f,lz=-1.0f;
+float deltaMove = 0;
 
 /**************** Behaviors ****************/
-Seek* seek = new Seek(enemy,target,maxAcceleration);
-Flee* flee = new Flee(enemy,target,maxAcceleration); 
-Arrive* arrive = new Arrive(enemy,target,3,5,maxAcceleration,maxSpeed);
+    Seek* seek = new Seek(enemy,target,maxAcceleration);
+    Flee* flee = new Flee(enemy,target,maxAcceleration); 
+    Arrive* arrive = new Arrive(enemy,target,3,5,maxAcceleration,maxSpeed);
 
-//{&enemy,&target,maxAngularAcceleration,maxRotation,slowRadius,targetRadius}
-Align* align = new Align(enemy,target,20,30,5,2);
-VelocityMatch* velocityMatch = new VelocityMatch(enemy,target,maxAcceleration); 
+    //{&enemy,&target,maxAngularAcceleration,maxRotation,slowRadius,targetRadius}
+    Align* align = new Align(enemy,target,20,30,5,2);
+    VelocityMatch* velocityMatch = new VelocityMatch(enemy,target,maxAcceleration); 
 
 /**************** Delegated Behaviors ****************/
-Pursue* pursue = new Pursue(enemy,target,20,maxPrediction); 
-Evade* evade = new Evade(enemy,target,maxAcceleration,maxPrediction); 
+    Pursue* pursue = new Pursue(enemy,target,20,maxPrediction); 
+    Evade* evade = new Evade(enemy,target,maxAcceleration,maxPrediction); 
 
-// Align()
-Face* face = new Face(enemy,target,10,30,5,2);
+    // Align()
+    Face* face = new Face(enemy,target,10,30,5,2);
 
-// Align()
-LookWhereYoureGoing* lookWhereYoureGoing = new LookWhereYoureGoing(enemy,target,10,30,5,2);
+    // Align()
+    LookWhereYoureGoing* lookWhereYoureGoing = new LookWhereYoureGoing(enemy,target,10,30,5,2);
 
-//{Face(),wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration} 
-Wander* wander = new Wander(enemy,20,30,5,2, 0,4,2,50,10);
+    //{Face(),wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration} 
+    Wander* wander = new Wander(enemy,20,30,5,2, 0,4,2,50,10);
 
-//{enemy,targets,threshold,decayCoefficient,maxAcceleration} 
-Separation* separation = new Separation(enemy,targets,6,10,30);
+    //{enemy,targets,threshold,decayCoefficient,maxAcceleration} 
+    Separation* separation = new Separation(enemy,targets,6,10,30);
 
-/**************** Collisions ****************/
-CollisionDetector collisionDetector = {meshs};
+    /**************** Collisions ****************/
+    CollisionDetector collisionDetector = {meshs};
 
-//Seek(),collisionDetector,avoidDistance,lookahead
-ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(enemy,30,collisionDetector,5,4);
+    //Seek(),collisionDetector,avoidDistance,lookahead
+    ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(enemy,30,collisionDetector,5,4);
 
 /**************** Blended Behaviors ****************/
 // Follow Target
 
-list<BehaviorAndWeight*> behaviorsFlocking1;
-BlendedSteering flocking1 = {sidekick1,maxAcceleration,30,maxSpeed,behaviorsFlocking1};
-list<Kinematic*> targets1;
+    list<BehaviorAndWeight*> behaviorsFlocking1;
+    BlendedSteering flocking1 = {sidekick1,maxAcceleration,30,maxSpeed,behaviorsFlocking1};
+    list<Kinematic*> targets1;
 
-list<BehaviorAndWeight*> behaviorsFlocking2;
-BlendedSteering flocking2 = {sidekick2,maxAcceleration,30,maxSpeed,behaviorsFlocking2};
-list<Kinematic*> targets2;
+    list<BehaviorAndWeight*> behaviorsFlocking2;
+    BlendedSteering flocking2 = {sidekick2,maxAcceleration,30,maxSpeed,behaviorsFlocking2};
+    list<Kinematic*> targets2;
 
-void followTarget(Kinematic &target, Kinematic &sidekick,list<BehaviorAndWeight*> &behaviors,list<Kinematic*> &targets){
-    GLfloat maxPrediction = 0.4;
+    void followTarget(Kinematic &target, Kinematic &sidekick,list<BehaviorAndWeight*> &behaviors,list<Kinematic*> &targets){
+        GLfloat maxPrediction = 0.4;
 
-    Separation* separation = new Separation(sidekick,targets,10,10,30);
-    Arrive* arrive = new Arrive(sidekick,target,3,5,maxAcceleration,maxSpeed);
-    Seek* seek = new Seek(sidekick,target,maxAcceleration);
-    LookWhereYoureGoing* lookWhereYoureGoing = new LookWhereYoureGoing(sidekick,target,10,30,5,2); // Align()  
+        Separation* separation = new Separation(sidekick,targets,10,10,30);
+        Arrive* arrive = new Arrive(sidekick,target,3,5,maxAcceleration,maxSpeed);
+        Seek* seek = new Seek(sidekick,target,maxAcceleration);
+        LookWhereYoureGoing* lookWhereYoureGoing = new LookWhereYoureGoing(sidekick,target,10,30,5,2); // Align()  
 
-    ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(sidekick,30,collisionDetector,6,4);
+        ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(sidekick,30,collisionDetector,6,4);
 
-    behaviors.push_back(new BehaviorAndWeight(lookWhereYoureGoing,3));
-    behaviors.push_back(new BehaviorAndWeight(obstacleAvoidance,2));
-    behaviors.push_back(new BehaviorAndWeight(separation,2));
-    behaviors.push_back(new BehaviorAndWeight(arrive,0.5));
-}
-
-void initialize(){
-    ini = true;
-
-    glClearColor(0.81960,0.81960,0.81960,1);
-
-    // WALLS
-    meshs.push_back(new Mesh({{0.0,0.0,11},0.4,40,{0.3,0.3,0.3},'W'}));//up
-    meshs.push_back(new Mesh({{0.0,0.0,-9},0.4,90,{0.3,0.3,0.3},'W'}));//down
-    meshs.push_back(new Mesh({{6,0.0,7.5},7,0.2,{0.6,0.2,0.3},'W'}));
-    meshs.push_back(new Mesh({{-45,0.0,0.80},20,0.4,{0.3,0.3,0.3},'W'}));//left
-    meshs.push_back(new Mesh({{45,0.0,0.80},20,0.4,{0.3,0.3,0.3},'W'}));//right
-    // OBSTACLE
-    meshs.push_back(new Mesh({{-10,0.0,4},4,4,{1,0,0},'O'}));
-    meshs.push_back(new Mesh({{-18,0.0,4},4,4,{1,1,1},'O'}));
-    meshs.push_back(new Mesh({{20,0.0,-4},4,4,{0,0,1},'O'}));
-    meshs.push_back(new Mesh({{20,0.0,6},4,4,{0,0,1},'O'}));
-    meshs.push_back(new Mesh({{-5,0.0,-5},4,4,{1,1,0},'O'}));
-
-    /* FOLLOW TARGET */
-    followTarget(target, sidekick1,behaviorsFlocking1,targets1);
-    followTarget(target, sidekick2,behaviorsFlocking2,targets2);
-
-    targets1.push_back(&sidekick2);
-    targets1.push_back(&target);
-
-    targets2.push_back(&sidekick1);
-    targets2.push_back(&target);
-
-}
-
-void moveListTargets(GLfloat deltaTime){
-    for (list<Kinematic*>::iterator t=targets.begin(); t != targets.end(); ++t){
-        glColor3f(1,0,0);
-        drawFace((*t)->position,(*t)->orientation,pointSize);
+        behaviors.push_back(new BehaviorAndWeight(lookWhereYoureGoing,3));
+        behaviors.push_back(new BehaviorAndWeight(obstacleAvoidance,2));
+        behaviors.push_back(new BehaviorAndWeight(separation,2));
+        behaviors.push_back(new BehaviorAndWeight(arrive,0.5));
     }
-    /*
-    for (list<Kinematic*>::iterator t=targets.begin(); t != targets.end(); ++t){
-        if((*t)->position.y > 8 || (*t)->position.y < -6) (*t)->velocity.y *= (-1);
-        (*t)->updatePosition(deltaTime);
+
+    void initialize(){
+        ini = true;
+
+        glClearColor(0.81960,0.81960,0.81960,1);
+
+        /* FOLLOW TARGET */
+        followTarget(target, sidekick1,behaviorsFlocking1,targets1);
+        followTarget(target, sidekick2,behaviorsFlocking2,targets2);
+
+        targets1.push_back(&sidekick2);
+        targets1.push_back(&target);
+
+        targets2.push_back(&sidekick1);
+        targets2.push_back(&target);
     }
-    */
-}
+
+    void moveListTargets(GLfloat deltaTime){
+        for (list<Kinematic*>::iterator t=targets.begin(); t != targets.end(); ++t){
+            glColor3f(1,0,0);
+            drawFace((*t)->position,(*t)->orientation,pointSize);
+        }
+        /*
+        for (list<Kinematic*>::iterator t=targets.begin(); t != targets.end(); ++t){
+            if((*t)->position.y > 8 || (*t)->position.y < -6) (*t)->velocity.y *= (-1);
+            (*t)->updatePosition(deltaTime);
+        }
+        */
+    }
 
 /******************************* KEYBOARD *****************************/
 void controlKey (unsigned char key, int xmouse, int ymouse){  
@@ -178,9 +168,11 @@ void handleSpecialKeypress(int key, int x, int y) {
             target.velocity = {targetVelocity,0.0,0.0};
         break;
         case GLUT_KEY_UP:
+            deltaMove = -0.1f;
             target.velocity = {0.0,0.0,targetVelocity};
         break;
         case GLUT_KEY_DOWN:
+            deltaMove = 0.1f;
             target.velocity = {0.0,0.0,-targetVelocity};
         break;
         default: break;
@@ -192,7 +184,9 @@ void handleSpecialKeyReleased(int key, int x, int y){
         case GLUT_KEY_LEFT:
         case GLUT_KEY_RIGHT:
         case GLUT_KEY_UP:
+            deltaMove = 0.0f;
         case GLUT_KEY_DOWN:
+            deltaMove = 0.0f;
             target.velocity = {0.0,0.0,0.0};
         break;
         default: break;
@@ -208,18 +202,26 @@ void display(){
     glEnable(GL_POINT_SMOOTH); 
     glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
+    float z = target.position.z;
+    if (deltaMove)
+    z += deltaMove *-10.1f;
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    //gluLookAt(0, 0, 1, 0, 10, 0, 0, 1, 0);
-    float x = target.position.x;
-    float z = target.position.z;
-    //gluLookAt(0,0,1,0,10,0,0,1,0);
-    gluLookAt(x,0,1,x,10,-2,0,1,0);
-    //gluLookAt(target.position.x, 0, 1, target.position.x, 10, 0, 0, 1, 0);
+    //gluLookAt(0, 0, 1,
+    //          0, 10, 0, 
+    //          0, 1, 0);
     
-    //for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
+    float x = target.position.x;
 
-    drawFloor();
+    //gluLookAt(x, 0 ,1,
+    //          x, 10,0,
+    //          0, 1 ,0);
+    gluLookAt(  x, 0 , z,
+                x, 10, z-1.0f,
+                0, 1 , 0);
+
+    drawMap();
 
     glLineWidth(pointSize);
 
@@ -231,7 +233,6 @@ void display(){
     Marlene* novich = new Marlene(sidekick1.position,target.orientation,'s',sidekick1.velocity);
     novich->draw();
 
-    for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
    
     GLfloat timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
     GLfloat deltaTime = (timeSinceStart - oldTimeSinceStart) * 0.001;
@@ -261,7 +262,7 @@ void reshape(GLsizei w, GLsizei h) {
 
     GLfloat widthVP  = 10.0;
     GLfloat heightVP = 10.0;
-    GLfloat deepVP = 4.0;
+    GLfloat deepVP = 40.0;
     
     if (w < h){
         heightVP = heightVP/aspectradio;
