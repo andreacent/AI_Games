@@ -395,12 +395,12 @@ list<Mesh*> drawMap(){
             drawRoofRowV( 33.5f, 18.5f,2.0f,'l');   // vdd6
             drawRoofRowV( 29.5f, 18.5f,2.0f,'l');   // vdd7
     // DOWN
-        drawRoofRowH( 0.0f,42.0f,54.0f,'d');        // hu
+        drawRoofRowH( 0.0f,0.0f,54.0f,'d');         // hd
         drawRoofRowH( 25.0f,19.0f,5.0f,'d');        // hcd
         drawWall( 24.0f, 17.0f,6,'P');              // wcd
         drawBebedero(26.0f,15.0f);
     // UP
-        drawRoofRowH( 0.0f,0.0f,54.0f,'d');         // hd
+        drawRoofRowH( 0.0f,42.0f,54.0f,'d');        // hu
 
     for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
 
