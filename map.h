@@ -59,7 +59,7 @@ void drawTileHallway(vec3 position,vec3 colorSqr,vec3 colorLine,vec3 colorDetail
     glPopMatrix();
 }
 
-void drawSqaureFloor(float i1, float i2, float j1, float j2, vec3 color){
+void drawSquareFloor(float i1, float i2, float j1, float j2, vec3 color){
     float s = 5.0*px;
     for(int i = i1 ; i < i2 ; i++){
         for(int j = j1; j < j2; j++){
@@ -72,11 +72,67 @@ void drawSqaureFloor(float i1, float i2, float j1, float j2, vec3 color){
     }
 }
 
+void drawTileGrass(vec3 position){
+    vec3 colorSqr  = {0.3,0.8,0.2};
+    vec3 colorLine = {0.4,0.9,0.2};
+    
+    float x = position.x;
+    float z = position.z;
+    float pxX = 5*px;
+    float pxZ = 5*px;
+
+
+    glPushMatrix();
+        glTranslatef(x,0.0,z);
+        
+
+        glColor3f(colorSqr.x,colorSqr.y,colorSqr.z);
+        glBegin(GL_POLYGON);
+            glVertex3f(   0, 0.0,  pxZ); //a
+            glVertex3f( pxX, 0.0,  pxZ); //b
+            glVertex3f( pxX, 0.0,  0); //c
+            glVertex3f(   0, 0.0,  0); //d
+        glEnd();
+        
+        glColor3f(colorLine.x,colorLine.y,colorLine.z);
+        glBegin(GL_LINES);
+            // 1
+            glVertex3f( 0,  0.0,  0);
+            glVertex3f( 0,  0.0,  pxZ);
+
+            // 2
+            glVertex3f( 0,  0.0,  0);
+            glVertex3f( pxX,  0.0,0);
+
+            // 3
+            glVertex3f( 0,  0.0,  pxZ);
+            glVertex3f( pxX,  0.0,pxZ);
+
+            // 4
+            glVertex3f( pxX,  0.0,  pxZ);
+            glVertex3f( pxX,  0.0,pxZ);
+            
+        glEnd();
+        
+    glPopMatrix();
+}
+
+
+void drawSquareGrass(float i1, float i2, float j1, float j2){
+    float s = 5.0*px;
+    for(int i = i1 ; i < i2 ; i++){
+        for(int j = j1; j < j2; j++){
+            
+            drawTileGrass({j*s,0.0,i*s+(s/2)});
+        }
+    }
+}
+
 void drawFloor(){
 
-    vec3 white = {0.9,0.9,0.9};
-    vec3 whiteSombra = {0.7,0.7,0.7};
-    vec3 pasillo = {0.8235294117647058,0.8235294117647058,0.6352941176470588};
+    vec3 white         = {0.9,0.9,0.9};
+    vec3 whiteSombra   = {0.7,0.7,0.7};
+    vec3 pasillo       = {0.8235294117647058,0.8235294117647058,0.6352941176470588};
     vec3 pasilloSombra = {0.7254901960784313,0.7254901960784313,0.5372549019607843};
 	glPushMatrix();
 
@@ -84,56 +140,70 @@ void drawFloor(){
 
         // PASILLO PRINCIPAL Q3 - Q4
         // PASILLO 1-Q3/Q4 SOMBRA
-        drawSqaureFloor(7,21,0,54,pasilloSombra);
-        drawSqaureFloor(0,7,17,53,pasilloSombra);
+        drawSquareFloor(7,21,0,54,pasilloSombra);
+        drawSquareFloor(0,7,17,53,pasilloSombra);
 
        
         // PASILLO 1-Q3/Q4 LUZ
-        drawSqaureFloor(9,21,6,12,pasillo);
-        drawSqaureFloor(9,14,11,12,pasillo);
-        drawSqaureFloor(10,12,12,41,pasillo);
-        drawSqaureFloor(9,14,18,23,pasillo);
-        drawSqaureFloor(12,14,22,35,pasillo);
-        drawSqaureFloor(9,10,30,41,pasillo);
-        drawSqaureFloor(10,14,41,47,pasillo);
-        drawSqaureFloor(14,21,41,47,pasillo);
-        drawSqaureFloor(17,21,47,54,pasillo);
-        drawSqaureFloor(17,21,0,11,pasillo);
+        drawSquareFloor(9,21,6,12,pasillo);
+        drawSquareFloor(9,14,11,12,pasillo);
+        drawSquareFloor(10,12,12,41,pasillo);
+        drawSquareFloor(9,14,18,23,pasillo);
+        drawSquareFloor(12,14,22,35,pasillo);
+        drawSquareFloor(9,10,30,41,pasillo);
+        drawSquareFloor(10,14,41,47,pasillo);
+        drawSquareFloor(14,21,41,47,pasillo);
+        drawSquareFloor(17,21,47,54,pasillo);
+        drawSquareFloor(17,21,0,11,pasillo);
 
 
         // PASILLO PRINCIPAL Q1 - Q2
         // PASILLO 2-Q1/Q2 SOMBRA
-        drawSqaureFloor(21,42,0,54,pasilloSombra);
-        drawSqaureFloor(0,7,17,53,pasilloSombra);
+        drawSquareFloor(21,42,0,54,pasilloSombra);
+        drawSquareFloor(0,7,17,53,pasilloSombra);
 
         // PASILLO 1-Q3/Q4 LUZ
-        drawSqaureFloor(21,32,5,12,pasillo);
-        drawSqaureFloor(21,25,0,5,pasillo);
-        drawSqaureFloor(28,31,12,18,pasillo);
-        drawSqaureFloor(27,32,18,34,pasillo);
-        drawSqaureFloor(28,31,34,39,pasillo);
-        drawSqaureFloor(28,32,39,41,pasillo);
-        drawSqaureFloor(27,31,41,46,pasillo);
-        drawSqaureFloor(27,30,46,47,pasillo);
-        drawSqaureFloor(21,27,41,47,pasillo);
-        drawSqaureFloor(21,25,47,54,pasillo);
+        drawSquareFloor(21,32,5,12,pasillo);
+        drawSquareFloor(21,25,0,5,pasillo);
+        drawSquareFloor(28,31,12,18,pasillo);
+        drawSquareFloor(27,32,18,34,pasillo);
+        drawSquareFloor(28,31,34,39,pasillo);
+        drawSquareFloor(28,32,39,41,pasillo);
+        drawSquareFloor(27,31,41,46,pasillo);
+        drawSquareFloor(27,30,46,47,pasillo);
+        drawSquareFloor(21,27,41,47,pasillo);
+        drawSquareFloor(21,25,47,54,pasillo);
 
         // SALA
-        drawSqaureFloor(0,7,0,13,white);
-        drawSqaureFloor(4,5,1,10,whiteSombra);
+        drawSquareFloor(0,7,0,13,white);
+        drawSquareFloor(4,5,1,10,whiteSombra);
 
         // LDC
-        drawSqaureFloor(26,36,1,5,white);
-        drawSqaureFloor(36,41,1,13,whiteSombra);
-        drawSqaureFloor(34,37,10,13,whiteSombra);
+        drawSquareFloor(26,36,1,5,white);
+        drawSquareFloor(36,41,1,13,whiteSombra);
+        drawSquareFloor(34,37,10,13,whiteSombra);
+
+        // DEPARTAMENTO
+        drawSquareFloor(26,36,49,52,white);
+        drawSquareFloor(36,41,45,53,whiteSombra);
+        drawSquareFloor(26,41,52,53,whiteSombra);
 
         // COORDINACION
-        drawSqaureFloor(7,16,0,5,white);
-        drawSqaureFloor(8,14,0,2,whiteSombra);
-        drawSqaureFloor(12,14,2,4,whiteSombra);
+        drawSquareFloor(7,16,0,5,white);
+        drawSquareFloor(8,14,0,2,whiteSombra);
+        drawSquareFloor(12,14,2,4,whiteSombra);
 
         // BAÑOS
-        drawSqaureFloor(16,18,21,33,whiteSombra);
+        drawSquareFloor(16,18,21,33,whiteSombra);
+        drawSquareFloor(23,25,21,24,whiteSombra);
+        drawSquareFloor(23,25,30,33,whiteSombra);
+
+        // GRAMA
+        drawSquareGrass(19,24,13,20);
+        drawSquareGrass(20,22,20,25);
+        drawSquareGrass(19,24,25,29);
+        drawSquareGrass(20,22,29,34);
+        drawSquareGrass(19,24,34,40);
 
 	glPopMatrix();
 }

@@ -246,8 +246,8 @@ void reshape(GLsizei w, GLsizei h) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    GLfloat widthVP  = 10.0;
-    GLfloat heightVP = 10.0;
+    GLfloat widthVP  = 20.0;
+    GLfloat heightVP = 20.0;
     GLfloat deepVP = 40.0;
     
     if (w < h){
