@@ -100,9 +100,32 @@ void drawFloor(){
         drawSqaureFloor(17,21,47,54,pasillo);
         drawSqaureFloor(17,21,0,11,pasillo);
 
+
+        // PASILLO PRINCIPAL Q1 - Q2
+        // PASILLO 2-Q1/Q2 SOMBRA
+        drawSqaureFloor(21,42,0,54,pasilloSombra);
+        drawSqaureFloor(0,7,17,53,pasilloSombra);
+
+        // PASILLO 1-Q3/Q4 LUZ
+        drawSqaureFloor(21,32,5,12,pasillo);
+        drawSqaureFloor(21,25,0,5,pasillo);
+        drawSqaureFloor(28,31,12,18,pasillo);
+        drawSqaureFloor(27,32,18,34,pasillo);
+        drawSqaureFloor(28,31,34,39,pasillo);
+        drawSqaureFloor(28,32,39,41,pasillo);
+        drawSqaureFloor(27,31,41,46,pasillo);
+        drawSqaureFloor(27,30,46,47,pasillo);
+        drawSqaureFloor(21,27,41,47,pasillo);
+        drawSqaureFloor(21,25,47,54,pasillo);
+
         // SALA
         drawSqaureFloor(0,7,0,13,white);
         drawSqaureFloor(4,5,1,10,whiteSombra);
+
+        // LDC
+        drawSqaureFloor(26,36,1,5,white);
+        drawSqaureFloor(36,41,1,13,whiteSombra);
+        drawSqaureFloor(34,37,10,13,whiteSombra);
 
         // COORDINACION
         drawSqaureFloor(7,16,0,5,white);
@@ -172,8 +195,10 @@ void drawRoofRowH(float xPosition,float zPosition, float wTimes, char lado){
     
     vec3 posBorde1 = {xPosition,0.0,zPosition+0.56f};
     vec3 posBorde2 = {xPosition,0.0,zPosition+0.56f};
+    vec3 posBorde3 = {xPosition,0.0,zPosition+0.56f};
 
     vec3 posLight1 = {xPosition+0.5f,0.0,zPosition};
+    vec3 posLight2 = {xPosition+0.5f,0.0,zPosition};
     
     glPushMatrix();
         meshs.push_back(new Mesh({{ (wTimes/2)+xPosition,0.0, zPosition-0.01f}, 1.0f, 1.0f*wTimes,main, 'R'}));
@@ -186,6 +211,17 @@ void drawRoofRowH(float xPosition,float zPosition, float wTimes, char lado){
             drawSquare(posLight1,light, 0.1f, 1.0f);
             drawSquare(posBorde2,borde, 0.1f, 1.0f);
         }else if (lado == 'l'){
+            posLight1 = {xPosition-0.1f,0.0,zPosition};
+            posBorde2 = {xPosition-0.2f,0.0,zPosition};
+            drawSquare(posLight1,light, 0.1f, 1.0f);
+            drawSquare(posBorde2,borde, 0.1f, 1.0f);
+        }else if(lado== 'd'){
+
+            posLight2 = {xPosition+wTimes,0.0,zPosition};
+            posBorde3 = {xPosition+wTimes+0.1f,0.0,zPosition};
+            drawSquare(posLight2,light, 0.1f, 1.0f);
+            drawSquare(posBorde3,borde, 0.1f, 1.0f);
+
             posLight1 = {xPosition-0.1f,0.0,zPosition};
             posBorde2 = {xPosition-0.2f,0.0,zPosition};
             drawSquare(posLight1,light, 0.1f, 1.0f);
@@ -324,33 +360,83 @@ list<Mesh*> drawMap(){
 
     // Q1
         /* ===== Paredes  ===== */
+            drawWall( 49.0f,35.0f,1,'C');           // wdu1
+            drawWall( 45.0f,35.0f,2,'P');           // wdu2
+            drawWall( 42.0f,35.0f,1,'P');           // wdu3
+            drawWall( 38.0f,35.0f,1,'P');           // wdu4
+            drawWall( 35.0f,35.0f,1,'P');           // wdu5
+            drawWall( 31.0f,35.0f,1,'P');           // wdu6
+            drawWall( 27.0f,35.0f,2,'P');           // wdu7
+            
+            drawWall( 49.0f,29.0f,1,'C');           // wdu8
+            drawWall( 45.0f,40.0f,8,'C');           // wdu9
+            drawWall( 36.0f,40.0f,6,'O');           // wdu10
+            drawWall( 27.0f,40.0f,8,'O');           // wdu11
         /* ===== Columnas ===== */
+            drawColumn( 29.0f, 34.0f,3,'D');         // cdu1
+            drawColumn( 36.0f, 34.0f,3,'D');         // cdu2
+            drawColumn( 43.0f, 34.0f,9,'D');         // cdu3
+            drawColumn( 47.0f, 34.0f,3,'D');         // cdu4
+            drawColumn( 36.0f, 26.0f,1,'U');         // cdu5
         /* ===== Techos   ===== */
-            drawRoofRowV( 53.5f,25.0f,17.0f,'r');   // vdu1
-            drawRoofRowV( 40.5f,23.0f,2.0f,'r');   // vdu2
-            // vdu3
-            // vdu4
-            // vdu5
-            drawRoofRowV( 42.5f, 0.0f,7.5f,'r');    // vdu6
-            // vdu7
+            drawRoofRowV( 53.5f,25.5f,17.0f,'r');   // vdu1
+            drawRoofRowV( 40.5f,23.0f, 2.5f,'r');   // vdu2
+            drawRoofRowV( 33.5f,22.5f, 3.0f,'r');   // vdu3
+            drawRoofRowV( 29.5f,22.5f, 3.0f,'r');   // vdu4
 
+            drawRoofRowV( 48.5f, 25.5f,6.0f,'r');    // vdu5
+
+            drawRoofRowV( 42.5f, 36.5f,5.0f,'r');    // vdu6
+            drawRoofRowV( 35.5f, 36.5f,5.0f,'r');    // vdu7
+            drawRoofRowV( 49.5f, 30.5f,1.0f,'r');    // vdu8
+
+            drawRoofRowH( 30.0f,23.0f,3.0f,'d');    // hdu1
+            drawRoofRowH( 34.0f,25.0f,6.5f,'d');    // hdu2
+            drawRoofRowH( 49.0f,26.0f,4.5f,'d');    // hdu3
+            drawRoofRowH( 27.0f,37.0f,5.0f,'r');    // hdu4
+            drawRoofRowH( 35.0f,37.0f,4.0f,'d');    // hdu5
+            drawRoofRowH( 45.0f,37.0f,5.0f,'r');    // hdu6
     // Q2
         /* ===== Paredes  ===== */
+            drawWall( 23.0f,35.0f,2,'P');           // wiu5
+            drawWall( 20.0f,35.0f,1,'P');           // wiu4
+            drawWall( 16.0f,35.0f,1,'P');           // wiu3
+            drawWall( 13.0f,35.0f,1,'P');           // wiu2
+            drawWall(  5.0f,35.0f,5,'P');           // wiu1
+            
+            drawWall(  1.0f,40.0f,4,'C');           // wiu6
+            drawWall(  6.0f,40.0f,7,'S');           // wiu7
+            drawWall( 17.0f,40.0f,8,'O');           // wiu8
         /* ===== Columnas ===== */
+            drawColumn( 25.0f, 34.0f,9,'D');         // ciu1
+            drawColumn( 21.0f, 34.0f,3,'D');         // ciu2
+            drawColumn( 14.0f, 34.0f,9,'D');         // ciu3
+            drawColumn( 14.0f, 26.0f,1,'U');         // ciu4
         /* ===== Techos   ===== */
+            drawRoofRowV( 0.5f,25.5f,17.0f,'l');    // viu1
+            drawRoofRowV( 12.5f,23.0f, 2.5f,'r');   // viu2
+            drawRoofRowV( 20.5f,22.5f, 3.0f,'r');   // viu3
+            drawRoofRowV( 24.5f,22.5f, 3.0f,'r');   // viu4
+            drawRoofRowV( 4.5f, 25.5f,4.0f,'r');    // viu5
+            drawRoofRowV( 4.5f, 32.5f,5.0f,'r');    // viu6
+            drawRoofRowV( 5.5f, 36.5f,5.0f,'r');    // viu7
+            drawRoofRowV( 13.5f, 36.5f,5.0f,'r');    // viu8
+            drawRoofRowV( 16.5f, 36.5f,5.0f,'r');    // viu9
+
+            drawRoofRowH( 21.0f,23.0f,3.0f,'d');    // hiu1
+            drawRoofRowH( 13.0f,25.0f,7.0f,'d');    // hiu2
+            drawRoofRowH( 1.0f,26.0f,3.5f,'d');     // hiu3
+            drawRoofRowH( 20.0f,37.0f,5.0f,'l');    // hiu4
+            drawRoofRowH( 6.0f,37.0f,4.0f,'r');    // hiu5
     // Q3
         /* ===== Paredes  ===== */
             drawWall(  1.0f,15.0f,3,'C');           // wid1
             drawWall(  1.0f, 6.0f,9,'S');           // wid2
-            drawWall( 20.0f, 6.0f,5,'P');           // wid3
+            drawWall( 20.0f, 5.0f,5,'P');           // wid3
             
             drawWall( 12.0f,17.0f,2,'P');           // wid5
             drawWall( 16.0f,17.0f,5,'P');           // wid6
             drawWall( 21.0f,18.0f,3,'O');           // wid7
-
-        /* ===== Papeles  ===== */
-            drawPaper(17.0f,17.0f,2,'O');
-
         /* ===== Columnas ===== */
             drawColumn( 14.0f, 0.0f,9,'U');         // cid1
             drawColumn( 25.0f, 0.0f,9,'U');         // cid2
@@ -358,7 +444,6 @@ list<Mesh*> drawMap(){
             drawColumn( 14.0f,16.0f,3,'D');         // cid3
         /* ===== Techos   ===== */
             drawRoofRowV( 0.5f, 0.0f,17.5f,'l');    // vid1
-            drawRoofRowV( 0.5f,25.0f,17.0f,'l');    // viu1
             drawRoofRowV( 4.5f,12.5f,5.0f,'r');     // vid2
             drawRoofRowV( 13.5f, 0.0f,7.5f,'l');    // vid3
             drawRoofRowV( 16.5f, 0.0f,7.5f,'l');    // vid4
@@ -371,12 +456,13 @@ list<Mesh*> drawMap(){
             drawRoofRowH( 0.5f,8.0f,9.5f,'r');      // hid2
             
             drawRoofRowH( 13.0f,19.0f,7.0f,'d');    // hid3
-            drawRoofRowH( 21.0f,20.0f,3.0f,'d');    // hid4        
+            drawRoofRowH( 21.0f,20.0f,3.0f,'d');    // hid4
+            drawRoofRowH( 20.0f,07.0f,5.0f,'l');    // hid5
     // Q4
         /* ===== Paredes  ===== */
-            drawWall( 27.0f, 6.0f,5,'P');           // wdd1
-            drawWall( 36.0f, 6.0f,3,'P');           // wdd2
-            drawWall( 45.0f, 5.85f,5,'P');          // wdd3
+            drawWall( 27.0f, 5.0f,5,'P');           // wdd1
+            drawWall( 36.0f, 5.0f,3,'P');           // wdd2
+            drawWall( 45.0f, 5.0f,5,'P');           // wdd3
             drawWall( 49.0f, 15.0f,4,'P');          // wdd5
             
             drawWall( 39.0f, 17.0f,2,'P');          // wdd6
@@ -392,6 +478,10 @@ list<Mesh*> drawMap(){
 
             drawRoofRowH( 34.0f,19.0f,6.0f,'d');    // hdd2
             drawRoofRowH( 30.0f,20.0f,3.0f,'d');    // hdd3
+            
+            drawRoofRowH( 27.0f,07.0f,5.0f,'r');    // hdd4
+            drawRoofRowH( 36.0f,07.0f,3.0f,'r');    // hdd5
+            drawRoofRowH( 45.0f,07.0f,5.0f,'r');    // hdd6
 
             drawRoofRowV( 53.5f, 0.0f,17.5f,'r');   // vdd1
             drawRoofRowV( 48.5f,12.5f,5.0f,'r');    // vdd2
@@ -408,6 +498,7 @@ list<Mesh*> drawMap(){
         drawBebedero(26.0f,15.0f);
     // UP
         drawRoofRowH( 0.0f,42.0f,54.0f,'d');        // hu
+        drawRoofRowH( 25.0f,25.0f,5.0f,'d');        // hcu
 
     for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
 

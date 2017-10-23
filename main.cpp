@@ -35,7 +35,7 @@ GLfloat maxSpeed = 8;
 GLfloat maxAcceleration = 40;
 GLfloat maxPrediction = 0.4;
 
-Kinematic target = {{45.0f,0.0f,29.0f}};
+Kinematic target = {{6.0f,0.0f,29.0f}};
 Kinematic sidekick1 = {{-18.0f,0.0,-2.0f},0.0};
 Kinematic sidekick2 = {{-18.0f,0.0,-6.0f},0.0};
 
