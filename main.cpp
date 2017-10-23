@@ -35,8 +35,8 @@ GLfloat maxSpeed = 8;
 GLfloat maxAcceleration = 40;
 GLfloat maxPrediction = 0.4;
 
-Kinematic target = {{6.0f,0.0f,29.0f}};
-Kinematic sidekick1 = {{-18.0f,0.0,-2.0f},0.0};
+Kinematic target = {{2.0f,0.0f,13.0f}};
+Kinematic sidekick1 = {{46.0f,0.0,3.0f},0.0};
 Kinematic sidekick2 = {{-18.0f,0.0,-6.0f},0.0};
 
 Kinematic enemy = {{-26.0f,0,-7.0f},0.0};
@@ -51,7 +51,7 @@ float deltaMove = 0;
 /**************** Behaviors ****************/
     Seek* seek = new Seek(enemy,target,maxAcceleration);
     Flee* flee = new Flee(enemy,target,maxAcceleration); 
-    Arrive* arrive = new Arrive(enemy,target,3,5,maxAcceleration,maxSpeed);
+    Arrive* arrive = new Arrive(sidekick1,target,10,15,maxAcceleration,maxSpeed);
 
     //{&enemy,&target,maxAngularAcceleration,maxRotation,slowRadius,targetRadius}
     Align* align = new Align(enemy,target,20,30,5,2);
@@ -94,16 +94,16 @@ float deltaMove = 0;
         GLfloat maxPrediction = 0.4;
 
         Separation* separation = new Separation(sidekick,targets,10,10,30);
-        Arrive* arrive = new Arrive(sidekick,target,3,5,maxAcceleration,maxSpeed);
+        Arrive* arrive1 = new Arrive(sidekick,target,0.5,20,maxAcceleration,maxSpeed);
         Seek* seek = new Seek(sidekick,target,maxAcceleration);
         LookWhereYoureGoing* lookWhereYoureGoing = new LookWhereYoureGoing(sidekick,target,10,30,5,2); // Align()  
 
         ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(sidekick,30,collisionDetector,6,4);
 
         behaviors.push_back(new BehaviorAndWeight(lookWhereYoureGoing,3));
-        behaviors.push_back(new BehaviorAndWeight(obstacleAvoidance,2));
-        behaviors.push_back(new BehaviorAndWeight(separation,2));
-        behaviors.push_back(new BehaviorAndWeight(arrive,0.5));
+        behaviors.push_back(new BehaviorAndWeight(obstacleAvoidance,0.8));
+        behaviors.push_back(new BehaviorAndWeight(separation,0.3));
+        behaviors.push_back(new BehaviorAndWeight(arrive1,0.1));
     }
 
     void initialize(){
@@ -127,12 +127,6 @@ float deltaMove = 0;
             glColor3f(1,0,0);
             drawFace((*t)->position,(*t)->orientation,pointSize);
         }
-        /*
-        for (list<Kinematic*>::iterator t=targets.begin(); t != targets.end(); ++t){
-            if((*t)->position.y > 8 || (*t)->position.y < -6) (*t)->velocity.y *= (-1);
-            (*t)->updatePosition(deltaTime);
-        }
-        */
     }
 
 /******************************* KEYBOARD *****************************/
@@ -216,8 +210,8 @@ void display(){
     Marlene* marlene = new Marlene(target.position,target.orientation,'p',target.velocity);
     marlene->draw();
     
-    // Marlene* novich = new Marlene(sidekick1.position,target.orientation,'s',sidekick1.velocity);
-    // novich->draw();
+    Marlene* novich = new Marlene(sidekick1.position,target.orientation,'s',sidekick1.velocity);
+    novich->draw();
 
    
     GLfloat timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
@@ -246,8 +240,8 @@ void reshape(GLsizei w, GLsizei h) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    GLfloat widthVP  = 20.0;
-    GLfloat heightVP = 20.0;
+    GLfloat widthVP  = 30.0;
+    GLfloat heightVP = 30.0;
     GLfloat deepVP = 40.0;
     
     if (w < h){

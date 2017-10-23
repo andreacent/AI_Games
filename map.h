@@ -8,12 +8,10 @@ void drawTileHallway(vec3 position,vec3 colorSqr,vec3 colorLine,vec3 colorDetail
     float x = position.x;
     float z = position.z;
     float pxX = 5*px;
-    float pxZ = 5*  px;
-
+    float pxZ = 5*px;
 
     glPushMatrix();
         glTranslatef(x,0.0,z);
-        
 
         glColor3f(colorSqr.x,colorSqr.y,colorSqr.z);
         glBegin(GL_POLYGON);
@@ -28,15 +26,12 @@ void drawTileHallway(vec3 position,vec3 colorSqr,vec3 colorLine,vec3 colorDetail
             // 1
             glVertex3f( 0,  0.0,  0);
             glVertex3f( 0,  0.0,  pxZ);
-
             // 2
             glVertex3f( 0,  0.0,  0);
             glVertex3f( pxX,  0.0,0);
-
             // 3
             glVertex3f( 0,  0.0,  pxZ);
             glVertex3f( pxX,  0.0,pxZ);
-
             // 4
             glVertex3f( pxX,  0.0,  pxZ);
             glVertex3f( pxX,  0.0,pxZ);
@@ -45,17 +40,13 @@ void drawTileHallway(vec3 position,vec3 colorSqr,vec3 colorLine,vec3 colorDetail
             // d1
             glVertex3f( 0.1,  0.0, 0.2);
             glVertex3f( 0.2,  0.0,0.4);
-
             // d2
             glVertex3f( 0.4,  0.0, 0.8);
             glVertex3f( 0.3,  0.0,0.9);
-
             // d3
             glVertex3f( 0.5,  0.0, 0.9);
-            glVertex3f( 0.7,  0.0,0.7);
-            
+            glVertex3f( 0.7,  0.0,0.7);    
         glEnd();
-        
     glPopMatrix();
 }
 
@@ -63,11 +54,7 @@ void drawSquareFloor(float i1, float i2, float j1, float j2, vec3 color){
     float s = 5.0*px;
     for(int i = i1 ; i < i2 ; i++){
         for(int j = j1; j < j2; j++){
-            
-            drawTileHallway({j*s,0.0,i*s+(s/2)},
-                            color,
-                            {0.5,0.5,0.5},
-                            {0.6,0.6,0.6});
+            drawTileHallway({j*s,0.0,i*s+(s/2)},color,{0.5,0.5,0.5},{0.6,0.6,0.6});
         }
     }
 }
@@ -81,11 +68,9 @@ void drawTileGrass(vec3 position){
     float pxX = 5*px;
     float pxZ = 5*px;
 
-
     glPushMatrix();
         glTranslatef(x,0.0,z);
         
-
         glColor3f(colorSqr.x,colorSqr.y,colorSqr.z);
         glBegin(GL_POLYGON);
             glVertex3f(   0, 0.0,  pxZ); //a
@@ -99,37 +84,29 @@ void drawTileGrass(vec3 position){
             // 1
             glVertex3f( 0,  0.0,  0);
             glVertex3f( 0,  0.0,  pxZ);
-
             // 2
             glVertex3f( 0,  0.0,  0);
             glVertex3f( pxX,  0.0,0);
-
             // 3
             glVertex3f( 0,  0.0,  pxZ);
             glVertex3f( pxX,  0.0,pxZ);
-
             // 4
             glVertex3f( pxX,  0.0,  pxZ);
             glVertex3f( pxX,  0.0,pxZ);
-            
         glEnd();
-        
     glPopMatrix();
 }
-
 
 void drawSquareGrass(float i1, float i2, float j1, float j2){
     float s = 5.0*px;
     for(int i = i1 ; i < i2 ; i++){
         for(int j = j1; j < j2; j++){
-            
             drawTileGrass({j*s,0.0,i*s+(s/2)});
         }
     }
 }
 
 void drawFloor(){
-
     vec3 white         = {0.9,0.9,0.9};
     vec3 whiteSombra   = {0.7,0.7,0.7};
     vec3 pasillo       = {0.8235294117647058,0.8235294117647058,0.6352941176470588};
@@ -139,12 +116,9 @@ void drawFloor(){
 	    glTranslatef(0.0,0.0,0.0);
 
         // PASILLO PRINCIPAL Q3 - Q4
-        // PASILLO 1-Q3/Q4 SOMBRA
         drawSquareFloor(7,21,0,54,pasilloSombra);
         drawSquareFloor(0,7,17,53,pasilloSombra);
-
-       
-        // PASILLO 1-Q3/Q4 LUZ
+        // ILUMINADO
         drawSquareFloor(9,21,6,12,pasillo);
         drawSquareFloor(9,14,11,12,pasillo);
         drawSquareFloor(10,12,12,41,pasillo);
@@ -155,14 +129,11 @@ void drawFloor(){
         drawSquareFloor(14,21,41,47,pasillo);
         drawSquareFloor(17,21,47,54,pasillo);
         drawSquareFloor(17,21,0,11,pasillo);
-
-
         // PASILLO PRINCIPAL Q1 - Q2
-        // PASILLO 2-Q1/Q2 SOMBRA
+        // SOMBRA
         drawSquareFloor(21,42,0,54,pasilloSombra);
         drawSquareFloor(0,7,17,53,pasilloSombra);
-
-        // PASILLO 1-Q3/Q4 LUZ
+        // ILUMINADO
         drawSquareFloor(21,32,5,12,pasillo);
         drawSquareFloor(21,25,0,5,pasillo);
         drawSquareFloor(28,31,12,18,pasillo);
@@ -173,38 +144,31 @@ void drawFloor(){
         drawSquareFloor(27,30,46,47,pasillo);
         drawSquareFloor(21,27,41,47,pasillo);
         drawSquareFloor(21,25,47,54,pasillo);
-
         // SALA
         drawSquareFloor(0,7,0,13,white);
         drawSquareFloor(4,5,1,10,whiteSombra);
-
         // LDC
         drawSquareFloor(26,36,1,5,white);
         drawSquareFloor(36,41,1,13,whiteSombra);
         drawSquareFloor(34,37,10,13,whiteSombra);
-
         // DEPARTAMENTO
         drawSquareFloor(26,36,49,52,white);
         drawSquareFloor(36,41,45,53,whiteSombra);
         drawSquareFloor(26,41,52,53,whiteSombra);
-
         // COORDINACION
         drawSquareFloor(7,16,0,5,white);
         drawSquareFloor(8,14,0,2,whiteSombra);
         drawSquareFloor(12,14,2,4,whiteSombra);
-
         // BAÑOS
         drawSquareFloor(16,18,21,33,whiteSombra);
         drawSquareFloor(23,25,21,24,whiteSombra);
         drawSquareFloor(23,25,30,33,whiteSombra);
-
         // GRAMA
         drawSquareGrass(19,24,13,20);
         drawSquareGrass(20,22,20,25);
         drawSquareGrass(19,24,25,29);
         drawSquareGrass(20,22,29,34);
         drawSquareGrass(19,24,34,40);
-
 	glPopMatrix();
 }
 
@@ -217,25 +181,20 @@ void drawSquare(vec3 position,vec3 colorSqr,float timesX,float timesZ){
 
     glPushMatrix();
         glPointSize(px);
-
         glTranslatef(x,0.0,z);
         
         glColor3f(colorSqr.x,colorSqr.y,colorSqr.z);
-
         glBegin(GL_POLYGON);
-            
             glVertex3f(   0, y, -pxZ/2); //a
             glVertex3f(   0, y,  pxZ/2); //d
-            
             glVertex3f( pxX, y,  pxZ/2); //b
             glVertex3f( pxX, y, -pxZ/2); //c
         glEnd();
-        
     glPopMatrix();
 }
 
 void drawRoofRowV(float xPosition,float zPosition, float hTimes, char lado){
-    vec3 main = {0.7843137254901961,0.7529411764705882,0.7215686274509804};
+    vec3 main  = {0.7843137254901961,0.7529411764705882,0.7215686274509804};
     vec3 light = {0.8784313725490196,0.8470588235294118,0.7529411764705882};
     vec3 borde = {0.4666666666666667,0.47058823529411764,0.5333333333333333};
     
@@ -259,7 +218,7 @@ void drawRoofRowV(float xPosition,float zPosition, float hTimes, char lado){
 }
 
 void drawRoofRowH(float xPosition,float zPosition, float wTimes, char lado){
-    vec3 main = {0.7843137254901961,0.7529411764705882,0.7215686274509804};
+    vec3 main  = {0.7843137254901961,0.7529411764705882,0.7215686274509804};
     vec3 light = {0.8784313725490196,0.8470588235294118,0.7529411764705882};
     vec3 borde = {0.4666666666666667,0.47058823529411764,0.5333333333333333};
     
@@ -272,7 +231,6 @@ void drawRoofRowH(float xPosition,float zPosition, float wTimes, char lado){
     
     glPushMatrix();
         meshs.push_back(new Mesh({{ (wTimes/2)+xPosition,0.0, zPosition-0.01f}, 1.0f, 1.0f*wTimes,main, 'R'}));
-    
         drawSquare(posBorde1,borde, wTimes+0.2f, 0.1f);
 
         if(lado == 'r'){
@@ -297,19 +255,7 @@ void drawRoofRowH(float xPosition,float zPosition, float wTimes, char lado){
             drawSquare(posLight1,light, 0.1f, 1.0f);
             drawSquare(posBorde2,borde, 0.1f, 1.0f);
         }
-    
-
     glPopMatrix();
-}
-
-void drawPaper(float xPosition,float zPosition, float wTimes,char sitio){
-    vec3 pared = {1,1,1};
-
-    glPushMatrix();
-
-        meshs.push_back(new Mesh({{ (wTimes/2)+xPosition,0.0, zPosition+0.6f}, 1.0f, (1.0f)*wTimes-0.4f,pared, 'W'}));
-
-    glPopMatrix(); 
 }
 
 void drawWall(float xPosition,float zPosition, float wTimes,char sitio){
@@ -332,7 +278,6 @@ void drawWall(float xPosition,float zPosition, float wTimes,char sitio){
     }
 
     glPushMatrix();
-
         meshs.push_back(new Mesh({{ (wTimes/2)+xPosition,0.0, zPosition+0.6f}, 2.0f, (1.0f)*wTimes-0.4f,pared, 'W'}));
 
         drawSquare({xPosition,0.0, zPosition-0.5f},piso,wTimes,0.25f);
@@ -346,7 +291,6 @@ void drawWall(float xPosition,float zPosition, float wTimes,char sitio){
         if( sitio == 'S' ){
             meshs.push_back(new Mesh({{ (wTimes/2)+xPosition,0.0, zPosition+0.6f}, 0.5f, (1.0f)*wTimes-0.4f,madera, 'W'}));
         }
-
     glPopMatrix();
 }
 
@@ -360,11 +304,9 @@ void drawTriangle(vec3 position,vec3 colorSqr, float directionX,float directionZ
 
         glPushMatrix();
             glPointSize(px);
-
             glTranslatef(x,0.0,z);
             
             glColor3f(colorSqr.x,colorSqr.y,colorSqr.z);
-
             glBegin(GL_POLYGON);
                 glVertex3f( 0.0, 0.0, 0.0); //a
                 glVertex3f( 0.0, 0.0, directionZ* pxZ); //b
@@ -381,11 +323,8 @@ void drawBebedero(float xPosition,float zPosition){
     float zP = zPosition-0.9f;
     float t = 1.5f;
 
-
     glPushMatrix();
-
         meshs.push_back(new Mesh({{ 1.0f+xPosition,0.0, zPosition+t}, 2.0f,2.0f-0.4f,main, 'O'}));
-        
     glPopMatrix();
 }
 
@@ -403,7 +342,6 @@ void drawColumn(float xPosition,float zPosition, float hTimes,char dir){
         t = 0.3f;
         zP = zPosition+hTimes-1.05f;
     }
-
     glPushMatrix();
 
         meshs.push_back(new Mesh({{ 1.0f+xPosition,0.0, (hTimes/2)-t+zPosition}, (1.0f)*hTimes,2.0f-0.4f,main, 'W'}));
@@ -417,17 +355,7 @@ void drawColumn(float xPosition,float zPosition, float hTimes,char dir){
 }
 
 list<Mesh*> drawMap(){
-
     drawFloor();
-    
-    /* ==========
-    Paredes
-        C -> Coordinacion
-        S -> Sala
-        P -> Pasillo
-        O -> Pasillo Oscuro
-    =========== */
-
     // Q1
         /* ===== Paredes  ===== */
             drawWall( 49.0f,35.0f,1,'C');           // wdu1
@@ -437,7 +365,7 @@ list<Mesh*> drawMap(){
             drawWall( 35.0f,35.0f,1,'P');           // wdu5
             drawWall( 31.0f,35.0f,1,'P');           // wdu6
             drawWall( 27.0f,35.0f,2,'P');           // wdu7
-            
+
             drawWall( 49.0f,29.0f,1,'C');           // wdu8
             drawWall( 45.0f,40.0f,8,'C');           // wdu9
             drawWall( 36.0f,40.0f,6,'O');           // wdu10
@@ -569,8 +497,6 @@ list<Mesh*> drawMap(){
     // UP
         drawRoofRowH( 0.0f,42.0f,54.0f,'d');        // hu
         drawRoofRowH( 25.0f,25.0f,5.0f,'d');        // hcu
-
     for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
-
     return meshs;
 }

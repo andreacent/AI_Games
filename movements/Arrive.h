@@ -29,10 +29,10 @@ public:
 		targetDistance =glm::length(direction);
 
 		// Check if we are there, return no steering
-		if (targetDistance < targetRadius) return false;
+		if (targetDistance - targetRadius < -1E-9) return false;
 
 		// If we are outside the slowRadius, then go max speed
-		if (targetDistance > slowRadius){
+		if (targetDistance - slowRadius > 1E-9){
 			targetSpeed = maxSpeed;
 		}
 		else{// Otherwise calculate a scaled speed
