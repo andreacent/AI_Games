@@ -326,6 +326,14 @@ list<Mesh*> drawMap(){
         /* ===== Paredes  ===== */
         /* ===== Columnas ===== */
         /* ===== Techos   ===== */
+            drawRoofRowV( 53.5f,25.0f,17.0f,'r');   // vdu1
+            drawRoofRowV( 40.5f,23.0f,2.0f,'r');   // vdu2
+            // vdu3
+            // vdu4
+            // vdu5
+            drawRoofRowV( 42.5f, 0.0f,7.5f,'r');    // vdu6
+            // vdu7
+
     // Q2
         /* ===== Paredes  ===== */
         /* ===== Columnas ===== */
@@ -352,7 +360,6 @@ list<Mesh*> drawMap(){
             drawRoofRowV( 0.5f, 0.0f,17.5f,'l');    // vid1
             drawRoofRowV( 0.5f,25.0f,17.0f,'l');    // viu1
             drawRoofRowV( 4.5f,12.5f,5.0f,'r');     // vid2
-            drawRoofRowV( 53.5f,25.0f,17.0f,'r');   // vdu1
             drawRoofRowV( 13.5f, 0.0f,7.5f,'l');    // vid3
             drawRoofRowV( 16.5f, 0.0f,7.5f,'l');    // vid4
             
@@ -369,7 +376,7 @@ list<Mesh*> drawMap(){
         /* ===== Paredes  ===== */
             drawWall( 27.0f, 6.0f,5,'P');           // wdd1
             drawWall( 36.0f, 6.0f,3,'P');           // wdd2
-            drawWall( 45.0f, 5.85f,5,'P');           // wdd3
+            drawWall( 45.0f, 5.85f,5,'P');          // wdd3
             drawWall( 49.0f, 15.0f,4,'P');          // wdd5
             
             drawWall( 39.0f, 17.0f,2,'P');          // wdd6
@@ -381,7 +388,7 @@ list<Mesh*> drawMap(){
             
             drawColumn( 37.0f, 16.0f,3,'D');         // cdd3
         /* ===== Techos   ===== */
-            drawRoofRowH( 48.0f,17.0f,5.0f,'l');     // hdd1
+            drawRoofRowH( 48.0f,17.0f,5.0f,'l');    // hdd1
 
             drawRoofRowH( 34.0f,19.0f,6.0f,'d');    // hdd2
             drawRoofRowH( 30.0f,20.0f,3.0f,'d');    // hdd3
