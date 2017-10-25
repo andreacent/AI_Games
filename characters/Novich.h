@@ -1,12 +1,6 @@
 class Novich : public Character{
-protected:
-	vec3 position;
-	vec3 facing;
-	float rot;
-	char rol;
 public:
-	Novich(vec3 p,float rt,char rl,vec3 velocity) 
-		: position(p),rot(rt),rol(rl),facing(velocity),Character(p,rt,rl,velocity) {}
+	Novich(Kinematic &character,char rl) : Character(character,rl) {}
 
     // Colors
     vec3 line =  {     0,     0,     0};    
@@ -21,8 +15,8 @@ public:
 	    // Cabello
 	    drawMirrorX(positionH,0,-1,hairS,3, 1);
 
-	    drawSquare({  2*positionH.x+(-8)*px,position.y,2*positionH.z+(-6)*px },hairS, 4, 4);
-	    drawSquare({  2*positionH.x+(-4)*px,position.y,2*positionH.z+(-6)*px },hair, 12, 4);
+	    drawSquare({  2*positionH.x+(-8)*px,character.position.y,2*positionH.z+(-6)*px },hairS, 4, 4);
+	    drawSquare({  2*positionH.x+(-4)*px,character.position.y,2*positionH.z+(-6)*px },hair, 12, 4);
 
 	    drawMirrorX(positionH,0,-4,hairS,3, 1);
 	    
@@ -44,10 +38,10 @@ public:
 
 	void draw(){
 
-	    float x = position.x;
-	    float z = position.z;
+	    float x = character.position.x;
+	    float z = character.position.z;
 	    //float px = 0.125;
-	    double deg = glm::degrees(-rot);//radianes a grados
+	    double deg = glm::degrees(-character.rotation);//radianes a grados
 
 	    switch(rol){
 	        case 'p':

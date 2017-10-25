@@ -22,10 +22,13 @@
 #include "movements/ObstacleAvoidance.h"
 #include "movements/BlendedSteering.h"
 
+
+#include "characters/Character.h"
 #include "characters/Marlene.h"
 #include "characters/Novich.h"
 
 #include "path/pathfindAStar.h"
+#include "path/triangules.h"
 
 GLfloat oldTimeSinceStart = 0.0;
 GLfloat pointSize=1.5;
@@ -37,15 +40,19 @@ GLfloat maxSpeed = 4;
 GLfloat maxAcceleration = 10;
 GLfloat maxPrediction = 0.4;
 
-Kinematic target = {{2.0f,0.0f,13.0f}};
-Kinematic sidekick1 = {{46.0f,0.0,3.0f},0.0};
-Kinematic sidekick2 = {{-18.0f,0.0,-6.0f},0.0};
-
-Kinematic enemy = {{-26.0f,0,-7.0f},0.0};
-
 bool ini = false;
 list<Kinematic*> targets;
 
+/******************** CHARACTERES *******************/
+Kinematic target = {{2.0f,0.0f,13.0f}};
+Kinematic sidekick1 = {{46.0f,0.0,3.0f},0.0};
+Kinematic sidekick2 = {{-18.0f,0.0,-6.0f},0.0};
+Kinematic enemy = {{-26.0f,0,-7.0f},0.0};
+
+Marlene marlene = {target,'p'};
+Marlene novich = {sidekick1,'s'};
+
+/******************** Camera *******************/
 float x=target.position.x, z=target.position.z;
 // actual vector representing the camera's direction
 float deltaMove = 0;
@@ -205,28 +212,26 @@ void display(){
     gluLookAt(x,0,z,x,10,z-1.0f,0,1,0);
     
     list<Mesh*> meshs = drawMap();
+    drawTriangleMap();
 
     glLineWidth(pointSize);
 
     //TEST CHARACTER
-    Marlene* marlene = new Marlene(target.position,target.orientation,'p',target.velocity);
-    marlene->draw();
-    
-    Marlene* novich = new Marlene(sidekick1.position,target.orientation,'s',sidekick1.velocity);
-    novich->draw();
+    marlene.draw();
+    novich.draw();
 
    
     GLfloat timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
     GLfloat deltaTime = (timeSinceStart - oldTimeSinceStart) * 0.001;
     oldTimeSinceStart = timeSinceStart;
 
-    moveListTargets(deltaTime);
+    //moveListTargets(deltaTime);
 
     target.updatePosition(deltaTime);
     target.updateOrientation(deltaTime);
 
-    flocking1.update(maxSpeed,deltaTime);
-    flocking2.update(maxSpeed,deltaTime);
+    //flocking1.update(maxSpeed,deltaTime);
+    //flocking2.update(maxSpeed,deltaTime);
     
     glFlush();
     glutPostRedisplay();
@@ -242,8 +247,8 @@ void reshape(GLsizei w, GLsizei h) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    GLfloat widthVP  = 30.0;
-    GLfloat heightVP = 30.0;
+    GLfloat widthVP  = 20.0;
+    GLfloat heightVP = 20.0;
     GLfloat deepVP = 40.0;
     
     if (w < h){

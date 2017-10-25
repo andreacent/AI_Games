@@ -5,9 +5,7 @@
 */
 class Character{
 protected:
-	vec3 position;
-	vec3 facing;
-	float rot;
+	Kinematic &character;
 	char rol;
 
 
@@ -15,8 +13,7 @@ public:
 
     float px = 0.125/2;
 
-	Character(vec3 p,float rt,char rl,vec3 velocity) 
-		: position(p),rot(rt),rol(rl),facing(velocity) {}
+	Character(Kinematic &c,char rl)  : character(c),rol(rl) {}
 
 
 	/**************** GUIDES ****************/
@@ -148,6 +145,7 @@ public:
 	}
 
 	void drawHead(vec3 positionH,vec3 colorLine,vec3 colorSkin,vec3 colorSkinS){
+		vec3 facing = character.velocity;
 
 		if(facing.x < 0 && abs(facing.x) > abs(facing.z)){
 			

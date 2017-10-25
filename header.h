@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <list>
 #include <vector>
-
 #include <iostream>
 #include <math.h>
 #include <queue>
@@ -22,7 +21,6 @@ using namespace std;
 
 #include "Mesh.h"
 #include "map.h"
-#include "characters/Character.h"
 #include "Collision.h"
 
 GLfloat getNewOrientation(GLfloat currentOrientation, vec3 velocity);
@@ -88,9 +86,7 @@ GLfloat getNewOrientation(GLfloat currentOrientation, vec3 velocity){
 	}
 };
 
-GLfloat randomBinomial(){
-	return rand() - rand();
-}
+GLfloat randomBinomial(){ return rand() - rand(); }
 
 vec3 getVectorOrientation(GLfloat orientation){
 	vec3 vecOrientation = {-sin(orientation),0.0,cos(orientation)};//{-sin(orientation),cos(orientation)};
