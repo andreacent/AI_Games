@@ -25,14 +25,16 @@
 #include "characters/Marlene.h"
 #include "characters/Novich.h"
 
+#include "path/pathfindAStar.h"
+
 GLfloat oldTimeSinceStart = 0.0;
 GLfloat pointSize=1.5;
 
 GLfloat targetRotation = glm::radians(10.0);
-GLfloat targetVelocity =20;
+GLfloat targetVelocity =3;
 
-GLfloat maxSpeed = 8;
-GLfloat maxAcceleration = 40;
+GLfloat maxSpeed = 4;
+GLfloat maxAcceleration = 10;
 GLfloat maxPrediction = 0.4;
 
 Kinematic target = {{2.0f,0.0f,13.0f}};
@@ -93,12 +95,12 @@ float deltaMove = 0;
     void followTarget(Kinematic &target, Kinematic &sidekick,list<BehaviorAndWeight*> &behaviors,list<Kinematic*> &targets){
         GLfloat maxPrediction = 0.4;
 
-        Separation* separation = new Separation(sidekick,targets,10,10,30);
+        Separation* separation = new Separation(sidekick,targets,4,4,maxAcceleration);
         Arrive* arrive1 = new Arrive(sidekick,target,0.5,20,maxAcceleration,maxSpeed);
         Seek* seek = new Seek(sidekick,target,maxAcceleration);
         LookWhereYoureGoing* lookWhereYoureGoing = new LookWhereYoureGoing(sidekick,target,10,30,5,2); // Align()  
 
-        ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(sidekick,30,collisionDetector,6,4);
+        ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(sidekick,10,collisionDetector,2,1);
 
         behaviors.push_back(new BehaviorAndWeight(lookWhereYoureGoing,3));
         behaviors.push_back(new BehaviorAndWeight(obstacleAvoidance,0.8));
