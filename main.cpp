@@ -28,7 +28,8 @@
 #include "characters/Novich.h"
 
 #include "path/pathfindAStar.h"
-#include "path/triangules.h"
+
+Graph graph;
 
 GLfloat oldTimeSinceStart = 0.0;
 GLfloat pointSize=1.5;
@@ -40,6 +41,7 @@ GLfloat maxSpeed = 4;
 GLfloat maxAcceleration = 10;
 GLfloat maxPrediction = 0.4;
 
+bool activeTriangles = true;
 bool ini = false;
 list<Kinematic*> targets;
 
@@ -118,6 +120,7 @@ float deltaMove = 0;
     void initialize(){
         ini = true;
 
+        graph.createGameGraph();
         glClearColor(0.81960,0.81960,0.81960,1);
 
         /* FOLLOW TARGET */
@@ -146,6 +149,9 @@ void controlKey (unsigned char key, int xmouse, int ymouse){
         break;
         case 'd': 
             target.rotation = -targetRotation;
+        break;
+        case ' ': 
+            activeTriangles = !activeTriangles;
         break;
         default: break;
     }  
@@ -212,9 +218,10 @@ void display(){
     gluLookAt(x,0,z,x,10,z-1.0f,0,1,0);
     
     list<Mesh*> meshs = drawMap();
-    drawTriangleMap();
 
     glLineWidth(pointSize);
+
+    if(activeTriangles) graph.drawTriangles();
 
     //TEST CHARACTER
     marlene.draw();
@@ -247,8 +254,8 @@ void reshape(GLsizei w, GLsizei h) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    GLfloat widthVP  = 20.0;
-    GLfloat heightVP = 20.0;
+    GLfloat widthVP  = 22.0;
+    GLfloat heightVP = 22.0;
     GLfloat deepVP = 40.0;
     
     if (w < h){
