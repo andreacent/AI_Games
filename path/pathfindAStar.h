@@ -1,6 +1,7 @@
 #include <queue>
 #include <map>
 #include <vector>
+#include <set>
 
 #ifndef _Graph_
     #define _Graph_
@@ -58,7 +59,7 @@ std::vector<Node> pathfindAStar(Graph graph, vec3 posStart, vec3 posEnd){
         if (current.node.id == goal.id) break;
 
         // Loop through each connection in turn
-        for (list<int>::iterator itAdj = current.node.adjacent.begin(); 
+        for (set<int>::iterator itAdj = current.node.adjacent.begin(); 
             itAdj != current.node.adjacent.end(); 
             ++itAdj ){ 
             // Get the cost estimate for the end node

@@ -1,5 +1,5 @@
 #include <map>
-#include <list>
+#include <set>
 #include <iostream>
 #include <fstream>
 
@@ -8,18 +8,17 @@ public:
     int id;
     vec3 point;
     vec3 triangle[3];
-    list<int> adjacent;
+    set<int> adjacent;
 
     Node(){}
 
-    Node(int i,vec3 t[]) : id(i){
+    Node(int i,vec3 t[], bool addNext = true) : id(i){
         for(int i =0; i<3; i++){ triangle[i] = t[i]; }
         setPoint();
-        adjacent.push_back(i-1);
-        adjacent.push_back(i+1);
+        if(addNext) adjacent.insert(i+1);
     }
 
-    Node(int i,vec3 t[], list<int> a) : id(i), adjacent(a){
+    Node(int i,vec3 t[], set<int> a) : id(i), adjacent(a){
         for(int i =0; i<3; i++){ triangle[i] = t[i]; }
         setPoint();
     }
@@ -34,7 +33,7 @@ public:
         cout<<"-- NODO "<<id<<" --"<<endl;
         cout<<"Punto "<< point.x<<","<<point.y<<","<<point.z<<endl;
         cout<<"Adyacentes ";
-        for(list<int>::iterator it = adjacent.begin(); it != adjacent.end(); ++it){ 
+        for(set<int>::iterator it = adjacent.begin(); it != adjacent.end(); ++it){ 
             cout<<(*it)<<" ";
         }
         cout <<endl;
@@ -42,7 +41,7 @@ public:
 
     void drawAdjLine(map<int,Node> nodes){
         glColor3f(1,1,1);
-        for (list<int>::iterator it = adjacent.begin(); it != adjacent.end(); ++it ){
+        for (set<int>::iterator it = adjacent.begin(); it != adjacent.end(); ++it ){
             if ((*it) < id) continue;
             vec3 p;
             glBegin(GL_LINES);
@@ -120,11 +119,14 @@ public:
         Node node;
         for (map<int,Node>::iterator itNode = nodes.begin(); itNode != nodes.end(); ++itNode ){
             node = (*itNode).second;
-            for (list<int>::iterator it = node.adjacent.begin(); it != node.adjacent.end(); ++it ){
+            for (set<int>::iterator it = node.adjacent.begin(); it != node.adjacent.end(); ++it ){
                 if ((*it) < node.id) continue;
                 dist = distance(node.point,nodes[(*it)].point);
                 distances[make_pair(node.id,(*it))] = dist;
                 distances[make_pair((*it),node.id)] = dist;
+
+                //inserto el nodo actual entre los adyacentes del otro
+                nodes[(*it)].adjacent.insert(node.id);
             }
             
         }

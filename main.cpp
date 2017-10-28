@@ -37,7 +37,7 @@ bool ini = false;
 
 /******************** CHARACTERES *******************/
 list<Kinematic*> targets;
-Kinematic target = {{48.0f,0.0f,31.0f}};
+Kinematic target = {{46.0f,0.0f,22.0f}};
 Kinematic sidekick1 = {{22.0f,0.0,24.0f},0.0};
 Kinematic sidekick2 = {{-18.0f,0.0,-6.0f},0.0};
 Kinematic enemy = {{-26.0f,0,-7.0f},0.0};
