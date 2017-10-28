@@ -1,3 +1,11 @@
+#include <list>
+#include <vector>
+
+#ifndef _Mesh_
+	#define _Mesh_
+	#include "../assets/Mesh.h"
+#endif
+
 struct Collision{
 	vec3 position;
 	vec3 normal;

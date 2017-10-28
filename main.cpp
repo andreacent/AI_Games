@@ -5,29 +5,19 @@
     carnet USB: 11-11020
     sep-dic 2017
 */    
-#include "header.h"
-#include "draw.cpp"
-
-#include "movements/Seek.h"
-#include "movements/Flee.h"
-#include "movements/Arrive.h"
-#include "movements/Align.h"
-#include "movements/VelocityMatch.h"
-#include "movements/Pursue.h"
-#include "movements/Evade.h"
-#include "movements/Face.h"
-#include "movements/LookWhereYoureGoing.h"
-#include "movements/Wander.h"
-#include "movements/Separation.h"
-#include "movements/ObstacleAvoidance.h"
-#include "movements/BlendedSteering.h"
-
+#include "movements/Behavior.cpp"
 
 #include "characters/Character.h"
 #include "characters/Marlene.h"
 #include "characters/Novich.h"
 
-#include "path/pathfindAStar.h"
+#include "assets/map.h"
+#include "path/graph.cpp"
+
+#include <GL/freeglut.h>
+#include <GL/gl.h>
+#include <glm/glm.hpp>
+//#include <GL/glew.h>
 
 Graph graph;
 
@@ -43,11 +33,11 @@ GLfloat maxPrediction = 0.4;
 
 bool activeTriangles = true;
 bool ini = false;
-list<Kinematic*> targets;
 
 /******************** CHARACTERES *******************/
-Kinematic target = {{2.0f,0.0f,13.0f}};
-Kinematic sidekick1 = {{46.0f,0.0,3.0f},0.0};
+list<Kinematic*> targets;
+Kinematic target = {{23.0f,0.0f,24.0f}};
+Kinematic sidekick1 = {{6.0f,0.0,23.0f},0.0};
 Kinematic sidekick2 = {{-18.0f,0.0,-6.0f},0.0};
 Kinematic enemy = {{-26.0f,0,-7.0f},0.0};
 
@@ -117,7 +107,7 @@ float deltaMove = 0;
         behaviors.push_back(new BehaviorAndWeight(arrive1,0.1));
     }
 
-    void initialize(){
+    void initialize(){        
         ini = true;
 
         graph.createGameGraph();
@@ -132,12 +122,20 @@ float deltaMove = 0;
 
         targets2.push_back(&sidekick1);
         targets2.push_back(&target);
+
+
+        std::vector<Node> path = pathfindAStar(graph, target.position, sidekick1.position);
+        for (vector<Node>::iterator itPath = path.begin(); 
+            itPath != path.end(); 
+            ++itPath ){
+            (*itPath).printNodeInfo();
+        }
     }
 
     void moveListTargets(GLfloat deltaTime){
         for (list<Kinematic*>::iterator t=targets.begin(); t != targets.end(); ++t){
             glColor3f(1,0,0);
-            drawFace((*t)->position,(*t)->orientation,pointSize);
+            //drawFace((*t)->position,(*t)->orientation,pointSize);
         }
     }
 
@@ -234,8 +232,8 @@ void display(){
 
     //moveListTargets(deltaTime);
 
-    target.updatePosition(deltaTime);
-    target.updateOrientation(deltaTime);
+    //target.updatePosition(deltaTime);
+    //target.updateOrientation(deltaTime);
 
     //flocking1.update(maxSpeed,deltaTime);
     //flocking2.update(maxSpeed,deltaTime);

@@ -1,64 +1,90 @@
 #include <map>
+#include <list>
 #include <iostream>
 #include <fstream>
 
-class Node;
-class Connection;
-
 class Node{ 
 public:
-    vector<Connection> connections;
     int id;
-    vec3 position;
+    vec3 point;
     vec3 triangle[3];
+    list<int> adjacent;
 
     Node(){}
 
-    /*
-    Copia el array que contiene los vertices del triangulo
-    Con los vertices del triangulo, calcula el baricentro y lo almacena en position
-    */
     Node(int i,vec3 t[]) : id(i){
         for(int i =0; i<3; i++){ triangle[i] = t[i]; }
-        position = {(triangle[0].x+triangle[1].x+triangle[2].x)/3
-                    ,0 
-                    ,(triangle[0].z+triangle[1].z+triangle[2].z)/3 };
+        setPoint();
+        adjacent.push_back(i-1);
+        adjacent.push_back(i+1);
     }
 
-    void printPosition(){        
-        cout<< position.x<<","<<position.y<<","<<position.z<<endl;
+    Node(int i,vec3 t[], list<int> a) : id(i), adjacent(a){
+        for(int i =0; i<3; i++){ triangle[i] = t[i]; }
+        setPoint();
+    }
+
+    void setPoint(){
+        point = {(triangle[0].x+triangle[1].x+triangle[2].x)/3
+                ,0 
+                ,(triangle[0].z+triangle[1].z+triangle[2].z)/3 };
+    }
+
+    void printNodeInfo(){
+        cout<<"-- NODO "<<id<<" --"<<endl;
+        cout<<"Punto "<< point.x<<","<<point.y<<","<<point.z<<endl;
+        cout<<"Adyacentes ";
+        for(list<int>::iterator it = adjacent.begin(); it != adjacent.end(); ++it){ 
+            cout<<(*it)<<" ";
+        }
+        cout <<endl;
+    }
+//
+    void drawAdjLine(map<int,Node> nodes){
+        glColor3f(0,1,1);
+        for (list<int>::iterator it = adjacent.begin(); it != adjacent.end(); ++it ){
+            if ((*it) < id) continue;
+            vec3 p;
+            glBegin(GL_LINES);
+                p = nodes[(*it)].point;
+                glVertex3f( p.x,p.y,p.z);
+                glVertex3f( point.x,point.y,point.z);
+            glEnd();
+        }
     }
 
     //vector<Connection> getConnections(){ return connections;}
 };
 
-class Connection{
-protected:
-    float cost;
-    Node fromNode;
-    Node toNode;
-
+class Heuristic{ 
 public:
-    Connection(float c, Node &fn, Node &tn) : cost(c),fromNode(fn),toNode(tn) {}
+    //Stores the goal node that this heuristic is estimating for
+    Node goalNode;
 
-    float getCost(){ return cost; }
-    Node getFromNode(){ return fromNode; }
-    Node getToNode(){ return toNode; }
+    Heuristic(Node g) : goalNode(g){}
+
+    /*
+    Generates an estimated cost to reach the 
+    stored goal from the given node
+    */
+    float estimate(Node node){
+        return distance(node.point,goalNode.point);
+    }
 };
 
+
 class Graph{ 
-protected: 
-    map<int,Node> nodes;
-  
 public:
+    map<int,Node> nodes;
+    map<pair<int,int>, float> distances;
+  
     float sign (vec3 p1, vec3 p2, vec3 p3)
     {
         return (p1.x - p3.x) * (p2.z - p3.z) - (p2.x - p3.x) * (p1.z - p3.z);
     }
 
     /*
-    Busca si el punto dado se encuentra dentro del 
-    triangulo correspondiente al nodo
+    Busca si el punto dado se encuentra dentro del triangulo correspondiente al nodo
     */
     bool pointInTriangle (vec3 pt, Node node)
     {
@@ -75,7 +101,7 @@ public:
     }
 
     /*
-    Obtiene el nodo del grafo dada una position en el mapa
+    Obtiene el nodo del grafo dada una point en el mapa
     */
     bool getNode(vec3 pt, Node &node){
         for (map<int,Node>::iterator it = nodes.begin(); it != nodes.end(); ++it ){
@@ -88,6 +114,27 @@ public:
         }
     }
 
+    /*
+    Itera sobre los nodos y calcula las distancias entre los adyacentes
+    */
+    void setDistances(){
+        float dist;
+        Node node;
+        for (map<int,Node>::iterator itNode = nodes.begin(); itNode != nodes.end(); ++itNode ){
+            node = (*itNode).second;
+            for (list<int>::iterator it = node.adjacent.begin(); it != node.adjacent.end(); ++it ){
+                if ((*it) < node.id) continue;
+                dist = distance(node.point,nodes[(*it)].point);
+                distances[make_pair(node.id,(*it))] = dist;
+                distances[make_pair((*it),node.id)] = dist;
+            }
+            
+        }
+    }
+
+    /*
+    Dibuja los triagulos asociados a los nodos
+    */
     void drawTriangles()
     {
         glColor3f(1,0,0);
@@ -99,32 +146,12 @@ public:
                                 (*it).second.triangle[i].z);
                 }
             glEnd();
+
+            //(*it).second.drawAdjLine(nodes);
+            //glColor3f(1,0,0);
         }
     }
 
-    /*
-        Hay que completar los triangulos e incluir los adyacentes
-    */
-    void createGameGraph()
-    {
-        nodes[1] = Node(1, new vec3[3]{vec3(5,0,25),vec3(14,0,25),vec3(5,0,34)} );
-        nodes[2] = Node(2, new vec3[3]{vec3(5,0,34),vec3(14,0,34),vec3(14,0,25)} );
-        nodes[3] = Node(3, new vec3[3]{vec3(14,0,33),vec3(14,0,26),vec3(16,0,26)} );
-        nodes[4] = Node(4, new vec3[3]{vec3(14,0,33),vec3(16,0,26),vec3(16,0,33)} );
-        nodes[5] = Node(5, new vec3[3]{vec3(16,0,34),vec3(21,0,34),vec3(16,0,25)} );
-        nodes[6] = Node(6, new vec3[3]{vec3(21,0,25),vec3(21,0,34),vec3(16,0,25)} );
-        nodes[7] = Node(7, new vec3[3]{vec3(21,0,33),vec3(23,0,33),vec3(21,0,30)} );
-        nodes[8] = Node(8, new vec3[3]{vec3(23,0,30),vec3(23,0,33),vec3(21,0,30)} );
-        nodes[9] = Node(9, new vec3[3]{vec3(21,0,30),vec3(21,0,23),vec3(24,0,23)} );
-        nodes[10] = Node(10, new vec3[3]{vec3(21,0,30),vec3(24,0,30),vec3(24,0,23)} );
-
-        /*
-        PRUEBA
-        Node node;
-        if (getNode(vec3(15,0,28), node)){
-            cout<<node.id<<endl;
-            node.printPosition();
-        }
-        */
-    }
+    /* Crea el grafo del juego */
+    void createGameGraph();
 };

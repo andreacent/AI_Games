@@ -1,32 +1,21 @@
 /* 
     Andrea Centeno
+    carnet USB: 10-10138
+    Sergio Teran
+    carnet USB: 11-11020
     sep-dic 2017
-*/
-#include <stdio.h>
-#include <stdlib.h>
-#include <list>
-#include <vector>
-#include <iostream>
-#include <math.h>
-#include <queue>
-
-#include <GL/glew.h>
-#include <GL/freeglut.h>
+*/ 
 #include <GL/gl.h>
 #include <glm/glm.hpp>
-#include <glm/gtx/intersect.hpp>
 
 using namespace glm;
 using namespace std;
-
-#include "Mesh.h"
-#include "map.h"
-#include "Collision.h"
 
 GLfloat getNewOrientation(GLfloat currentOrientation, vec3 velocity);
 GLfloat randomBinomial();
 vec3 getVectorOrientation(GLfloat orientation);
 GLfloat mapToRange(GLfloat orientation);
+vec3 rotateVectorZ(vec3 v, GLfloat ang);
 
 struct SteeringOutput {
 	vec3 linear;
@@ -74,31 +63,16 @@ public:
 	virtual void update(GLfloat maxSpeed,GLfloat deltaTime) = 0;
 };
 
-GLfloat getNewOrientation(GLfloat currentOrientation, vec3 velocity){
-	//Make sure we have a velocity
-	if (glm::length(velocity) > 0){
-		//Calculate orientation using an arc tangent of
-		//the velocity components.
-		return atan2(velocity.x, velocity.z);
-	}	
-	else{ //Otherwise use the current orientation
-		return currentOrientation;
-	}
-};
-
-GLfloat randomBinomial(){ return rand() - rand(); }
-
-vec3 getVectorOrientation(GLfloat orientation){
-	vec3 vecOrientation = {-sin(orientation),0.0,cos(orientation)};//{-sin(orientation),cos(orientation)};
-	return vecOrientation;
-};
-
-GLfloat mapToRange(GLfloat orientation){
-	if (orientation > M_PI) orientation -= 2*M_PI;
-	else if (orientation < -M_PI) orientation += 2*M_PI;
-	return orientation;
-}
-
-vec3 rotateVectorZ(vec3 v, GLfloat ang){
-	return vec3(v.x * cos(ang) + v.z * sin(ang), v.y, v.z * cos(ang) - v.x * sin(ang) );
-}
+#include "Seek.h"
+#include "Flee.h"
+#include "Arrive.h"
+#include "Align.h"
+#include "VelocityMatch.h"
+#include "Pursue.h"
+#include "Evade.h"
+#include "Face.h"
+#include "LookWhereYoureGoing.h"
+#include "Wander.h"
+#include "Separation.h"
+#include "ObstacleAvoidance.h"
+#include "BlendedSteering.h"

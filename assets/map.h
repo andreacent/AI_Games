@@ -1,3 +1,7 @@
+#ifndef _Mesh_
+    #define _Mesh_
+    #include "Mesh.h"
+#endif
 
 float px = 0.2;
 list<Mesh*> meshs;

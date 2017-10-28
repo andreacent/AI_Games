@@ -1,18 +1,17 @@
 #include <queue>
-#include <set>
-#include "graph.h"
+#include <map>
+#include <vector>
 
-float estimate(Node node,Node goal){
-    return distance(node.position,goal.position);
-}
+#ifndef _Graph_
+    #define _Graph_
+    #include "graph.h"
+#endif
 
-std::vector<Node> pathfindAStar(Node start, Node end, Node goal){ //Graph graph, 
-        
+std::vector<Node> pathfindAStar(Graph graph, vec3 posStart, vec3 posEnd){ 
     //This structure is used to keep track of the information we need for each node
     struct NodeRecord{
         NodeRecord* parent;
         Node node;
-        Connection* connection;
         float costSoFar;
         float estimatedTotalCost;
     };
@@ -25,18 +24,22 @@ std::vector<Node> pathfindAStar(Node start, Node end, Node goal){ //Graph graph,
         }
     };
 
-
+    //get start and goal nodes 
+    std::vector<Node> path;
+    Node start,goal;
+    if (!graph.getNode(posStart, start) || !graph.getNode(posEnd, goal)) return path;
+    Heuristic heuristic = {goal};
+        
     // Initialize the record for the start node
     NodeRecord startRecord;
     startRecord.node = start;
     startRecord.costSoFar = 0;
-    startRecord.estimatedTotalCost = estimate(start,goal);//heuristic.estimate(start,goal);
+    startRecord.estimatedTotalCost = heuristic.estimate(start);//heuristic.estimate(start,goal);
 
     // Initialize the open and closed lists
     std::priority_queue<NodeRecord, std::vector<NodeRecord>, CompareNodes> open; //open = PathfindingList(); 
     std::map<int,float> openMap; //almaceno el id del nodo y el costSoFar minimo
-    std::vector<NodeRecord> closed; //closed = PathfindingList();
-    std::set<int> closedSet; //alamceno el id de los nodos cerrados
+    std::map<int,NodeRecord> closed; //alamceno el id de los nodos cerrados
 
     NodeRecord current = startRecord;
 
@@ -53,39 +56,26 @@ std::vector<Node> pathfindAStar(Node start, Node end, Node goal){ //Graph graph,
         // If it is the goal node, then terminate
         if (current.node.id == goal.id) break;
 
-        // Otherwise get its outgoing connections
-        //std::vector<Connection> connections = current.node.connections;
-
         // Loop through each connection in turn
-        for (vector<Connection>::iterator iter = current.node.connections.begin(); 
-                iter != current.node.connections.end(); 
-                ++iter ){//for (connection in connections){
+        for (list<int>::iterator itAdj = current.node.adjacent.begin(); 
+            itAdj != current.node.adjacent.end(); 
+            ++itAdj ){ 
             // Get the cost estimate for the end node
-            Connection connection = (*iter);
-            Node endNode = connection.getToNode();
-            float endNodeCost = current.costSoFar + connection.getCost();
+            Node endNode = graph.nodes[(*itAdj)];
+            float endNodeCost = current.costSoFar + graph.distances[make_pair(current.node.id,endNode.id)];
+
             float endNodeHeuristic;
             NodeRecord endNodeRecord;
 
             // If the node is closed we may have to skip, or remove it from the closed list.
-            if(closedSet.count(endNode.id) > 0){// (closed.contains(endNode)){                
-                vector<NodeRecord>::iterator endNodeRecordIter;
-
-                for (vector<NodeRecord>::iterator it = closed.begin(); it != closed.end(); ++it ){
-                    if ((*it).node.id == endNode.id) {
-                        // Here we find the record in the closed list corresponding to the endNode.
-                        endNodeRecord = (*it);
-                        endNodeRecordIter = it;
-                        break;
-                    }
-                }               
+            if(closed.count(endNode.id) > 0){
+                endNodeRecord = closed[endNode.id];            
 
                 // If we didn’t find a shorter route, skip
                 if (endNodeRecord.costSoFar <= endNodeCost) continue;
 
                 // Otherwise remove it from the closed list
-                closed.erase(endNodeRecordIter);
-                closedSet.erase(endNode.id);
+                closed.erase(endNode.id);
 
                 // We can use the node’s old cost values
                 // to calculate its heuristic without calling
@@ -129,14 +119,13 @@ std::vector<Node> pathfindAStar(Node start, Node end, Node goal){ //Graph graph,
                 // We’ll need to calculate the heuristic value
                 // using the function, since we don’t have an
                 // existing record to use
-                endNodeHeuristic = estimate(endNode,goal);//heuristic.estimate(endNode,goal);
+                endNodeHeuristic = heuristic.estimate(endNode);//heuristic.estimate(endNode,goal);
             }
 
             // We’re here if we need to update the node
             // Update the cost, estimate and connection
             endNodeRecord.costSoFar = endNodeCost;
             endNodeRecord.parent = &current;
-            endNodeRecord.connection = &connection;
             endNodeRecord.estimatedTotalCost = endNodeCost + endNodeHeuristic;
 
             // And add it to the open list
@@ -149,11 +138,9 @@ std::vector<Node> pathfindAStar(Node start, Node end, Node goal){ //Graph graph,
         // We’ve finished looking at the connections for
         // the current node, so add it to the closed list
         // and remove it from the open list        
-        closed.push_back(current);
-        closedSet.insert(current.node.id);
+        closed[current.node.id] = current;
     }
 
-    std::vector<Node> path;
     // We’re here if we’ve either found the goal, or
     // if we’ve no more nodes to search, find which.
     if (current.node.id != goal.id){
@@ -165,7 +152,7 @@ std::vector<Node> pathfindAStar(Node start, Node end, Node goal){ //Graph graph,
         // Work back along the path, accumulating
         // connections
         while (current.node.id != start.id){            
-            path.push_back(current.node);//path += current.connection;
+            path.push_back(current.node);
             current = *current.parent;
         }
         // Reverse the path, and return it

@@ -1,3 +1,5 @@
+#include <list>
+
 class Separation: public Behavior{
 protected:
 	// Holds the kinematic data for the character

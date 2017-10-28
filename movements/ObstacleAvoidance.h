@@ -1,4 +1,20 @@
-// #include "Collision.h"
+#include <glm/gtx/intersect.hpp>
+
+#ifndef _Collision_
+	#define _Collision_
+	#include "../assets/Collision.h"
+#endif
+
+
+void drawRay(vec3 position, vec3 direction) {
+    glPushMatrix();
+        glTranslatef(position.x,position.y,position.z);
+        glBegin(GL_LINES);
+            glVertex3f(0.0,0.0, 0.0);
+            glVertex3f(direction.x,direction.y, direction.z);
+        glEnd();
+    glPopMatrix();
+}
 
 class ObstacleAvoidance: public Seek{
 protected:
