@@ -26,3 +26,25 @@ void Graph::createGameGraph()
     }
     */
 }
+
+
+void drawPath(std::vector<Node> path){
+    vec3 p1,p2;
+
+    vector<Node>::iterator itPath = path.begin();
+    p1 = (*itPath).point;
+
+    ++itPath;
+
+    glColor3f(0,1,1);
+    while (itPath != path.end()){
+        p2 = (*itPath).point;
+        glBegin(GL_LINES);
+            glVertex3f( p1.x,p1.y,p1.z);
+            glVertex3f( p2.x,p2.y,p2.z);
+        glEnd();
+
+        p1 = p2;
+        ++itPath;
+    }
+}

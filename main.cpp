@@ -20,6 +20,7 @@
 //#include <GL/glew.h>
 
 Graph graph;
+std::vector<Node> path;
 
 GLfloat oldTimeSinceStart = 0.0;
 GLfloat pointSize=1.5;
@@ -123,13 +124,9 @@ float deltaMove = 0;
         targets2.push_back(&sidekick1);
         targets2.push_back(&target);
 
-
-        std::vector<Node> path = pathfindAStar(graph, target.position, sidekick1.position);
-        for (vector<Node>::iterator itPath = path.begin(); 
-            itPath != path.end(); 
-            ++itPath ){
-            (*itPath).printNodeInfo();
-        }
+        //prueba de calcular el camino
+        path = pathfindAStar(graph, sidekick1.position, target.position);
+        
     }
 
     void moveListTargets(GLfloat deltaTime){
@@ -219,7 +216,10 @@ void display(){
 
     glLineWidth(pointSize);
 
-    if(activeTriangles) graph.drawTriangles();
+    if(activeTriangles) {
+        graph.drawTriangles();
+        if (int(path.size()) > 0) drawPath(path);
+    }
 
     //TEST CHARACTER
     marlene.draw();

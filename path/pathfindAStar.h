@@ -10,7 +10,7 @@
 std::vector<Node> pathfindAStar(Graph graph, vec3 posStart, vec3 posEnd){ 
     //This structure is used to keep track of the information we need for each node
     struct NodeRecord{
-        NodeRecord* parent;
+        NodeRecord* father = NULL;
         Node node;
         float costSoFar;
         float estimatedTotalCost;
@@ -41,10 +41,10 @@ std::vector<Node> pathfindAStar(Graph graph, vec3 posStart, vec3 posEnd){
     std::map<int,float> openMap; //almaceno el id del nodo y el costSoFar minimo
     std::map<int,NodeRecord> closed; //alamceno el id de los nodos cerrados
 
+    open.push(startRecord); 
+
     NodeRecord current = startRecord;
-
-    open.push(startRecord);//open += startRecord;    
-
+  
     // Iterate through processing each node
     while (!open.empty()){
         // Find the smallest element in the open list (using the estimatedTotalCost)
@@ -62,6 +62,7 @@ std::vector<Node> pathfindAStar(Graph graph, vec3 posStart, vec3 posEnd){
             ++itAdj ){ 
             // Get the cost estimate for the end node
             Node endNode = graph.nodes[(*itAdj)];
+
             float endNodeCost = current.costSoFar + graph.distances[make_pair(current.node.id,endNode.id)];
 
             float endNodeHeuristic;
@@ -81,9 +82,10 @@ std::vector<Node> pathfindAStar(Graph graph, vec3 posStart, vec3 posEnd){
                 // to calculate its heuristic without calling
                 // the possibly expensive heuristic function
                 endNodeHeuristic = endNodeCost - endNodeRecord.costSoFar;
+        cout<<"->   CLOSED  ->"<<endNodeHeuristic<<" -- "<<heuristic.estimate(endNode)<<endl;
             }
             // Skip if the node is open and we’ve not found a better route
-            else if (openMap.count(endNode.id) > 0 && openMap[endNode.id] > endNodeCost){ //(open.contains(endNode)){
+            else if (openMap.count(endNode.id) > 0 && openMap[endNode.id] > endNodeCost){
                 // Here we find the record in the open list corresponding to the endNode.
                 // If our route is no better, then skip 
                 //if (endNodeRecord.costSoFar <= endNodeCost) continue;
@@ -119,13 +121,13 @@ std::vector<Node> pathfindAStar(Graph graph, vec3 posStart, vec3 posEnd){
                 // We’ll need to calculate the heuristic value
                 // using the function, since we don’t have an
                 // existing record to use
-                endNodeHeuristic = heuristic.estimate(endNode);//heuristic.estimate(endNode,goal);
+                endNodeHeuristic = heuristic.estimate(endNode);
             }
 
             // We’re here if we need to update the node
             // Update the cost, estimate and connection
             endNodeRecord.costSoFar = endNodeCost;
-            endNodeRecord.parent = &current;
+            endNodeRecord.father = new NodeRecord(current);
             endNodeRecord.estimatedTotalCost = endNodeCost + endNodeHeuristic;
 
             // And add it to the open list
@@ -143,19 +145,20 @@ std::vector<Node> pathfindAStar(Graph graph, vec3 posStart, vec3 posEnd){
 
     // We’re here if we’ve either found the goal, or
     // if we’ve no more nodes to search, find which.
-    if (current.node.id != goal.id){
-        // We’ve run out of nodes without finding the
-        // goal, so there’s no solution
-        return path;
-    }
-    else{ // Compile the list of connections in the path
+    if (current.node.id == goal.id){ 
+        // Compile the list of connections in the path
         // Work back along the path, accumulating
         // connections
-        while (current.node.id != start.id){            
-            path.push_back(current.node);
-            current = *current.parent;
+
+        path.push_back(current.node);
+        NodeRecord *father = current.father;
+
+        while (father != NULL){              
+            path.push_back(father->node);
+            father = father->father;
         }
         // Reverse the path, and return it
-        return path;
     }
+    
+    return path;
 }

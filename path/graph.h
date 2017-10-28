@@ -105,9 +105,9 @@ public:
     */
     bool getNode(vec3 pt, Node &node){
         for (map<int,Node>::iterator it = nodes.begin(); it != nodes.end(); ++it ){
-            cout<<"buscando triangulo en nodo "<<(*it).second.id<<endl;
+            //cout<<"buscando triangulo en nodo "<<(*it).second.id<<endl;
             if( pointInTriangle(pt,(*it).second) ) {
-                cout<<"-> encontrado "<<endl;
+                //cout<<"-> encontrado "<<endl;
                 node = (*it).second;
                 return true;
             }
