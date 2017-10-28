@@ -39,9 +39,9 @@ public:
         }
         cout <<endl;
     }
-//
+
     void drawAdjLine(map<int,Node> nodes){
-        glColor3f(0,1,1);
+        glColor3f(1,1,1);
         for (list<int>::iterator it = adjacent.begin(); it != adjacent.end(); ++it ){
             if ((*it) < id) continue;
             vec3 p;
@@ -52,8 +52,6 @@ public:
             glEnd();
         }
     }
-
-    //vector<Connection> getConnections(){ return connections;}
 };
 
 class Heuristic{ 
@@ -147,8 +145,8 @@ public:
                 }
             glEnd();
 
-            //(*it).second.drawAdjLine(nodes);
-            //glColor3f(1,0,0);
+            (*it).second.drawAdjLine(nodes);
+            glColor3f(1,0,0);
         }
     }
 

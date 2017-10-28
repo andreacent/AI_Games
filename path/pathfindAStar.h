@@ -19,7 +19,7 @@ std::vector<Node> pathfindAStar(Graph graph, vec3 posStart, vec3 posEnd){
     class CompareNodes {
     public:
         bool operator()(NodeRecord &n1, NodeRecord &n2) {
-            if (n1.estimatedTotalCost  < n2.estimatedTotalCost ) return true;
+            if (n1.estimatedTotalCost  > n2.estimatedTotalCost ) return true;
             return false;
         }
     };
@@ -52,6 +52,7 @@ std::vector<Node> pathfindAStar(Graph graph, vec3 posStart, vec3 posEnd){
         current = open.top();        
         open.pop();
         openMap.erase(current.node.id);
+        //cout<<"--- expande nodo "<<current.node.id<<endl;
         
         // If it is the goal node, then terminate
         if (current.node.id == goal.id) break;
@@ -70,7 +71,8 @@ std::vector<Node> pathfindAStar(Graph graph, vec3 posStart, vec3 posEnd){
 
             // If the node is closed we may have to skip, or remove it from the closed list.
             if(closed.count(endNode.id) > 0){
-                endNodeRecord = closed[endNode.id];            
+                endNodeRecord = closed[endNode.id];       
+                //cout<<endNodeRecord.node.id<<" cerrado con "<<endNodeRecord.costSoFar<<" <= endNodeCost "<<endNodeCost<<endl;    
 
                 // If we didn’t find a shorter route, skip
                 if (endNodeRecord.costSoFar <= endNodeCost) continue;
@@ -81,14 +83,16 @@ std::vector<Node> pathfindAStar(Graph graph, vec3 posStart, vec3 posEnd){
                 // We can use the node’s old cost values
                 // to calculate its heuristic without calling
                 // the possibly expensive heuristic function
-                endNodeHeuristic = endNodeCost - endNodeRecord.costSoFar;
-        cout<<"->   CLOSED  ->"<<endNodeHeuristic<<" -- "<<heuristic.estimate(endNode)<<endl;
+                //cout<<"node sacado de cerrado "<<endNodeRecord.node.id<<endl;
+                endNodeHeuristic = endNodeRecord.estimatedTotalCost - endNodeRecord.costSoFar;
             }
             // Skip if the node is open and we’ve not found a better route
-            else if (openMap.count(endNode.id) > 0 && openMap[endNode.id] > endNodeCost){
+            else if (openMap.count(endNode.id) > 0){
                 // Here we find the record in the open list corresponding to the endNode.
                 // If our route is no better, then skip 
-                //if (endNodeRecord.costSoFar <= endNodeCost) continue;
+
+                //cout<<endNode.id<<" abierto con "<<openMap[endNode.id]<<" <= endNodeCost "<<endNodeCost<<endl;
+                if (openMap[endNode.id] <= endNodeCost) continue;
 
                 // SOLUCION ANIMAL
                 //creo una nueva cola de prioridad
@@ -112,7 +116,7 @@ std::vector<Node> pathfindAStar(Graph graph, vec3 posStart, vec3 posEnd){
                 // We can use the node’s old cost values
                 // to calculate its heuristic without calling
                 // the possibly expensive heuristic function
-                endNodeHeuristic = endNodeCost - endNodeRecord.costSoFar;
+                endNodeHeuristic = endNodeRecord.estimatedTotalCost - endNodeRecord.costSoFar;
             }
             // Otherwise we know we’ve got an unvisited node, so make a record for it
             else{
@@ -134,6 +138,8 @@ std::vector<Node> pathfindAStar(Graph graph, vec3 posStart, vec3 posEnd){
             if(openMap.count(endNode.id) < 1){
                 open.push(endNodeRecord); 
                 openMap[endNodeRecord.node.id] = endNodeRecord.costSoFar;
+
+                //cout<<"+ "<<endNodeRecord.node.id<<" entra a open con est. "<<endNodeRecord.estimatedTotalCost<<endl;
             }
 
         }

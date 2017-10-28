@@ -37,8 +37,8 @@ bool ini = false;
 
 /******************** CHARACTERES *******************/
 list<Kinematic*> targets;
-Kinematic target = {{23.0f,0.0f,24.0f}};
-Kinematic sidekick1 = {{6.0f,0.0,23.0f},0.0};
+Kinematic target = {{48.0f,0.0f,31.0f}};
+Kinematic sidekick1 = {{22.0f,0.0,24.0f},0.0};
 Kinematic sidekick2 = {{-18.0f,0.0,-6.0f},0.0};
 Kinematic enemy = {{-26.0f,0,-7.0f},0.0};
 
@@ -232,8 +232,8 @@ void display(){
 
     //moveListTargets(deltaTime);
 
-    //target.updatePosition(deltaTime);
-    //target.updateOrientation(deltaTime);
+    target.updatePosition(deltaTime);
+    target.updateOrientation(deltaTime);
 
     //flocking1.update(maxSpeed,deltaTime);
     //flocking2.update(maxSpeed,deltaTime);
