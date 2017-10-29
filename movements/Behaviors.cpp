@@ -54,7 +54,7 @@ void createMapBaseBehaviors(
     //(character,target, maxAngularAcceleration,maxRotation,slowRadius,targetRadius)
 	behaviors["lwyg"] = new LookWhereYoureGoing(character,target,10,30,5,2); 
 	//(character,maxAcceleration,collisionDetector,avoidDistance,lookahead) 	
-	behaviors["obstacle"] = new ObstacleAvoidance(character,30,collisionDetector,4,2);
+	behaviors["obstacle"] = new ObstacleAvoidance(character,16,collisionDetector,4.5,3);
 }
 
 void createMapAllBehaviors(
@@ -74,7 +74,7 @@ void createMapAllBehaviors(
     //(character,target, maxAngularAcceleration,maxRotation,slowRadius,targetRadius)
     behaviors["align"] = new Align(character,target,20,maxRotation,5,2);
     //(character,target,maxAcceleration)
-    behaviors["velocityMatch"] = new VelocityMatch(character,target,10); 
+    behaviors["velocityMatch"] = new VelocityMatch(character,target,16); 
 	//(character,target,maxAcceleration, maxPrediction)
     behaviors["pursue"] = new Pursue(character,target,maxAcceleration,maxPrediction); 
 	//(character,target,maxAcceleration, maxPrediction)
@@ -89,7 +89,7 @@ void createMapAllBehaviors(
 	//(character,targets,threshold,decayCoefficient,maxAcceleration) 
     behaviors["separation"] = new Separation(character,targets,3,6,maxAcceleration);  
 	//(character,maxAcceleration,collisionDetector,avoidDistance,lookahead) 	
-	behaviors["obstacle"] = new ObstacleAvoidance(character,10,collisionDetector,2,1);
+	behaviors["obstacle"] = new ObstacleAvoidance(character,16,collisionDetector,4.5,3);
 }
 
 #endif

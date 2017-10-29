@@ -27,10 +27,12 @@ public:
 	Bezier getPath(){ return path; }
 
 	bool getSteering(SteeringOutput &steering){
+		if (path.size < 1) return false;
+
 		//Find the current position on the path
 		currentParam = path.getParam(character.position);
 
-		if (currentParam > 0.99) return false;
+		if (currentParam > 0.99) path.size = 0;
 		//Get the target position
 		target.position = path.getPoint(currentParam + pathOffset);
 

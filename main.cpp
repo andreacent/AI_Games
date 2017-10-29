@@ -12,7 +12,6 @@
 #include "characters/Novich.h"
 
 #include "assets/map.h"
-#include "assets/draw.cpp"
 #include "graph/graph.cpp"
 
 #include <GL/freeglut.h>
@@ -82,17 +81,7 @@ BlendedSteering novichFollowTarget = {novich,maxAcceleration,maxRotation,maxSpee
 //follow path with obstacles (BlendedSteering)
 BlendedSteering novichFollowPathWithObs = {novich,maxAcceleration,maxRotation,maxSpeed, *new list<BehaviorAndWeight*>()};
 
-/**************** Blended Behaviors ****************/
-// Follow Target
-
-    list<BehaviorAndWeight*> behaviorsFlocking1;
-    BlendedSteering sidekick1flocking = {sidekick1,maxAcceleration,30,maxSpeed,behaviorsFlocking1};
-    list<Kinematic*> sidekick1targets;
-
-    list<BehaviorAndWeight*> behaviorsFlocking2;
-    BlendedSteering sidekick2flocking = {sidekick2,maxAcceleration,30,maxSpeed,behaviorsFlocking2};
-    list<Kinematic*> sidekick2targets;
-
+/****************** Initialize **********************/
 void initialize(){
     ini = true;
 
@@ -108,17 +97,15 @@ void initialize(){
 
     /* sidekick1 : behaviors and flocking */
     createMapAllBehaviors(sidekick1, target, collisionDetector, sidekick1Targets, sidekick1Behaviors);
-    sidekick1Targets.push_back(&target);   
     flocking( sidekick1Behaviors, sidekick1Flocking );
-    sidekick1targets.push_back(&sidekick2);
-    sidekick1targets.push_back(&target);
+    sidekick1Targets.push_back(&sidekick2);
+    sidekick1Targets.push_back(&target);
 
     /* sidekick2 : behaviors and flocking */
     createMapAllBehaviors(sidekick2, target, collisionDetector, sidekick2Targets, sidekick2Behaviors);
-    sidekick2Targets.push_back(&target);   
     flocking( sidekick2Behaviors, sidekick2Flocking );
-    sidekick2targets.push_back(&sidekick1);
-    sidekick2targets.push_back(&target);
+    sidekick2Targets.push_back(&sidekick1);
+    sidekick2Targets.push_back(&target);
 }
 
 /******************************* KEYBOARD *****************************/
@@ -203,6 +190,7 @@ void display(){
     gluLookAt(x,0,z,x,10,z-1.0f,0,1,0);
     
     list<Mesh*> meshs = drawMap();
+    cout<<meshs.size()<<endl;
 
     glLineWidth(pointSize);
 
@@ -225,13 +213,12 @@ void display(){
     target.updateOrientation(deltaTime);
 
     //novichFollowTarget.update(maxSpeed,deltaTime);
-    sidekick1Flocking.update(maxSpeed,deltaTime);
-    sidekick2Flocking.update(maxSpeed,deltaTime);
+    //sidekick1Flocking.update(maxSpeed,deltaTime);
+    //sidekick2Flocking.update(maxSpeed,deltaTime);
 
-    //sidekick2Behaviors["velocityMatch"]->update(maxSpeed,deltaTime);
-    //sidekick2Behaviors["lwyg"]->update(maxSpeed,deltaTime);
+    //sidekick2Behaviors["wander"]->update(maxSpeed,deltaTime);
 
-    if (int(novichFollowPath->getPath().size) > 0) novichFollowPath->update(maxSpeed,deltaTime);
+    if (int(novichFollowPath->getPath().size) > 0) novichFollowPathWithObs.update(maxSpeed,deltaTime);
     
     glFlush();
     glutPostRedisplay();
@@ -266,7 +253,7 @@ int main (int argc, char** argv) {
     // glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE | GLUT_DEPTH);
     glutInitWindowSize(1000,600);
-    glutCreateWindow("AI VideoGame");
+    glutCreateWindow("AI Game");
 
     if(!ini) initialize();
 

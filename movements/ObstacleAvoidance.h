@@ -35,22 +35,20 @@ public:
 
 	bool getSteering(SteeringOutput &steering){
 		glm::vec3 rayVector,rayVectorL,rayVectorR;
-		GLfloat raySize = lookahead * 0.7;
-
 		Collision collision;
 
 		// 1. Calculate the target to delegate to seek
 
 		// Calculate the collision ray vector
 		rayVector = glm::normalize(character.velocity) * lookahead;
+
+		GLfloat raySize = lookahead * 0.6;
 		rayVectorL = glm::normalize(rotateVectorZ(character.velocity, glm::radians(-35.0))) * raySize;
 		rayVectorR = glm::normalize(rotateVectorZ(character.velocity, glm::radians(35.0))) * raySize;
-
-		//cout<<"-- distance(charPos, ray) "<<glm::distance(collision.position,rayVector)<<endl;
-
-		//drawRay(character.position, rayVector);
+		
 		//drawRay(character.position, rayVectorR);
 		//drawRay(character.position, rayVectorL);
+		//drawRay(character.position, rayVector);
 
 		// Find the collision
 		if(!collisionDetector.getCollision(character.position, rayVector, collision, lookahead)){
@@ -70,14 +68,12 @@ public:
 		// 2. Delegate to seek
 		Seek::getSteering(steering);
 
-		//cout<<"steering.linear "<<steering.linear.x<<","<<steering.linear.z<<endl;
 		return true;
-
 	}
 
 	void update(GLfloat maxSpeed,GLfloat deltaTime){
 		SteeringOutput steering;
-		if(ObstacleAvoidance::getSteering(steering)) character.update(steering,maxSpeed,deltaTime);
+		if(ObstacleAvoidance::getSteering(steering)) character.update(steering.linear,maxSpeed,deltaTime);
 	}
 };
 

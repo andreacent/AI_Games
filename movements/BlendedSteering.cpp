@@ -35,6 +35,9 @@ void flocking(  std::map<string,Behavior*> behaviors,
     if(behaviors.count("velocityMatch") > 0 ){
         blended.addBehavior(new BehaviorAndWeight(behaviors["velocityMatch"],1));
     }
+    //if(behaviors.count("obstacle") > 0 ){
+    //    blended.addBehavior(new BehaviorAndWeight(behaviors["obstacle"],2));
+    //}
 }
 
 void followPathWithObstacle(  
@@ -42,10 +45,10 @@ void followPathWithObstacle(
                     BlendedSteering &blended ){
 
     if(behaviors.count("obstacle") > 0 ){
-        blended.addBehavior(new BehaviorAndWeight(behaviors["obstacle"],0.3));
+        blended.addBehavior(new BehaviorAndWeight(behaviors["obstacle"],1));
     }
     if(behaviors.count("followPath") > 0 ){
-        blended.addBehavior(new BehaviorAndWeight(behaviors["followPath"],0.7));
+        blended.addBehavior(new BehaviorAndWeight(behaviors["followPath"],0.8));
     }
 }
 
