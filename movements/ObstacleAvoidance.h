@@ -3,6 +3,7 @@
 
 #include <glm/gtx/intersect.hpp>
 #include "../assets/Collision.h"
+#include <iostream>
 
 void drawRay(glm::vec3 position, glm::vec3 direction) {
     glPushMatrix();

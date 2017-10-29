@@ -42,6 +42,26 @@ struct Kinematic{
 			velocity = glm::normalize(velocity) * maxSpeed;
 		}
 	}
+
+	void update(GLfloat angular,GLfloat maxSpeed,GLfloat deltaTime){
+		// Update the position and orientation
+		orientation += rotation * deltaTime;
+		// and the velocity and rotation
+		orientation += angular * deltaTime;
+	}
+
+	void update(glm::vec3 linear,GLfloat maxSpeed,GLfloat deltaTime){
+		// Update the position and orientation
+		position += velocity * deltaTime;
+
+		// and the velocity and rotation
+		velocity += linear * deltaTime;
+
+		// Check for speeding and clip
+		if (glm::length(velocity) > maxSpeed){
+			velocity = glm::normalize(velocity) * maxSpeed;
+		}
+	}
 };
 
 #endif

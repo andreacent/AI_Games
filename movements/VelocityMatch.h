@@ -33,7 +33,7 @@ public:
 
 	void update(GLfloat maxSpeed,GLfloat deltaTime){
 		SteeringOutput so;
-    	if(getSteering(so)) character.update(so,maxSpeed,deltaTime);
+    	if(getSteering(so)) character.update(so.linear,maxSpeed,deltaTime);
 	}
 };
 

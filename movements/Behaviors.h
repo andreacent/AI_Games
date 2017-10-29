@@ -1,5 +1,5 @@
-#ifndef BEHAVIOR_H
-#define BEHAVIOR_H
+#ifndef BEHAVIORS_H
+#define BEHAVIORS_H
 
 #include "../assets/kinematic.h"
 
@@ -34,7 +34,6 @@ glm::vec3 rotateVectorZ(glm::vec3 v, GLfloat ang);
 #include "Separation.h"
 #include "ObstacleAvoidance.h"
 #include "FollowPath.h"
-/****Combining****/
-#include "BlendedSteering.h"
+
 
 #endif

@@ -9,6 +9,8 @@
     sep-dic 2017
 */
 
+#include <list>
+
 struct BehaviorAndWeight{
 	Behavior *behavior;
 	GLfloat weight;
@@ -29,13 +31,16 @@ protected:
 	GLfloat maxSpeed;
 
 	// Holds a list of BehaviorAndWeight instances.
-	list<BehaviorAndWeight*> &behaviors;
+	std::list<BehaviorAndWeight*> &behaviors;
 
 public:
 
-	BlendedSteering(Kinematic &c, GLfloat mr,GLfloat ma,GLfloat ms,list<BehaviorAndWeight*> &b) 
+	BlendedSteering(Kinematic &c, GLfloat mr,GLfloat ma,GLfloat ms,std::list<BehaviorAndWeight*> &b) 
 		: character(c),maxRotation(glm::radians(mr)),maxAcceleration(ma),maxSpeed(ms),behaviors(b) {}
 	
+	void setBehaviors(std::list<BehaviorAndWeight*> &b){ behaviors = b; }
+
+	void addBehavior(BehaviorAndWeight* b){ behaviors.push_back(b); }
 
 	// Returns the acceleration required.
 	SteeringOutput getSteering(){
@@ -44,8 +49,8 @@ public:
 		SteeringOutput steering;
 
 		// Accumulate all accelerations
-		for (list<BehaviorAndWeight*>::iterator behaviorI = behaviors.begin(); behaviorI != behaviors.end(); ++behaviorI ){
-			
+		for (std::list<BehaviorAndWeight*>::iterator behaviorI = behaviors.begin(); behaviorI != behaviors.end(); ++behaviorI ){
+
 			GLfloat w = (*behaviorI)->weight;			
 			SteeringOutput so;
 			if((*behaviorI)->behavior->getSteering(so)){
@@ -53,7 +58,7 @@ public:
 				steering.angular += w * so.angular;
 			}
 		};
-		
+
 		// Crop the result and return
 		if(glm::length(steering.linear) > maxAcceleration) steering.linear = glm::normalize(steering.linear) * maxAcceleration;
 		if( steering.angular > maxRotation ) steering.angular  = maxRotation;

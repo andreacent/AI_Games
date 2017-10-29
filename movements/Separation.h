@@ -44,13 +44,15 @@ public:
 			}
 		}			
 
+		if (glm::length(steering.linear) == 0) return false;
+
 		// We’ve gone through all targets, return the result
 		return true;
 	}
 
 	void update(GLfloat maxSpeed,GLfloat deltaTime){
     	SteeringOutput so;
-    	if(getSteering(so) && glm::length(so.linear) != 0) character.update(so,maxSpeed,deltaTime);
+    	if(getSteering(so)) character.update(so.linear,maxSpeed,deltaTime);
 	}
 };
 

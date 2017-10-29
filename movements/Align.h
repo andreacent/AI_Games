@@ -71,8 +71,8 @@ public:
 	}
 
 	void update(GLfloat maxSpeed,GLfloat deltaTime){
-		SteeringOutput steering;
-    	if(getSteering(steering)) character.update(steering,maxSpeed,deltaTime);
+		SteeringOutput so;
+    	if(getSteering(so)) character.update(so.angular,maxSpeed,deltaTime);
 	}
 };
 

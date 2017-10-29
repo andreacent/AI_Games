@@ -41,7 +41,7 @@ public:
 
 	void update(GLfloat maxSpeed,GLfloat deltaTime){
 		SteeringOutput steering;
-	    if (getSteering(steering)) character.update(steering,maxSpeed,deltaTime);
+	    if (getSteering(steering)) character.update(steering.linear,maxSpeed,deltaTime);
 	}
 };
 

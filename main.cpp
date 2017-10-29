@@ -5,13 +5,14 @@
     carnet USB: 11-11020
     sep-dic 2017
 */    
-#include "movements/Behaviors.cpp"
+#include "movements/BlendedSteering.cpp"
 
 #include "characters/Character.h"
 #include "characters/Marlene.h"
 #include "characters/Novich.h"
 
 #include "assets/map.h"
+#include "assets/draw.cpp"
 #include "graph/graph.cpp"
 
 #include <GL/freeglut.h>
@@ -28,112 +29,97 @@ GLfloat pointSize=1.5;
 GLfloat targetRotation = glm::radians(10.0);
 GLfloat targetVelocity =3;
 
-GLfloat maxSpeed = 4;
-GLfloat maxAcceleration = 6;
-GLfloat maxPrediction = 0.4;
+GLfloat maxRotation = 30;
 
 bool activeTriangles = true;
 bool ini = false;
 
-/******************** CHARACTERES *******************/
-list<Kinematic*> targets;
-Kinematic target = {{29.0f,0.0f,14.0f}};
-Kinematic sidekick1 = {{22.0f,0.0,24.0f},0.0};
-Kinematic sidekick2 = {{-18.0f,0.0,-6.0f},0.0};
-Kinematic enemy = {{-26.0f,0,-7.0f},0.0};
-
-Marlene marlene = {target,'p'};
-Marlene novich = {sidekick1,'s'};
-
 /******************** Camera *******************/
-float x=target.position.x, z=target.position.z;
 // actual vector representing the camera's direction
 float deltaMove = 0;
 
-/**************** Behaviors ****************/
-    Seek* seek = new Seek(enemy,target,maxAcceleration);
-    Flee* flee = new Flee(enemy,target,maxAcceleration); 
-    Arrive* arrive = new Arrive(sidekick1,target,10,15,maxAcceleration,maxSpeed);
+/**************** Collisions ****************/
+CollisionDetector collisionDetector = {meshs};
 
-    //{&enemy,&target,maxAngularAcceleration,maxRotation,slowRadius,targetRadius}
-    Align* align = new Align(enemy,target,20,30,5,2);
-    VelocityMatch* velocityMatch = new VelocityMatch(enemy,target,maxAcceleration); 
+/******************** CHARACTERES *******************/
+Kinematic target = {{29.0f,0.0f,14.0f}};
+Marlene marlene = {target,'p'};
 
-/**************** Delegated Behaviors ****************/
-    Pursue* pursue = new Pursue(enemy,target,20,maxPrediction); 
-    Evade* evade = new Evade(enemy,target,maxAcceleration,maxPrediction); 
+/* sidekick1 */
+Kinematic sidekick1 = {{27.0f,0,12.0f},0.0};
+//mesh
+Marlene sidekick1Mesh = {sidekick1,'s'};
+//target list (separation)
+std::list<Kinematic*> sidekick1Targets;
+//behavior list
+std::map<string,Behavior*> sidekick1Behaviors;
+//flocking (BlendedSteering)
+BlendedSteering sidekick1Flocking = {sidekick1,maxAcceleration,maxRotation,maxSpeed,*new list<BehaviorAndWeight*>()};
 
-    // Align()
-    Face* face = new Face(enemy,target,10,30,5,2);
+/* sidekick2 */
+Kinematic sidekick2 = {{27.0f,0,14.0f},0.0};
+//mesh
+Marlene sidekick2Mesh = {sidekick2,'s'};
+//target list (separation)
+std::list<Kinematic*> sidekick2Targets;
+//behavior list
+std::map<string,Behavior*> sidekick2Behaviors;
+//flocking (BlendedSteering)
+BlendedSteering sidekick2Flocking = {sidekick2,maxAcceleration,maxRotation,maxSpeed,*new list<BehaviorAndWeight*>()};
 
-    // Align()
-    LookWhereYoureGoing* lookWhereYoureGoing = new LookWhereYoureGoing(enemy,target,10,30,5,2);
-
-    // FollowPath(Kinematic &c, GLfloat ma, Bezier p, GLfloat po=0.3) 
-    FollowPath* followPath = new FollowPath(sidekick1,maxAcceleration);
-
-    //{Face(),wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration} 
-    Wander* wander = new Wander(enemy,20,30,5,2, 0,4,2,50,10);
-
-    //{enemy,targets,threshold,decayCoefficient,maxAcceleration} 
-    Separation* separation = new Separation(enemy,targets,6,10,30);
-
-    /**************** Collisions ****************/
-    CollisionDetector collisionDetector = {meshs};
-
-    //Seek(),collisionDetector,avoidDistance,lookahead
-    ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(enemy,30,collisionDetector,5,4);
+/* NOVICH */
+Kinematic novich = {{22.0f,0.0,24.0f},0.0};
+//mesh
+Marlene novichMesh = {novich,'s'};
+//behavior list
+std::map<string,Behavior*> novichBehaviors;
+//follow path
+FollowPath* novichFollowPath = new FollowPath(novich,maxAcceleration);
+//target list (separation)
+std::list<Kinematic*> novichTargets;
+//follow target (BlendedSteering)
+BlendedSteering novichFollowTarget = {novich,maxAcceleration,maxRotation,maxSpeed, *new list<BehaviorAndWeight*>()};
+//follow path with obstacles (BlendedSteering)
+BlendedSteering novichFollowPathWithObs = {novich,maxAcceleration,maxRotation,maxSpeed, *new list<BehaviorAndWeight*>()};
 
 /**************** Blended Behaviors ****************/
 // Follow Target
 
     list<BehaviorAndWeight*> behaviorsFlocking1;
-    BlendedSteering flocking1 = {sidekick1,maxAcceleration,30,maxSpeed,behaviorsFlocking1};
-    list<Kinematic*> targets1;
+    BlendedSteering sidekick1flocking = {sidekick1,maxAcceleration,30,maxSpeed,behaviorsFlocking1};
+    list<Kinematic*> sidekick1targets;
 
     list<BehaviorAndWeight*> behaviorsFlocking2;
-    BlendedSteering flocking2 = {sidekick2,maxAcceleration,30,maxSpeed,behaviorsFlocking2};
-    list<Kinematic*> targets2;
+    BlendedSteering sidekick2flocking = {sidekick2,maxAcceleration,30,maxSpeed,behaviorsFlocking2};
+    list<Kinematic*> sidekick2targets;
 
-    void followTarget(Kinematic &target, Kinematic &sidekick,list<BehaviorAndWeight*> &behaviors,list<Kinematic*> &targets){
-        GLfloat maxPrediction = 0.4;
+void initialize(){
+    ini = true;
 
-        Separation* separation = new Separation(sidekick,targets,4,4,maxAcceleration);
-        Arrive* arrive1 = new Arrive(sidekick,target,0.5,20,maxAcceleration,maxSpeed);
-        Seek* seek = new Seek(sidekick,target,maxAcceleration);
-        LookWhereYoureGoing* lookWhereYoureGoing = new LookWhereYoureGoing(sidekick,target,10,30,5,2); // Align()  
+    graph.createGameGraph();
+    glClearColor(0.81960,0.81960,0.81960,1);
 
-        ObstacleAvoidance* obstacleAvoidance = new ObstacleAvoidance(sidekick,10,collisionDetector,2,1);
+    /* NOVICH : behaviors and blended */
+    createMapBaseBehaviors(novich, target, novichTargets, collisionDetector, novichBehaviors);
+    novichBehaviors["followPath"] = novichFollowPath;
+    novichTargets.push_back(&target);   
+    followTarget(novichBehaviors, novichFollowTarget);
+    followPathWithObstacle(novichBehaviors, novichFollowPathWithObs);
 
-        behaviors.push_back(new BehaviorAndWeight(lookWhereYoureGoing,3));
-        behaviors.push_back(new BehaviorAndWeight(obstacleAvoidance,0.8));
-        behaviors.push_back(new BehaviorAndWeight(separation,0.3));
-        behaviors.push_back(new BehaviorAndWeight(arrive1,0.1));
-    }
+    /* sidekick1 : behaviors and flocking */
+    createMapAllBehaviors(sidekick1, target, collisionDetector, sidekick1Targets, sidekick1Behaviors);
+    sidekick1Targets.push_back(&target);   
+    flocking( sidekick1Behaviors, sidekick1Flocking );
+    sidekick1targets.push_back(&sidekick2);
+    sidekick1targets.push_back(&target);
 
-    void initialize(){        
-        ini = true;
-
-        graph.createGameGraph();
-        glClearColor(0.81960,0.81960,0.81960,1);
-
-        /* FOLLOW TARGET */
-        followTarget(target, sidekick1,behaviorsFlocking1,targets1);
-        followTarget(target, sidekick2,behaviorsFlocking2,targets2);
-
-        targets1.push_back(&sidekick2);
-        targets1.push_back(&target);
-
-        targets2.push_back(&sidekick1);
-        targets2.push_back(&target);     
-    }
-
-    void moveListTargets(GLfloat deltaTime){
-        for (list<Kinematic*>::iterator t=targets.begin(); t != targets.end(); ++t){
-            glColor3f(1,0,0);
-            //drawFace((*t)->position,(*t)->orientation,pointSize);
-        }
-    }
+    /* sidekick2 : behaviors and flocking */
+    createMapAllBehaviors(sidekick2, target, collisionDetector, sidekick2Targets, sidekick2Behaviors);
+    sidekick2Targets.push_back(&target);   
+    flocking( sidekick2Behaviors, sidekick2Flocking );
+    sidekick2targets.push_back(&sidekick1);
+    sidekick2targets.push_back(&target);
+}
 
 /******************************* KEYBOARD *****************************/
 void controlKey (unsigned char key, int xmouse, int ymouse){  
@@ -149,8 +135,8 @@ void controlKey (unsigned char key, int xmouse, int ymouse){
         break;
         case '0': 
             //prueba de calcular el camino
-            path = pathfindAStar(graph, sidekick1.position, target.position);
-            followPath->setPath(path);   
+            path = pathfindAStar(graph, novich.position, target.position);
+            novichFollowPath->setPath(path);   
         break;
         default: break;
     }  
@@ -222,27 +208,30 @@ void display(){
 
     if(activeTriangles) {
         graph.drawTriangles();
-        if (int(followPath->getPath().size) > 0) followPath->getPath().draw();
+        if (int(novichFollowPath->getPath().size) > 0) novichFollowPath->getPath().draw();
     }
 
     //TEST CHARACTER
     marlene.draw();
-    novich.draw();
-
+    novichMesh.draw();
+    sidekick1Mesh.draw();
+    sidekick2Mesh.draw();
    
     GLfloat timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
     GLfloat deltaTime = (timeSinceStart - oldTimeSinceStart) * 0.001;
     oldTimeSinceStart = timeSinceStart;
 
-    //moveListTargets(deltaTime);
-
     target.updatePosition(deltaTime);
     target.updateOrientation(deltaTime);
 
-    //flocking1.update(maxSpeed,deltaTime);
-    //flocking2.update(maxSpeed,deltaTime);
+    //novichFollowTarget.update(maxSpeed,deltaTime);
+    sidekick1Flocking.update(maxSpeed,deltaTime);
+    sidekick2Flocking.update(maxSpeed,deltaTime);
 
-    if (int(followPath->getPath().size) > 0) followPath->update(maxSpeed,deltaTime);
+    //sidekick2Behaviors["velocityMatch"]->update(maxSpeed,deltaTime);
+    //sidekick2Behaviors["lwyg"]->update(maxSpeed,deltaTime);
+
+    if (int(novichFollowPath->getPath().size) > 0) novichFollowPath->update(maxSpeed,deltaTime);
     
     glFlush();
     glutPostRedisplay();
