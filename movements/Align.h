@@ -1,3 +1,6 @@
+#ifndef ALIGN_H
+#define ALIGN_H
+
 class Align: public Behavior{
 protected:
 	// Holds the Kinematic data for the character and target
@@ -72,3 +75,5 @@ public:
     	if(getSteering(steering)) character.update(steering,maxSpeed,deltaTime);
 	}
 };
+
+#endif

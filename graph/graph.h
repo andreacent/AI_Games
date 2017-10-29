@@ -1,24 +1,28 @@
+#ifndef GRAPH_H
+#define GRAPH_H
+
 #include <map>
 #include <set>
 #include <iostream>
 #include <fstream>
+#include <glm/glm.hpp>
 
 class Node{ 
 public:
     int id;
-    vec3 point;
-    vec3 triangle[3];
+    glm::vec3 point;
+    glm::vec3 triangle[3];
     set<int> adjacent;
 
     Node(){}
 
-    Node(int i,vec3 t[], bool addNext = true) : id(i){
+    Node(int i,glm::vec3 t[], bool addNext = true) : id(i){
         for(int i =0; i<3; i++){ triangle[i] = t[i]; }
         setPoint();
         if(addNext) adjacent.insert(i+1);
     }
 
-    Node(int i,vec3 t[], set<int> a) : id(i), adjacent(a){
+    Node(int i,glm::vec3 t[], set<int> a) : id(i), adjacent(a){
         for(int i =0; i<3; i++){ triangle[i] = t[i]; }
         setPoint();
     }
@@ -43,7 +47,7 @@ public:
         glColor3f(1,1,1);
         for (set<int>::iterator it = adjacent.begin(); it != adjacent.end(); ++it ){
             if ((*it) < id) continue;
-            vec3 p;
+            glm::vec3 p;
             glBegin(GL_LINES);
                 p = nodes[(*it)].point;
                 glVertex3f( p.x,p.y,p.z);
@@ -75,7 +79,7 @@ public:
     map<int,Node> nodes;
     map<pair<int,int>, float> distances;
   
-    float sign (vec3 p1, vec3 p2, vec3 p3)
+    float sign (glm::vec3 p1, glm::vec3 p2, glm::vec3 p3)
     {
         return (p1.x - p3.x) * (p2.z - p3.z) - (p2.x - p3.x) * (p1.z - p3.z);
     }
@@ -83,11 +87,11 @@ public:
     /*
     Busca si el punto dado se encuentra dentro del triangulo correspondiente al nodo
     */
-    bool pointInTriangle (vec3 pt, Node node)
+    bool pointInTriangle (glm::vec3 pt, Node node)
     {
-        vec3 v1 = node.triangle[0];
-        vec3 v2 = node.triangle[1];
-        vec3 v3 = node.triangle[2];
+        glm::vec3 v1 = node.triangle[0];
+        glm::vec3 v2 = node.triangle[1];
+        glm::vec3 v3 = node.triangle[2];
         bool b1, b2, b3;
 
         b1 = sign(pt, v1, v2) < 0.0f;
@@ -100,7 +104,7 @@ public:
     /*
     Obtiene el nodo del grafo dada una point en el mapa
     */
-    bool getNode(vec3 pt, Node &node){
+    bool getNode(glm::vec3 pt, Node &node){
         for (map<int,Node>::iterator it = nodes.begin(); it != nodes.end(); ++it ){
             //cout<<"buscando triangulo en nodo "<<(*it).second.id<<endl;
             if( pointInTriangle(pt,(*it).second) ) {
@@ -155,3 +159,5 @@ public:
     /* Crea el grafo del juego */
     void createGameGraph();
 };
+
+#endif

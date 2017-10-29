@@ -1,14 +1,15 @@
+#ifndef ASTART_H
+#define ASTART_H
+
 #include <queue>
 #include <map>
+#include <list>
 #include <vector>
 #include <set>
 
-#ifndef _Graph_
-    #define _Graph_
-    #include "graph.h"
-#endif
+#include "graph.h"
 
-std::vector<Node> pathfindAStar(Graph graph, vec3 posStart, vec3 posEnd){ 
+std::list<glm::vec3> pathfindAStar(Graph graph, glm::vec3 posStart, glm::vec3 posEnd){ 
     //This structure is used to keep track of the information we need for each node
     struct NodeRecord{
         NodeRecord* father = NULL;
@@ -26,7 +27,7 @@ std::vector<Node> pathfindAStar(Graph graph, vec3 posStart, vec3 posEnd){
     };
 
     //get start and goal nodes 
-    std::vector<Node> path;
+    std::list<glm::vec3> path;
     Node start,goal;
     if (!graph.getNode(posStart, start) || !graph.getNode(posEnd, goal)) return path;
     Heuristic heuristic = {goal};
@@ -157,11 +158,11 @@ std::vector<Node> pathfindAStar(Graph graph, vec3 posStart, vec3 posEnd){
         // Work back along the path, accumulating
         // connections
 
-        path.push_back(current.node);
+        path.push_front(current.node.point);
         NodeRecord *father = current.father;
 
         while (father != NULL){              
-            path.push_back(father->node);
+            path.push_front(father->node.point);
             father = father->father;
         }
         // Reverse the path, and return it
@@ -169,3 +170,5 @@ std::vector<Node> pathfindAStar(Graph graph, vec3 posStart, vec3 posEnd){
     
     return path;
 }
+
+#endif

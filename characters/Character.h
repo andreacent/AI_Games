@@ -3,6 +3,8 @@
     11-11020
     sep-dic 2017
 */
+using namespace glm;
+
 class Character{
 protected:
 	Kinematic &character;

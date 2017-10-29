@@ -1,3 +1,6 @@
+#ifndef VELOCITYMATCH_H
+#define VELOCITYMATCH_H
+
 class VelocityMatch: public Behavior{
 protected:
 	// Holds the Kinematic data for the character and target
@@ -33,3 +36,5 @@ public:
     	if(getSteering(so)) character.update(so,maxSpeed,deltaTime);
 	}
 };
+
+#endif

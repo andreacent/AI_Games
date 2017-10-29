@@ -1,9 +1,12 @@
+#ifndef FACE_H
+#define FACE_H
+
 class Face: public Align{
 public:
 	Face(Kinematic &c, Kinematic &t, GLfloat sr, GLfloat tr, GLfloat maa, GLfloat mr) : Align(c, t, sr, tr, maa, mr) {}
 
 	bool getSteering(SteeringOutput &steering){
-		vec3 direction;
+		glm::vec3 direction;
 		GLfloat lastOrientation;
 
 		// 1. Calculate the target to delegate to align
@@ -11,7 +14,7 @@ public:
 		direction = target.position - character.position;
 
 		// Check for a zero direction, and make no change if so
-		if (length(direction) == 0.0) return false;
+		if (glm::length(direction) == 0.0) return false;
 
 		lastOrientation = target.orientation;
 
@@ -31,3 +34,5 @@ public:
 	    if(getSteering(so)) character.update(so,maxSpeed,deltaTime);
 	}
 };
+
+#endif

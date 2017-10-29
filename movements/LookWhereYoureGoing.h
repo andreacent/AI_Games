@@ -1,3 +1,6 @@
+#ifndef LWYG_H
+#define LWYG_H
+
 class LookWhereYoureGoing: public Align{
 public:
 	LookWhereYoureGoing(Kinematic &c, Kinematic &t, GLfloat sr, GLfloat tr, GLfloat maa, GLfloat mr) 
@@ -9,7 +12,7 @@ public:
 		GLfloat lastOrientation;
 
 		// Check for a zero direction, and make no change if so
-		if (length(character.velocity) == 0) return false;
+		if (glm::length(character.velocity) == 0) return false;
 
 		lastOrientation = target.orientation;
 		// Otherwise set the target based on the velocity
@@ -28,3 +31,5 @@ public:
     	if(getSteering(so)) character.update(so,maxSpeed,deltaTime);
 	}
 };
+
+#endif

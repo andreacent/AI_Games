@@ -1,3 +1,6 @@
+#ifndef BLENDED_H
+#define BLENDED_H
+
 /* 
     Andrea Centeno
     10-10138
@@ -63,3 +66,5 @@ public:
     	character.update(so,maxSpeed,deltaTime);
 	}
 };
+
+#endif

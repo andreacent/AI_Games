@@ -1,3 +1,6 @@
+#ifndef EVADE_H
+#define EVADE_H
+
 class Evade: public Flee{
 private:
 	// Holds the maximum prediction time
@@ -7,16 +10,16 @@ public:
 	Evade(Kinematic &c, Kinematic &t, GLfloat ma, GLfloat mp) : Flee(c,t,ma), maxPrediction(mp) {}
 
 	bool getSteering(SteeringOutput &steering){
-		vec3 direction,lastPosition;
+		glm::vec3 direction,lastPosition;
 		GLfloat distance,speed,prediction;
 
 		//1. Calculate the target to delegate to Flee
 		// Work out the distance to target
 		direction = target.position - character.position;
-		distance = length(direction);
+		distance = glm::length(direction);
 
 		// Work out our current speed
-		speed = length(character.velocity);
+		speed = glm::length(character.velocity);
 
 		// Check if speed is too small to give a reasonable
 		// prediction time
@@ -43,3 +46,5 @@ public:
     	character.update(steering,maxSpeed,deltaTime);
 	}
 };
+
+#endif

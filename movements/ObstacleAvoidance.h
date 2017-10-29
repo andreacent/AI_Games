@@ -1,12 +1,10 @@
+#ifndef OBSAVOIDANCE_H
+#define OBSAVOIDANCE_H
+
 #include <glm/gtx/intersect.hpp>
+#include "../assets/Collision.h"
 
-#ifndef _Collision_
-	#define _Collision_
-	#include "../assets/Collision.h"
-#endif
-
-
-void drawRay(vec3 position, vec3 direction) {
+void drawRay(glm::vec3 position, glm::vec3 direction) {
     glPushMatrix();
         glTranslatef(position.x,position.y,position.z);
         glBegin(GL_LINES);
@@ -35,7 +33,7 @@ public:
 		: Seek(c,*new Kinematic(),ma), collisionDetector(cd), avoidDistance(ad), lookahead(l){}
 
 	bool getSteering(SteeringOutput &steering){
-		vec3 rayVector,rayVectorL,rayVectorR;
+		glm::vec3 rayVector,rayVectorL,rayVectorR;
 		GLfloat raySize = lookahead * 0.7;
 
 		Collision collision;
@@ -81,3 +79,5 @@ public:
 		if(ObstacleAvoidance::getSteering(steering)) character.update(steering,maxSpeed,deltaTime);
 	}
 };
+
+#endif

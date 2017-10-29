@@ -5,14 +5,14 @@
     carnet USB: 11-11020
     sep-dic 2017
 */    
-#include "movements/Behavior.cpp"
+#include "movements/Behaviors.cpp"
 
 #include "characters/Character.h"
 #include "characters/Marlene.h"
 #include "characters/Novich.h"
 
 #include "assets/map.h"
-#include "path/graph.cpp"
+#include "graph/graph.cpp"
 
 #include <GL/freeglut.h>
 #include <GL/gl.h>
@@ -20,7 +20,7 @@
 //#include <GL/glew.h>
 
 Graph graph;
-std::vector<Node> path;
+std::list<vec3> path;
 
 GLfloat oldTimeSinceStart = 0.0;
 GLfloat pointSize=1.5;
@@ -29,7 +29,7 @@ GLfloat targetRotation = glm::radians(10.0);
 GLfloat targetVelocity =3;
 
 GLfloat maxSpeed = 4;
-GLfloat maxAcceleration = 10;
+GLfloat maxAcceleration = 6;
 GLfloat maxPrediction = 0.4;
 
 bool activeTriangles = true;
@@ -37,7 +37,7 @@ bool ini = false;
 
 /******************** CHARACTERES *******************/
 list<Kinematic*> targets;
-Kinematic target = {{46.0f,0.0f,22.0f}};
+Kinematic target = {{29.0f,0.0f,14.0f}};
 Kinematic sidekick1 = {{22.0f,0.0,24.0f},0.0};
 Kinematic sidekick2 = {{-18.0f,0.0,-6.0f},0.0};
 Kinematic enemy = {{-26.0f,0,-7.0f},0.0};
@@ -68,6 +68,9 @@ float deltaMove = 0;
 
     // Align()
     LookWhereYoureGoing* lookWhereYoureGoing = new LookWhereYoureGoing(enemy,target,10,30,5,2);
+
+    // FollowPath(Kinematic &c, GLfloat ma, Bezier p, GLfloat po=0.3) 
+    FollowPath* followPath = new FollowPath(sidekick1,maxAcceleration);
 
     //{Face(),wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration} 
     Wander* wander = new Wander(enemy,20,30,5,2, 0,4,2,50,10);
@@ -122,11 +125,7 @@ float deltaMove = 0;
         targets1.push_back(&target);
 
         targets2.push_back(&sidekick1);
-        targets2.push_back(&target);
-
-        //prueba de calcular el camino
-        path = pathfindAStar(graph, sidekick1.position, target.position);
-        
+        targets2.push_back(&target);     
     }
 
     void moveListTargets(GLfloat deltaTime){
@@ -147,6 +146,11 @@ void controlKey (unsigned char key, int xmouse, int ymouse){
         break;
         case ' ': 
             activeTriangles = !activeTriangles;
+        break;
+        case '0': 
+            //prueba de calcular el camino
+            path = pathfindAStar(graph, sidekick1.position, target.position);
+            followPath->setPath(path);   
         break;
         default: break;
     }  
@@ -218,7 +222,7 @@ void display(){
 
     if(activeTriangles) {
         graph.drawTriangles();
-        if (int(path.size()) > 0) drawPath(path);
+        if (int(followPath->getPath().size) > 0) followPath->getPath().draw();
     }
 
     //TEST CHARACTER
@@ -237,6 +241,8 @@ void display(){
 
     //flocking1.update(maxSpeed,deltaTime);
     //flocking2.update(maxSpeed,deltaTime);
+
+    if (int(followPath->getPath().size) > 0) followPath->update(maxSpeed,deltaTime);
     
     glFlush();
     glutPostRedisplay();

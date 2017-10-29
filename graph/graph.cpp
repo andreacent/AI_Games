@@ -1,31 +1,11 @@
-#ifndef _Graph_
-	#define _Graph_
-	#include "graph.h"
-#endif
-
-#include <set>
+#include "graph.h"
 #include "pathfindAStar.h"
 
-void drawPath(std::vector<Node> path){
-    vec3 p1,p2;
+#include <set>
+#include <glm/glm.hpp>
 
-    vector<Node>::iterator itPath = path.begin();
-    p1 = (*itPath).point;
-
-    ++itPath;
-
-    glColor3f(0,1,1);
-    while (itPath != path.end()){
-        p2 = (*itPath).point;
-        glBegin(GL_LINES);
-            glVertex3f( p1.x,p1.y,p1.z);
-            glVertex3f( p2.x,p2.y,p2.z);
-        glEnd();
-
-        p1 = p2;
-        ++itPath;
-    }
-}
+using namespace glm;
+using namespace std;
 
 void Graph::createGameGraph()
 {
@@ -98,7 +78,7 @@ void Graph::createGameGraph()
     nodes[67] = Node(67, new vec3[3]{vec3(14,0,15),vec3(16,0,8),vec3(16,0,15)} );
     nodes[68] = Node(68, new vec3[3]{vec3(14,0,15),vec3(16,0,8),vec3(14,0,8)} );
     nodes[69] = Node(69, new vec3[3]{vec3(12,0,16),vec3(14,0,7),vec3(14,0,16)} );
-    nodes[70] = Node(70, new vec3[3]{vec3(12,0,16),vec3(14,0,7),vec3(12,0,7)} );//set<int>{71,76} no creo que deba llegar a 76
+    nodes[70] = Node(70, new vec3[3]{vec3(12,0,16),vec3(14,0,7),vec3(12,0,7)} );
     nodes[71] = Node(71, new vec3[3]{vec3(10,0,15),vec3(12,0,7),vec3(12,0,15)}, set<int>{72,75} );
     nodes[72] = Node(72, new vec3[3]{vec3(10,0,15),vec3(12,0,7),vec3(10,0,7)} );
     nodes[73] = Node(73, new vec3[3]{vec3(5,0,15),vec3(10,0,8),vec3(10,0,15)}, set<int>{74,75} );

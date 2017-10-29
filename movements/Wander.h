@@ -1,3 +1,6 @@
+#ifndef WANDER_H
+#define WANDER_H
+
 class Wander: public Face{
 	// Holds the radius and forward offset of the wander
 	// circle.
@@ -53,3 +56,5 @@ public:
     	character.update(so,maxSpeed,deltaTime);
 	}
 };
+
+#endif

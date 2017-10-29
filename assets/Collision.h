@@ -1,14 +1,14 @@
+#ifndef COLLISION_H
+#define COLLISION_H
+
+#include "../assets/Mesh.h"
+
 #include <list>
 #include <vector>
 
-#ifndef _Mesh_
-	#define _Mesh_
-	#include "../assets/Mesh.h"
-#endif
-
 struct Collision{
-	vec3 position;
-	vec3 normal;
+	glm::vec3 position;
+	glm::vec3 normal;
 };
 
 class CollisionDetector{
@@ -18,15 +18,15 @@ protected:
 public:
 	CollisionDetector(list<Mesh*> &ms) : meshs(ms) {}
 
-	bool getCollision(vec3 position, vec3 direction, Collision &collision, GLfloat raySize){
-		vec3 colPosition, colNormal;
+	bool getCollision(glm::vec3 position, glm::vec3 direction, Collision &collision, GLfloat raySize){
+		glm::vec3 colPosition, colNormal;
 
 		for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m){
-			list<vector<vec3>> triangles = (*m)->getTriangles();
-			vec3 intersect;
-			vec3 p1,p2,p3;
+			list<vector<glm::vec3>> triangles = (*m)->getTriangles();
+			glm::vec3 intersect;
+			glm::vec3 p1,p2,p3;
 
-			for (list<vector<vec3>>::iterator t=triangles.begin(); t != triangles.end(); ++t){
+			for (list<vector<glm::vec3>>::iterator t=triangles.begin(); t != triangles.end(); ++t){
 				//los pongo asi para invertir la normal
 				p1 = (*t).at(2);
 				p2 = (*t).at(1);
@@ -50,3 +50,6 @@ public:
 		return false;
 	}
 };
+
+
+#endif

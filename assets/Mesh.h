@@ -1,13 +1,21 @@
+#ifndef MESH_H
+#define MESH_H
+
+#include <GL/gl.h>
+#include <glm/glm.hpp>
+#include <vector>
+#include <list>
+
 class Mesh{
 protected:
 	GLfloat height;
-	vec3 color;
-	vec3 position;
+	glm::vec3 color;
+	glm::vec3 position;
 	char type; //W:wall, O:obstacle1, H:hole, R:Roof
 	
 public:	GLfloat width;
 
-	Mesh(vec3 p, GLfloat h, GLfloat w, vec3 c,char t) 
+	Mesh(glm::vec3 p, GLfloat h, GLfloat w, glm::vec3 c,char t) 
 		: position(p),height(h),width(w),color(c),type(t) {}
 
 	/*
@@ -74,7 +82,7 @@ public:	GLfloat width;
 	    } 
 	}	
 
-	list<vector<vec3>> getTriangles(){
+	std::list<std::vector<glm::vec3>> getTriangles(){
 		GLfloat iX,iY,iZ,fX,fY,fZ;
 		iX = position.x-(width/2);
 		iZ = position.z-(height/2);
@@ -84,28 +92,29 @@ public:	GLfloat width;
 		fY = 1;
 
 		/* POINTS */
-		vec3 a = {iX, fY, iZ};
-		vec3 b = {iX, iY, iZ};
-		vec3 c = {fX, fY, iZ};
-		vec3 d = {fX, iY, iZ};
-		vec3 e = {fX, iY, fZ};
-		vec3 f = {iX, iY, fZ};
-		vec3 g = {iX, fY, fZ};
-		vec3 h = {fX, fY, fZ};
+		glm::vec3 a = {iX, fY, iZ};
+		glm::vec3 b = {iX, iY, iZ};
+		glm::vec3 c = {fX, fY, iZ};
+		glm::vec3 d = {fX, iY, iZ};
+		glm::vec3 e = {fX, iY, fZ};
+		glm::vec3 f = {iX, iY, fZ};
+		glm::vec3 g = {iX, fY, fZ};
+		glm::vec3 h = {fX, fY, fZ};
 
 		/* TRIANGLES */
-		return list<vector<vec3>> { 
-			  vector<vec3> {a, b, c}
-			, vector<vec3> {c, b, d}
-			, vector<vec3> {c, d, e}
-			, vector<vec3> {e, d, b}
-			, vector<vec3> {e, b, f}
-			, vector<vec3> {f, b, g}
-			, vector<vec3> {f, g, e}
-			, vector<vec3> {e, g, h}
-			, vector<vec3> {e, h, c}
-			, vector<vec3> {c, h, g}
-			, vector<vec3> {c, g, a}
-			, vector<vec3> {a, g, b} };
+		return std::list<std::vector<glm::vec3>> { 
+			  vector<glm::vec3> {a, b, c}
+			, vector<glm::vec3> {c, b, d}
+			, vector<glm::vec3> {c, d, e}
+			, vector<glm::vec3> {e, d, b}
+			, vector<glm::vec3> {e, b, f}
+			, vector<glm::vec3> {f, b, g}
+			, vector<glm::vec3> {f, g, e}
+			, vector<glm::vec3> {e, g, h}
+			, vector<glm::vec3> {e, h, c}
+			, vector<glm::vec3> {c, h, g}
+			, vector<glm::vec3> {c, g, a}
+			, vector<glm::vec3> {a, g, b} };
 	}
 };
+#endif

@@ -1,6 +1,6 @@
-#include "Behavior.h"
+#include "Behaviors.h"
 
-GLfloat getNewOrientation(GLfloat currentOrientation, vec3 velocity){
+GLfloat getNewOrientation(GLfloat currentOrientation, glm::vec3 velocity){
 	//Make sure we have a velocity
 	if (glm::length(velocity) > 0){
 		//Calculate orientation using an arc tangent of
@@ -14,8 +14,8 @@ GLfloat getNewOrientation(GLfloat currentOrientation, vec3 velocity){
 
 GLfloat randomBinomial(){ return rand() - rand(); }
 
-vec3 getVectorOrientation(GLfloat orientation){
-	vec3 vecOrientation = {-sin(orientation),0.0,cos(orientation)};//{-sin(orientation),cos(orientation)};
+glm::vec3 getVectorOrientation(GLfloat orientation){
+	glm::vec3 vecOrientation = {-sin(orientation),0.0,cos(orientation)};//{-sin(orientation),cos(orientation)};
 	return vecOrientation;
 };
 
@@ -25,6 +25,6 @@ GLfloat mapToRange(GLfloat orientation){
 	return orientation;
 }
 
-vec3 rotateVectorZ(vec3 v, GLfloat ang){
-	return vec3(v.x * cos(ang) + v.z * sin(ang), v.y, v.z * cos(ang) - v.x * sin(ang) );
+glm::vec3 rotateVectorZ(glm::vec3 v, GLfloat ang){
+	return glm::vec3(v.x * cos(ang) + v.z * sin(ang), v.y, v.z * cos(ang) - v.x * sin(ang) );
 }

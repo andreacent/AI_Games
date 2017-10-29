@@ -1,3 +1,6 @@
+#ifndef ARRIVE_H
+#define ARRIVE_H
+
 class Arrive: public Behavior{
 protected:
 	// Holds the Kinematic data for the character and target
@@ -21,7 +24,7 @@ public:
 		character(c), target(t), targetRadius(tr), slowRadius(sr), maxAcceleration(ma), maxSpeed(ms){}
 
 	bool getSteering(SteeringOutput &steering){
-		vec3 direction,targetVelocity;
+		glm::vec3 direction,targetVelocity;
 		GLfloat targetSpeed,targetDistance;
 
 		// Get the direction to the target
@@ -62,3 +65,5 @@ public:
     	if(getSteering(so)) character.update(so,maxSpeed,deltaTime);
 	}
 };
+
+#endif

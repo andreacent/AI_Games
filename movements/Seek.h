@@ -1,3 +1,6 @@
+#ifndef SEEK_H
+#define SEEK_H
+
 class Seek: public Behavior{
 protected:
 	// Holds the Kinematic data for the character and target
@@ -14,7 +17,7 @@ public:
 		steering.linear = target.position - character.position;
 
 		// Give full acceleration along this direction
-		steering.linear = normalize(steering.linear) * maxAcceleration;
+		steering.linear = glm::normalize(steering.linear) * maxAcceleration;
 
 		// Output the steering
 		steering.angular = 0;
@@ -28,3 +31,5 @@ public:
     	character.update(steering,maxSpeed,deltaTime);
 	}
 };
+
+#endif

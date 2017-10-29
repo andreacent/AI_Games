@@ -1,3 +1,6 @@
+#ifndef SEPARATION_H
+#define SEPARATION_H
+
 #include <list>
 
 class Separation: public Behavior{
@@ -22,7 +25,7 @@ public:
 		: character(c), targets(ts), threshold(t), decayCoefficient(d), maxAcceleration(ma) {}
 
 	bool getSteering(SteeringOutput &steering){
-		vec3 direction;
+		glm::vec3 direction;
 		GLfloat distance,strength;
 
 		// Loop through each target
@@ -47,6 +50,8 @@ public:
 
 	void update(GLfloat maxSpeed,GLfloat deltaTime){
     	SteeringOutput so;
-    	if(getSteering(so) && length(so.linear) != 0) character.update(so,maxSpeed,deltaTime);
+    	if(getSteering(so) && glm::length(so.linear) != 0) character.update(so,maxSpeed,deltaTime);
 	}
 };
+
+#endif
