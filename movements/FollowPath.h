@@ -30,6 +30,7 @@ public:
 		//Find the current position on the path
 		currentParam = path.getParam(character.position);
 
+		if (currentParam > 0.99) return false;
 		//Get the target position
 		target.position = path.getPoint(currentParam + pathOffset);
 
@@ -40,8 +41,7 @@ public:
 
 	void update(GLfloat maxSpeed,GLfloat deltaTime){
 		SteeringOutput steering;
-	    getSteering(steering);
-	    character.update(steering,maxSpeed,deltaTime);
+	    if (getSteering(steering)) character.update(steering,maxSpeed,deltaTime);
 	}
 };
 
