@@ -46,24 +46,25 @@ public:
 		rayVectorL = glm::normalize(rotateVectorZ(character.velocity, glm::radians(-35.0))) * raySize;
 		rayVectorR = glm::normalize(rotateVectorZ(character.velocity, glm::radians(35.0))) * raySize;
 		
-		//drawRay(character.position, rayVectorR);
-		//drawRay(character.position, rayVectorL);
-		//drawRay(character.position, rayVector);
-
 		// Find the collision
-		if(!collisionDetector.getCollision(character.position, rayVector, collision, lookahead)){
-			if(!collisionDetector.getCollision(character.position, rayVectorR, collision, raySize)){
-				if(!collisionDetector.getCollision(character.position, rayVectorL, collision, raySize))
-					return false;
-			}
+		if(!collisionDetector.getCollision(character.position,collision
+											,rayVector, lookahead
+											,rayVectorR, raySize
+											,rayVectorL, raySize)){
+			return false;
 		}
 
 		// Otherwise create a target
 		target.position = collision.position + collision.normal * avoidDistance;
 
-		//cout<<"-- Collision position "<<collision.position.x<<","<<collision.position.z<<endl;
-		//cout<<"Collision normal "<<collision.normal.x<<","<<collision.normal.z<<endl;
-		//cout<<"target position "<<target.position.x<<","<<target.position.z<<endl;
+		/*
+		drawRay(character.position, rayVectorR);
+		drawRay(character.position, rayVectorL);
+		drawRay(character.position, rayVector);
+		cout<<"-- Collision position "<<collision.position.x<<","<<collision.position.z<<endl;
+		cout<<"Collision normal "<<collision.normal.x<<","<<collision.normal.z<<endl;
+		cout<<"target position "<<target.position.x<<","<<target.position.z<<endl;
+		*/
 
 		// 2. Delegate to seek
 		Seek::getSteering(steering);

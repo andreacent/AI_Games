@@ -19,6 +19,7 @@
 #include <glm/glm.hpp>
 //#include <GL/glew.h>
 
+
 Graph graph;
 std::list<vec3> path;
 
@@ -84,6 +85,10 @@ BlendedSteering novichFollowPathWithObs = {novich,maxAcceleration,maxRotation,ma
 /****************** Initialize **********************/
 void initialize(){
     ini = true;
+
+    Mesh* mesh1 = new Mesh(vec3(10,0,10),10,10,vec3(1,0,1),'O');
+    mesh1->createTrianglesSquare(true,true,true,false);
+    meshs.push_back(mesh1);
 
     graph.createGameGraph();
     glClearColor(0.81960,0.81960,0.81960,1);
@@ -189,8 +194,8 @@ void display(){
     float x = target.position.x;
     gluLookAt(x,0,z,x,10,z-1.0f,0,1,0);
     
-    list<Mesh*> meshs = drawMap();
-    cout<<meshs.size()<<endl;
+    drawMap();
+    //cout<<meshs.size()<<endl;
 
     glLineWidth(pointSize);
 
@@ -203,7 +208,7 @@ void display(){
     marlene.draw();
     novichMesh.draw();
     sidekick1Mesh.draw();
-    sidekick2Mesh.draw();
+    //sidekick2Mesh.draw();
    
     GLfloat timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
     GLfloat deltaTime = (timeSinceStart - oldTimeSinceStart) * 0.001;
@@ -212,8 +217,10 @@ void display(){
     target.updatePosition(deltaTime);
     target.updateOrientation(deltaTime);
 
+    for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
+
     //novichFollowTarget.update(maxSpeed,deltaTime);
-    //sidekick1Flocking.update(maxSpeed,deltaTime);
+    sidekick1Flocking.update(maxSpeed,deltaTime);
     //sidekick2Flocking.update(maxSpeed,deltaTime);
 
     //sidekick2Behaviors["wander"]->update(maxSpeed,deltaTime);

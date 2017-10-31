@@ -35,9 +35,9 @@ void flocking(  std::map<string,Behavior*> behaviors,
     if(behaviors.count("velocityMatch") > 0 ){
         blended.addBehavior(new BehaviorAndWeight(behaviors["velocityMatch"],1));
     }
-    //if(behaviors.count("obstacle") > 0 ){
-    //    blended.addBehavior(new BehaviorAndWeight(behaviors["obstacle"],2));
-    //}
+    if(behaviors.count("obstacle") > 0 ){
+        blended.addBehavior(new BehaviorAndWeight(behaviors["obstacle"],2));
+    }
 }
 
 void followPathWithObstacle(  
