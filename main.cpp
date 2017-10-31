@@ -42,11 +42,11 @@ float deltaMove = 0;
 CollisionDetector collisionDetector = {meshs};
 
 /******************** CHARACTERES *******************/
-Kinematic target = {{29.0f,0.0f,14.0f}};
+Kinematic target = {{29.0f,0.0f,29.0f}};
 Marlene marlene = {target,'p'};
 
 /* sidekick1 */
-Kinematic sidekick1 = {{27.0f,0,12.0f},0.0};
+Kinematic sidekick1 = {{30.0f,0,26.0f},0.0};
 //mesh
 Marlene sidekick1Mesh = {sidekick1,'s'};
 //target list (separation)
@@ -57,7 +57,7 @@ std::map<string,Behavior*> sidekick1Behaviors;
 BlendedSteering sidekick1Flocking = {sidekick1,maxAcceleration,maxRotation,maxSpeed,*new list<BehaviorAndWeight*>()};
 
 /* sidekick2 */
-Kinematic sidekick2 = {{27.0f,0,14.0f},0.0};
+Kinematic sidekick2 = {{27.0f,0,26.0f},0.0};
 //mesh
 Marlene sidekick2Mesh = {sidekick2,'s'};
 //target list (separation)
@@ -68,7 +68,7 @@ std::map<string,Behavior*> sidekick2Behaviors;
 BlendedSteering sidekick2Flocking = {sidekick2,maxAcceleration,maxRotation,maxSpeed,*new list<BehaviorAndWeight*>()};
 
 /* NOVICH */
-Kinematic novich = {{22.0f,0.0,24.0f},0.0};
+Kinematic novich = {{26.0f,0.0,23.0f},0.0};
 //mesh
 Marlene novichMesh = {novich,'s'};
 //behavior list
@@ -85,10 +85,6 @@ BlendedSteering novichFollowPathWithObs = {novich,maxAcceleration,maxRotation,ma
 /****************** Initialize **********************/
 void initialize(){
     ini = true;
-
-    Mesh* mesh1 = new Mesh(vec3(10,0,10),10,10,vec3(1,0,1),'O');
-    mesh1->createTrianglesSquare(true,true,true,false);
-    meshs.push_back(mesh1);
 
     graph.createGameGraph();
     glClearColor(0.81960,0.81960,0.81960,1);
@@ -217,7 +213,6 @@ void display(){
     target.updatePosition(deltaTime);
     target.updateOrientation(deltaTime);
 
-    for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
 
     //novichFollowTarget.update(maxSpeed,deltaTime);
     sidekick1Flocking.update(maxSpeed,deltaTime);

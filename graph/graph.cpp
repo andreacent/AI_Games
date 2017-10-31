@@ -9,6 +9,85 @@ using namespace std;
 
 void Graph::createGameGraph()
 {
+    int i = 0;
+    nodes[0] = Node(i++, new vec3[3]{vec3(16,0,16),vec3(12,0,18),vec3(5,0,17)} );
+    nodes[1] = Node(i++, new vec3[3]{vec3(5,0,17),vec3(5,0,25),vec3(12,0,18)}, set<int>{2} );
+    nodes[2] = Node(i++, new vec3[3]{vec3(12,0,23),vec3(5,0,25),vec3(12,0,18)}, set<int>{3,52} );
+    nodes[3] = Node(i++, new vec3[3]{vec3(5,0,34),vec3(5,0,25),vec3(12,0,23)}, set<int>{4} );
+    nodes[4] = Node(i++, new vec3[3]{vec3(5,0,34),vec3(16,0,25),vec3(12,0,23)} );
+    nodes[5] = Node(i++, new vec3[3]{vec3(5,0,34),vec3(16,0,25),vec3(10,0,34)} , set<int>{6,7});
+    nodes[6] = Node(i++, new vec3[3]{vec3(14,0,28),vec3(14,0,34),vec3(10,0,34)}, set<int>{7} );
+    nodes[7] = Node(i++, new vec3[3]{vec3(14,0,28),vec3(14,0,33),vec3(16,0,25)} );
+    nodes[8] = Node(i++, new vec3[3]{vec3(16,0,33),vec3(14,0,33),vec3(16,0,25)} );
+    nodes[9] = Node(i++, new vec3[3]{vec3(16,0,34),vec3(21,0,25),vec3(16,0,25)} );
+    nodes[10] = Node(i++, new vec3[3]{vec3(16,0,34),vec3(21,0,25),vec3(21,0,34)}, set<int>{11} );
+    nodes[11] = Node(i++, new vec3[3]{vec3(21,0,33),vec3(23,0,23),vec3(21,0,25)} );
+    nodes[12] = Node(i++, new vec3[3]{vec3(21,0,33),vec3(23,0,23),vec3(25,0,33)} );
+    nodes[13] = Node(i++, new vec3[3]{vec3(25,0,23),vec3(23,0,23),vec3(25,0,33)} );
+    nodes[14] = Node(i++, new vec3[3]{vec3(25,0,24),vec3(25,0,34),vec3(30,0,24)}, set<int>{15,18} );
+    nodes[15] = Node(i++, new vec3[3]{vec3(27,0,30),vec3(27,0,34),vec3(25,0,34)} );
+    nodes[16] = Node(i++, new vec3[3]{vec3(27,0,30),vec3(27,0,33),vec3(31,0,33)} );
+    nodes[17] = Node(i++, new vec3[3]{vec3(31,0,30),vec3(27,0,30),vec3(31,0,33)}, set<int>{18,19,20,21} );
+    nodes[18] = Node(i++, new vec3[3]{vec3(30,0,24),vec3(30,0,30),vec3(27,0,30)} );
+    nodes[19] = Node(i++, new vec3[3]{vec3(30,0,30),vec3(30,0,23),vec3(32,0,23)} );
+    nodes[20] = Node(i++, new vec3[3]{vec3(30,0,30),vec3(34,0,25),vec3(32,0,23)} );
+    nodes[21] = Node(i++, new vec3[3]{vec3(30,0,30),vec3(34,0,25),vec3(34,0,30)}, set<int>{22,24} );
+    nodes[22] = Node(i++, new vec3[3]{vec3(31,0,30),vec3(31,0,34),vec3(34,0,30)} );
+    nodes[23] = Node(i++, new vec3[3]{vec3(36,0,34),vec3(31,0,34),vec3(34,0,30)}, set<int>{25}  );
+    nodes[24] = Node(i++, new vec3[3]{vec3(36,0,25),vec3(34,0,25),vec3(34,0,30)} );
+    nodes[25] = Node(i++, new vec3[3]{vec3(34,0,30),vec3(36,0,25),vec3(36,0,34)} );
+    nodes[26] = Node(i++, new vec3[3]{vec3(36,0,25),vec3(38,0,33),vec3(36,0,33)} );
+    nodes[27] = Node(i++, new vec3[3]{vec3(36,0,25),vec3(38,0,33),vec3(38,0,25)} );
+    nodes[28] = Node(i++, new vec3[3]{vec3(38,0,25),vec3(38,0,34),vec3(44,0,25)}, set<int>{29,32}  );
+    nodes[29] = Node(i++, new vec3[3]{vec3(43,0,33),vec3(38,0,34),vec3(44,0,25)}, set<int>{30,31} );
+    nodes[30] = Node(i++, new vec3[3]{vec3(43,0,33),vec3(43,0,34),vec3(38,0,34)}, false);
+    nodes[31] = Node(i++, new vec3[3]{vec3(43,0,33),vec3(44,0,25),vec3(45,0,33)}, false);
+    nodes[32] = Node(i++, new vec3[3]{vec3(37,0,25),vec3(44,0,25),vec3(41,0,23)} );
+    nodes[33] = Node(i++, new vec3[3]{vec3(48,0,19),vec3(44,0,25),vec3(41,0,23)}, set<int>{34} );
+    nodes[34] = Node(i++, new vec3[3]{vec3(48,0,19),vec3(48,0,12),vec3(41,0,23)}, set<int>{35} );
+    nodes[35] = Node(i++, new vec3[3]{vec3(41,0,12),vec3(48,0,12),vec3(41,0,23)}, set<int>{36,53,55,59} );
+    //centro
+    nodes[36] = Node(i++, new vec3[3]{vec3(41,0,20),vec3(41,0,22),vec3(37,0,18)} );
+    nodes[37] = Node(i++, new vec3[3]{vec3(41,0,22),vec3(37,0,24),vec3(37,0,18)} );
+    nodes[38] = Node(i++, new vec3[3]{vec3(35,0,24),vec3(37,0,24),vec3(37,0,18)} );
+    nodes[39] = Node(i++, new vec3[3]{vec3(35,0,24),vec3(35,0,18),vec3(37,0,18)} );
+    nodes[40] = Node(i++, new vec3[3]{vec3(35,0,24),vec3(35,0,19),vec3(33,0,22)} );
+    nodes[41] = Node(i++, new vec3[3]{vec3(30,0,19),vec3(35,0,19),vec3(33,0,22)} );
+    nodes[42] = Node(i++, new vec3[3]{vec3(29,0,18),vec3(29,0,22),vec3(33,0,22)} );
+    nodes[43] = Node(i++, new vec3[3]{vec3(29,0,24),vec3(29,0,18),vec3(26,0,24)} );
+    nodes[44] = Node(i++, new vec3[3]{vec3(26,0,18),vec3(29,0,18),vec3(26,0,24)} );
+    nodes[45] = Node(i++, new vec3[3]{vec3(22,0,22),vec3(26,0,22),vec3(26,0,18)} );
+    nodes[46] = Node(i++, new vec3[3]{vec3(22,0,22),vec3(19,0,19),vec3(25,0,19)} );
+    nodes[47] = Node(i++, new vec3[3]{vec3(22,0,22),vec3(19,0,19),vec3(20,0,24)} );
+    nodes[48] = Node(i++, new vec3[3]{vec3(19,0,24),vec3(19,0,19),vec3(20,0,24)} );
+    nodes[49] = Node(i++, new vec3[3]{vec3(19,0,18),vec3(16,0,24),vec3(19,0,24)} );
+    nodes[50] = Node(i++, new vec3[3]{vec3(19,0,18),vec3(16,0,24),vec3(16,0,18)} );
+    nodes[51] = Node(i++, new vec3[3]{vec3(12,0,22),vec3(16,0,24),vec3(16,0,18)} );
+    nodes[52] = Node(i++, new vec3[3]{vec3(12,0,22),vec3(12,0,20),vec3(16,0,18)}, false );
+
+    //abajo
+    nodes[53] = Node(i++, new vec3[3]{vec3(47,0,12),vec3(45,0,12),vec3(47,0,7)} );
+    nodes[54] = Node(i++, new vec3[3]{vec3(45,0,7),vec3(45,0,12),vec3(47,0,7)} );
+    nodes[55] = Node(i++, new vec3[3]{vec3(41,0,12),vec3(45,0,12),vec3(45,0,8)} );
+    nodes[56] = Node(i++, new vec3[3]{vec3(41,0,12),vec3(43,0,8),vec3(45,0,8)} );
+    nodes[57] = Node(i++, new vec3[3]{vec3(41,0,12),vec3(43,0,8),vec3(32,0,7)}, set<int>{58,60} );
+    nodes[58] = Node(i++, new vec3[3]{vec3(43,0,7),vec3(43,0,8),vec3(32,0,7)},false );
+    nodes[59] = Node(i++, new vec3[3]{vec3(41,0,12),vec3(41,0,16),vec3(33,0,16)} );
+    nodes[60] = Node(i++, new vec3[3]{vec3(33,0,16),vec3(32,0,7),vec3(41,0,12)}, false);
+
+
+    setDistances();
+
+    /*
+    for (map<int,Node>::iterator it = nodes.begin(); it != nodes.end(); ++it ){
+        (*it).second.printNodeInfo();
+    }
+    */
+}
+
+/*
+void Graph::createGameGraph()
+{
     nodes[1] = Node(1, new vec3[3]{vec3(5,0,25),vec3(14,0,25),vec3(5,0,34)}, set<int>{2,78} );
     nodes[2] = Node(2, new vec3[3]{vec3(5,0,34),vec3(14,0,34),vec3(14,0,25)} );
     nodes[3] = Node(3, new vec3[3]{vec3(14,0,33),vec3(14,0,26),vec3(16,0,26)} );
@@ -94,9 +173,5 @@ void Graph::createGameGraph()
 
     setDistances();
 
-    /*
-    for (map<int,Node>::iterator it = nodes.begin(); it != nodes.end(); ++it ){
-        (*it).second.printNodeInfo();
-    }
-    */
-}
+} 
+*/
