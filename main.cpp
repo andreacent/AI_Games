@@ -202,6 +202,7 @@ void display(){
     gluLookAt(25,0,22,25,10,22-1.0f,0,1,0);
 
     drawFloor();
+    drawDetails();
     //cout<<meshs.size()<<endl;
 
     glLineWidth(pointSize);
