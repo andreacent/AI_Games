@@ -11,7 +11,7 @@
 #include "characters/Marlene.h"
 #include "characters/Novich.h"
 
-#include "assets/map.h"
+//#include "assets/map.h"
 #include "graph/graph.cpp"
 
 #include <GL/freeglut.h>
@@ -19,6 +19,10 @@
 #include <glm/glm.hpp>
 //#include <GL/glew.h>
 
+
+#include "mesh/Mesh.cpp"
+
+std::list<Mesh*> meshs;
 
 Graph graph;
 std::list<vec3> path;
@@ -85,6 +89,16 @@ BlendedSteering novichFollowPathWithObs = {novich,maxAcceleration,maxRotation,ma
 /****************** Initialize **********************/
 void initialize(){
     ini = true;
+
+    meshs.push_back(new RectanglePoints(vec3(1,0,1), 
+                                *new list<glm::vec3>{
+                                    glm::vec3(20,0,20),
+                                    glm::vec3(25,0,25),
+                                    glm::vec3(22,0,20),
+                                    glm::vec3(27,0,25) }) 
+                    );
+    meshs.push_back(new Rectangle(vec3(1,1,0), glm::vec3(12,0,16), 5,5 ) );
+    meshs.back()->createTriangles(true,true,true,true);
 
     graph.createGameGraph();
     glClearColor(0.81960,0.81960,0.81960,1);
@@ -190,7 +204,7 @@ void display(){
     float x = target.position.x;
     gluLookAt(x,0,z,x,10,z-1.0f,0,1,0);
     
-    drawMap();
+    //drawMap();
     //cout<<meshs.size()<<endl;
 
     glLineWidth(pointSize);
@@ -199,6 +213,7 @@ void display(){
         graph.drawTriangles();
         if (int(novichFollowPath->getPath().size) > 0) novichFollowPath->getPath().draw();
     }
+    for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
 
     //TEST CHARACTER
     marlene.draw();

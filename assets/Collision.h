@@ -1,7 +1,7 @@
 #ifndef COLLISION_H
 #define COLLISION_H
 
-#include "../assets/Mesh.h"
+#include "../mesh/Mesh.h"
 
 #include <list>
 #include <vector>
