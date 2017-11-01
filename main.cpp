@@ -11,7 +11,7 @@
 #include "characters/Marlene.h"
 #include "characters/Novich.h"
 
-//#include "assets/map.h"
+#include "assets/map.h"
 #include "graph/graph.cpp"
 
 #include <GL/freeglut.h>
@@ -31,7 +31,7 @@ GLfloat oldTimeSinceStart = 0.0;
 GLfloat pointSize=1.5;
 
 GLfloat targetRotation = glm::radians(10.0);
-GLfloat targetVelocity =3;
+GLfloat targetVelocity =5;
 
 GLfloat maxRotation = 30;
 
@@ -90,13 +90,7 @@ BlendedSteering novichFollowPathWithObs = {novich,maxAcceleration,maxRotation,ma
 void initialize(){
     ini = true;
 
-    meshs.push_back(new RectanglePoints(vec3(1,0,1),new glm::vec3[4]{
-                                                            glm::vec3(20,0,20),
-                                                            glm::vec3(25,0,25),
-                                                            glm::vec3(22,0,20),
-                                                            glm::vec3(27,0,25)},
-                                                    true,true,true,true )  );
-    meshs.push_back(new Rectangle(vec3(1,1,0), glm::vec3(12,0,16), 5,5,true,true,true,true ) );
+    meshs = drawMap();
 
     graph.createGameGraph();
     glClearColor(0.81960,0.81960,0.81960,1);
@@ -201,8 +195,8 @@ void display(){
     float z = target.position.z;
     float x = target.position.x;
     gluLookAt(x,0,z,x,10,z-1.0f,0,1,0);
-    
-    //drawMap();
+
+    drawFloor();
     //cout<<meshs.size()<<endl;
 
     glLineWidth(pointSize);
