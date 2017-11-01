@@ -12,6 +12,12 @@ public:
 	Rectangle(glm::vec3 c, glm::vec3 p, GLfloat h, GLfloat w) 
 		: Mesh(c), position(p),height(h),width(w) {}
 
+	Rectangle(glm::vec3 c, glm::vec3 p, GLfloat h, GLfloat w,
+				bool top, bool right,bool bottom, bool left) 
+				: Mesh(c), position(p),height(h),width(w) {
+			createTriangles(top, right,bottom, left);
+		}
+
 	void draw(){		
 		GLfloat iX,iY,iZ,fX,fY,fZ;
 		

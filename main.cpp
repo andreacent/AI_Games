@@ -97,8 +97,7 @@ void initialize(){
                                     glm::vec3(22,0,20),
                                     glm::vec3(27,0,25) }) 
                     );
-    meshs.push_back(new Rectangle(vec3(1,1,0), glm::vec3(12,0,16), 5,5 ) );
-    meshs.back()->createTriangles(true,true,true,true);
+    meshs.push_back(new Rectangle(vec3(1,1,0), glm::vec3(12,0,16), 5,5,true,true,true,true ) );
 
     graph.createGameGraph();
     glClearColor(0.81960,0.81960,0.81960,1);
