@@ -55,7 +55,7 @@ void drawSquareFloor(float i1, float i2, float j1, float j2, vec3 color){
     float s = 5.0*px;
     for(int i = i1 ; i < i2 ; i++){
         for(int j = j1; j < j2; j++){
-            drawTileHallway({j*s,0.0,i*s+(s/2)},color,{0.5,0.5,0.5},{0.6,0.6,0.6});
+            drawTileHallway({j*s,0.0,i*s+(s/2)-0.5},color,{0.5,0.5,0.5},{0.6,0.6,0.6});
         }
     }
 }
@@ -102,7 +102,7 @@ void drawSquareGrass(float i1, float i2, float j1, float j2){
     float s = 5.0*px;
     for(int i = i1 ; i < i2 ; i++){
         for(int j = j1; j < j2; j++){
-            drawTileGrass({j*s,0.0,i*s+(s/2)});
+            drawTileGrass({j*s,0.0,i*s+(s/2)-0.5});
         }
     }
 }
@@ -210,11 +210,11 @@ void drawFloor(){
 
         glPushMatrix();
 
-            meshsM.push_back(new RectanglePoints(borde,new glm::vec3[4]{
-                                                                    glm::vec3(xi  ,0,(yi  )+0.5),   // i
-                                                                    glm::vec3(xi  ,0,(yi+h)+0.5),   // a
-                                                                    glm::vec3(xi+1,0,(yi  )+0.5),   // b
-                                                                    glm::vec3(xi+1,0,(yi+h)+0.5)    // f
+            meshsM.push_back(new RectanglePoints(main,new glm::vec3[4]{
+                                                                    glm::vec3(xi  ,0,(yi  )),   // i
+                                                                    glm::vec3(xi  ,0,(yi+h)),   // a
+                                                                    glm::vec3(xi+1,0,(yi  )),   // b
+                                                                    glm::vec3(xi+1,0,(yi+h))    // f
                                                                     },  
                                                             true,true,true,true )  );
             /*
@@ -243,11 +243,11 @@ void drawFloor(){
         */
 
         glPushMatrix();
-            meshsM.push_back(new RectanglePoints(borde,new glm::vec3[4]{
-                                                                    glm::vec3(xi  ,0,(yi  )+0.5),   // i
-                                                                    glm::vec3(xi  ,0,(yi+1)+0.5),   // a
-                                                                    glm::vec3(xi+w,0,(yi  )+0.5),   // b
-                                                                    glm::vec3(xi+w,0,(yi+1)+0.5)    // f
+            meshsM.push_back(new RectanglePoints(main,new glm::vec3[4]{
+                                                                    glm::vec3(xi  ,0,(yi  )),   // i
+                                                                    glm::vec3(xi  ,0,(yi+1)),   // a
+                                                                    glm::vec3(xi+w,0,(yi  )),   // b
+                                                                    glm::vec3(xi+w,0,(yi+1))    // f
                                                                     },  
                                                             true,true,true,true )  );
             /*
@@ -279,43 +279,60 @@ void drawFloor(){
             */
         glPopMatrix();
     }
-/*
-    void drawWall(float xPosition,float zPosition, float wTimes,char sitio){
-        vec3 pared = {0.8196078431372549,0.8352941176470589,0.6980392156862745};
+
+    void drawWallDetails(float xi, float yi, float w,char sitio){
+
         vec3 piso  = {0.4745098039215686,0.45098039215686275,0.333};
         vec3 borde = {0.3176470588235294,0.3215686274509804,0.4};
         vec3 shadow = {0.7333333333333333,0.7490196078431373,0.7215686274509804};
         vec3 madera = {0.45098039215686275,0.2,5.4901960784313725e-2};
 
         if(sitio =='S'){
-            pared = {1,1,1};
             piso  = {0.3,0.3,0.3};
         }else if ( sitio == 'P'){
-            pared = {0.6274509803921569,0.596078431372549,0.6274509803921569};
             piso  = {0.4666666666666667,0.47058823529411764,0.5333333333333333};
             borde  = {0.3137254901960784,0.3137254901960784,0.40784313725490196};
         }else if ( sitio == 'O'){
-            pared = { 0.5490196078431373,0.5215686274509804,0.5490196078431373};
             piso  = {0.37254901960784315,0.3803921568627451,0.47843137254901963};
         }
 
         glPushMatrix();
-            meshsM.push_back(new Mesh({{ (wTimes/2)+xPosition,0.0, zPosition+0.6f}, 2.0f, (1.0f)*wTimes-0.4f,pared, 'W'}));
-
-            drawSquare({xPosition,0.0, zPosition-0.5f},piso,wTimes,0.25f);
+            drawSquare({xi,0.0, yi-0.9},piso,w,0.25);
+            /*
+            drawSquare({xi-0.1f  ,0.0, yi},borde,0.1f,2.0f);
+            drawSquare({xi+0.1f+w,0.0, yi},borde,0.1f,2.0f);
             
-            drawSquare({xPosition,0.0, zPosition+0.6f},borde,0.1f,2.0f);
-            drawSquare({xPosition+wTimes-0.1f,0.0, zPosition+0.6f},borde,0.1f,2.0f);
-            
-            drawSquare({xPosition+0.1f,0.0, zPosition+0.6f},shadow,0.1f,2.0f);
-            drawSquare({xPosition+wTimes-0.2f,0.0, zPosition+0.6f},shadow,0.1f,2.0f);
-            
-            if( sitio == 'S' ){
-                meshsM.push_back(new Mesh({{ (wTimes/2)+xPosition,0.0, zPosition+0.6f}, 0.5f, (1.0f)*wTimes-0.4f,madera, 'W'}));
-            }
+            drawSquare({xi  ,0.0, yi-0.1},shadow,0.1f,2.0f);
+            drawSquare({xi+w,0.0, yi},shadow,0.1f,2.0f);
+            */   
         glPopMatrix();
+
     }
 
+
+    void drawWall(float xi, float yi, float w,char sitio){
+        vec3 pared = {0.8196078431372549,0.8352941176470589,0.6980392156862745};
+
+        if(sitio =='S'){
+            pared = {1,1,1};
+        }else if ( sitio == 'P'){
+            pared = {0.6274509803921569,0.596078431372549,0.6274509803921569};
+        }else if ( sitio == 'O'){
+            pared = { 0.5490196078431373,0.5215686274509804,0.5490196078431373};
+        }
+
+        glPushMatrix();
+            meshsM.push_back(new RectanglePoints(pared,new glm::vec3[4]{
+                                                                    glm::vec3(xi  ,0,(yi-0.8)),   // i
+                                                                    glm::vec3(xi  ,0,(yi+1  )),   // a
+                                                                    glm::vec3(xi+w,0,(yi-0.8)),   // b
+                                                                    glm::vec3(xi+w,0,(yi+1  ))    // f
+                                                                    },  
+                                                            true,true,true,true )  );
+
+        glPopMatrix();
+    }
+/*
     void drawTriangle(vec3 position,vec3 colorSqr, float directionX,float directionZ){
             float timesX = 1;
             float timesZ = 1;
@@ -377,22 +394,65 @@ void drawFloor(){
     }
 */
 
+void drawDetails(){
+    drawWallDetails( 49,35,1,'C');           // wdu1
+    drawWallDetails( 45,35,2,'P');           // wdu2
+    drawWallDetails( 42,35,1,'P');           // wdu3
+    drawWallDetails( 38,35,1,'P');           // wdu4
+    drawWallDetails( 35,35,1,'P');           // wdu5
+    drawWallDetails( 31,35,1,'P');           // wdu6
+    drawWallDetails( 27,35,2,'P');           // wdu7
+
+    drawWallDetails( 49,29,1,'C');           // wdu8
+    drawWallDetails( 45,40,8,'C');           // wdu9
+    drawWallDetails( 36,40,6,'O');           // wdu10
+    drawWallDetails( 27,40,8,'O');           // wdu11
+
+    drawWallDetails( 23,35,2,'P');           // wiu5
+    drawWallDetails( 20,35,1,'P');           // wiu4
+    drawWallDetails( 16,35,1,'P');           // wiu3
+    drawWallDetails( 13,35,1,'P');           // wiu2
+    drawWallDetails(  5,35,5,'P');           // wiu1
+    
+    drawWallDetails(  1,40,4,'C');           // wiu6
+    drawWallDetails(  6,40,7,'S');           // wiu7
+    drawWallDetails( 17,40,8,'O');           // wiu8
+
+    drawWallDetails(  1,15,3,'C');           // wid1
+    drawWallDetails(  1, 6,9,'S');           // wid2
+    drawWallDetails( 20, 5,5,'P');           // wid3
+            
+    drawWallDetails( 12,17,2,'P');           // wid5
+    drawWallDetails( 16,17,5,'P');           // wid6
+    drawWallDetails( 21,18,3,'O');           // wid7
+
+    drawWallDetails( 27, 5,5,'P');           // wdd1
+    drawWallDetails( 36, 5,3,'P');           // wdd2
+    drawWallDetails( 45, 5,5,'P');           // wdd3
+    drawWallDetails( 49, 15,4,'P');          // wdd5
+    
+    drawWallDetails( 39, 17,2,'P');          // wdd6
+    drawWallDetails( 33, 17,4,'P');          // wdd7
+    drawWallDetails( 30, 18,3,'O');          // wdd8
+}
+
+
 list<Mesh*> drawMap(){
 
     // Q1
-        /* ===== Paredes  ===== 
-            drawWall( 49.0f,35.0f,1,'C');           // wdu1
-            drawWall( 45.0f,35.0f,2,'P');           // wdu2
-            drawWall( 42.0f,35.0f,1,'P');           // wdu3
-            drawWall( 38.0f,35.0f,1,'P');           // wdu4
-            drawWall( 35.0f,35.0f,1,'P');           // wdu5
-            drawWall( 31.0f,35.0f,1,'P');           // wdu6
-            drawWall( 27.0f,35.0f,2,'P');           // wdu7
+        /* ===== Paredes  ===== */
+            drawWall( 49,35,1,'C');           // wdu1
+            drawWall( 45,35,2,'P');           // wdu2
+            drawWall( 42,35,1,'P');           // wdu3
+            drawWall( 38,35,1,'P');           // wdu4
+            drawWall( 35,35,1,'P');           // wdu5
+            drawWall( 31,35,1,'P');           // wdu6
+            drawWall( 27,35,2,'P');           // wdu7
 
-            drawWall( 49.0f,29.0f,1,'C');           // wdu8
-            drawWall( 45.0f,40.0f,8,'C');           // wdu9
-            drawWall( 36.0f,40.0f,6,'O');           // wdu10
-            drawWall( 27.0f,40.0f,8,'O');           // wdu11
+            drawWall( 49,29,1,'C');           // wdu8
+            drawWall( 45,40,8,'C');           // wdu9
+            drawWall( 36,40,6,'O');           // wdu10
+            drawWall( 27,40,8,'O');           // wdu11
         /* ===== Columnas ===== 
             drawColumn( 29.0f, 34.0f,3,'D');         // cdu1
             drawColumn( 36.0f, 34.0f,3,'D');         // cdu2
@@ -417,16 +477,16 @@ list<Mesh*> drawMap(){
             drawRoofRowH( 45,36,5,'r');    // hdu6
             /*
     // Q2
-        /* ===== Paredes  ===== 
-            drawWall( 23.0f,35.0f,2,'P');           // wiu5
-            drawWall( 20.0f,35.0f,1,'P');           // wiu4
-            drawWall( 16.0f,35.0f,1,'P');           // wiu3
-            drawWall( 13.0f,35.0f,1,'P');           // wiu2
-            drawWall(  5.0f,35.0f,5,'P');           // wiu1
+        /* ===== Paredes  ===== */
+            drawWall( 23,35,2,'P');           // wiu5
+            drawWall( 20,35,1,'P');           // wiu4
+            drawWall( 16,35,1,'P');           // wiu3
+            drawWall( 13,35,1,'P');           // wiu2
+            drawWall(  5,35,5,'P');           // wiu1
             
-            drawWall(  1.0f,40.0f,4,'C');           // wiu6
-            drawWall(  6.0f,40.0f,7,'S');           // wiu7
-            drawWall( 17.0f,40.0f,8,'O');           // wiu8
+            drawWall(  1,40,4,'C');           // wiu6
+            drawWall(  6,40,7,'S');           // wiu7
+            drawWall( 17,40,8,'O');           // wiu8
         /* ===== Columnas ===== 
             drawColumn( 25.0f, 34.0f,9,'D');         // ciu1
             drawColumn( 21.0f, 34.0f,3,'D');         // ciu2
@@ -449,14 +509,14 @@ list<Mesh*> drawMap(){
             drawRoofRowH( 20,36,5,'l');    // hiu4
             drawRoofRowH(  6,36,4,'r');    // hiu5
     // Q3
-        /* ===== Paredes  ===== 
-            drawWall(  1.0f,15.0f,3,'C');           // wid1
-            drawWall(  1.0f, 6.0f,9,'S');           // wid2
-            drawWall( 20.0f, 5.0f,5,'P');           // wid3
+        /* ===== Paredes  ===== */
+            drawWall(  1,15,3,'C');           // wid1
+            drawWall(  1, 6,9,'S');           // wid2
+            drawWall( 20, 5,5,'P');           // wid3
             
-            drawWall( 12.0f,17.0f,2,'P');           // wid5
-            drawWall( 16.0f,17.0f,5,'P');           // wid6
-            drawWall( 21.0f,18.0f,3,'O');           // wid7
+            drawWall( 12,17,2,'P');           // wid5
+            drawWall( 16,17,5,'P');           // wid6
+            drawWall( 21,18,3,'O');           // wid7
         /* ===== Columnas ===== 
             drawColumn( 14.0f, 0.0f,9,'U');         // cid1
             drawColumn( 25.0f, 0.0f,9,'U');         // cid2
@@ -472,14 +532,14 @@ list<Mesh*> drawMap(){
             drawRoofRowV( 20, 18,2,'u');   // vid6
             drawRoofRowV( 24, 18,2,'u');   // vid7
 
-            drawRoofRowH( 0,16,4,'r');     // hid1
-            drawRoofRowH( 0, 7,9,'r');      // hid2
+            drawRoofRowH( 1,16,4,'r');     // hid1
+            drawRoofRowH( 1, 7,9,'r');      // hid2
             
             drawRoofRowH( 13,18,7,'d');    // hid3
             drawRoofRowH( 21,19,3,'d');    // hid4
             drawRoofRowH( 20, 6,5,'l');    // hid5
     // Q4
-        /* ===== Paredes  ===== 
+        /* ===== Paredes  ===== */
             drawWall( 27, 5,5,'P');           // wdd1
             drawWall( 36, 5,3,'P');           // wdd2
             drawWall( 45, 5,5,'P');           // wdd3
