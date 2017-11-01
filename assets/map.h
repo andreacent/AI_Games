@@ -1,4 +1,3 @@
-#include "../mesh/Mesh.h"
 #include "../mesh/Mesh.cpp"
 
 float px = 0.2;

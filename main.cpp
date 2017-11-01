@@ -13,7 +13,7 @@
 
 #include "assets/text.cpp"
 #include "assets/map.h"
-//#include "assets/StateMachine.h"
+#include "assets/StateMachine.h"
 #include "graph/graph.cpp"
 
 #include <GL/freeglut.h>
@@ -64,7 +64,7 @@ std::map<string,Behavior*> sidekick1Behaviors;
 BlendedSteering sidekick1Flocking = {sidekick1,maxAcceleration,maxRotation,maxSpeed,*new list<BehaviorAndWeight*>()};
 
 /* sidekick2 */
-Kinematic sidekick2 = {{27.0f,0,26.0f},0.0};
+Kinematic sidekick2 = {{36.0f,0,30.0f},0.0};
 //mesh
 Marlene sidekick2Mesh = {sidekick2,'s'};
 //target list (separation)
@@ -228,8 +228,6 @@ void display(){
     target.updatePosition(deltaTime);
     target.updateOrientation(deltaTime);
 
-
-    //novichFollowTarget.update(maxSpeed,deltaTime);
     //sidekick1Flocking.update(maxSpeed,deltaTime);
     //sidekick2Flocking.update(maxSpeed,deltaTime);
 

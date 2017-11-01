@@ -48,7 +48,7 @@ void followPathWithObstacle(
         blended.addBehavior(new BehaviorAndWeight(behaviors["obstacle"],1));
     }
     if(behaviors.count("followPath") > 0 ){
-        blended.addBehavior(new BehaviorAndWeight(behaviors["followPath"],0.8));
+        blended.addBehavior(new BehaviorAndWeight(behaviors["followPath"],0.6));
     }
 }
 

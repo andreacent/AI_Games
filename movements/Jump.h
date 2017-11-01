@@ -1,6 +1,8 @@
 #ifndef JUMP_H
 #define JUMP_H
 
+// INCOMPLETO
+
 struct JumpPoint{
 	// The position of the jump point
 	vec3 jumpLocation;

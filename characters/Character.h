@@ -3,11 +3,14 @@
     11-11020
     sep-dic 2017
 */
+#include "../assets/StateMachine.h"
 using namespace glm;
 
 class Character{
 protected:
 	Kinematic &character;
+	//StateMachine &stateMachine;
+
 	char rol;
 
 
@@ -15,6 +18,7 @@ public:
 
     float px = 0.125/2;
 
+	//Character(Kinematic &c,char rl,StateMachine &sm)  : character(c),rol(rl),stateMachine(sm) {}
 	Character(Kinematic &c,char rl)  : character(c),rol(rl) {}
 
 
