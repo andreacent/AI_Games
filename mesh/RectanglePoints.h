@@ -5,11 +5,18 @@
 
 class RectanglePoints: public Mesh{
 protected:
-	std::list<glm::vec3> &vectices;
+	glm::vec3 vectices[4];
 public:	
-	RectanglePoints(glm::vec3 c,std::list<glm::vec3> &v) 
-		: Mesh(c), vectices(v) {}
+	RectanglePoints(glm::vec3 c,glm::vec3 v[]) : Mesh(c) {
+		for(int i =0; i<4; i++){ vectices[i] = v[i]; }
+	}
 
+	RectanglePoints(glm::vec3 c,glm::vec3 v[],
+				bool top, bool right,bool bottom, bool left) 
+				: Mesh(c) {
+			for(int i =0; i<4; i++){ vectices[i] = v[i]; }
+			createTriangles(top, right,bottom, left);
+		}
 	/*
 			v2	v4
 			
@@ -25,6 +32,9 @@ public:
 	}	
 
 	void createTriangles(bool top, bool right,bool bottom, bool left){
+		GLfloat iY,fY;
+		iY = -1;
+		fY = 1;
 	}
 };
 
