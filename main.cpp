@@ -36,6 +36,7 @@ GLfloat targetVelocity =5;
 GLfloat maxRotation = 30;
 
 bool activeTriangles = true;
+bool activeMap = true;
 bool ini = false;
 
 /******************** Camera *******************/
@@ -46,7 +47,7 @@ float deltaMove = 0;
 CollisionDetector collisionDetector = {meshs};
 
 /******************** CHARACTERES *******************/
-Kinematic target = {{29.0f,0.0f,29.0f}};
+Kinematic target = {{2.0f,0.0f,2.0f}};
 Marlene marlene = {target,'p'};
 
 /* sidekick1 */
@@ -72,7 +73,7 @@ std::map<string,Behavior*> sidekick2Behaviors;
 BlendedSteering sidekick2Flocking = {sidekick2,maxAcceleration,maxRotation,maxSpeed,*new list<BehaviorAndWeight*>()};
 
 /* NOVICH */
-Kinematic novich = {{26.0f,0.0,23.0f},0.0};
+Kinematic novich = {{26.0f,0.0,30.0f},0.0};
 //mesh
 Marlene novichMesh = {novich,'s'};
 //behavior list
@@ -131,6 +132,9 @@ void controlKey (unsigned char key, int xmouse, int ymouse){
             //prueba de calcular el camino
             path = pathfindAStar(graph, novich.position, target.position);
             novichFollowPath->setPath(path);   
+        break;
+        case 'z':
+            activeMap = !activeMap;
         break;
         default: break;
     }  
@@ -194,7 +198,8 @@ void display(){
 
     float z = target.position.z;
     float x = target.position.x;
-    gluLookAt(x,0,z,x,10,z-1.0f,0,1,0);
+    //gluLookAt(x,0,z,x,10,z-1.0f,0,1,0);
+    gluLookAt(25,0,22,25,10,22-1.0f,0,1,0);
 
     drawFloor();
     //cout<<meshs.size()<<endl;
@@ -205,12 +210,12 @@ void display(){
         graph.drawTriangles();
         if (int(novichFollowPath->getPath().size) > 0) novichFollowPath->getPath().draw();
     }
-    for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
+    if(activeMap) for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
 
     //TEST CHARACTER
     marlene.draw();
     novichMesh.draw();
-    sidekick1Mesh.draw();
+    //sidekick1Mesh.draw();
     //sidekick2Mesh.draw();
    
     GLfloat timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
@@ -222,7 +227,7 @@ void display(){
 
 
     //novichFollowTarget.update(maxSpeed,deltaTime);
-    sidekick1Flocking.update(maxSpeed,deltaTime);
+    //sidekick1Flocking.update(maxSpeed,deltaTime);
     //sidekick2Flocking.update(maxSpeed,deltaTime);
 
     //sidekick2Behaviors["wander"]->update(maxSpeed,deltaTime);
