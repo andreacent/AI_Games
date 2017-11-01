@@ -332,7 +332,6 @@ void drawFloor(){
 
         glPopMatrix();
     }
-/*
     void drawTriangle(vec3 position,vec3 colorSqr, float directionX,float directionZ){
             float timesX = 1;
             float timesZ = 1;
@@ -354,6 +353,7 @@ void drawFloor(){
                 
             glPopMatrix();
     }
+/*
 
     void drawBebedero(float xPosition,float zPosition){
         vec3 main   = {1,0,0};
@@ -366,33 +366,54 @@ void drawFloor(){
             meshsM.push_back(new Mesh({{ 1.0f+xPosition,0.0, zPosition+t}, 2.0f,2.0f-0.4f,main, 'O'}));
         glPopMatrix();
     }
+*/
 
-    void drawColumn(float xPosition,float zPosition, float hTimes,char dir){
-        vec3 main   = {0.42745098039215684,0.47843137254901963,0.5686274509803921};
+    void drawColumnDetails(float xi, float yi, float h,char dir){
         vec3 shadow = {0.34901960784313724,0.34901960784313724,0.44313725490196076};
         vec3 light  = {0.796078431372549,0.792156862745098,0.8235294117647058};
 
-        float zT = -1;
-        float zP = zPosition-0.9f;
+
+        float yT = -1;
+        float yP = yi-0.9f;
         float t = 0.5f;
 
         if( dir == 'U'){
-            zT = 1;
+            yT = 0;
             t = 0.3f;
-            zP = zPosition+hTimes-1.05f;
+            yP = yi+h-1.05f;
         }
-        glPushMatrix();
 
-            meshsM.push_back(new Mesh({{ 1.0f+xPosition,0.0, (hTimes/2)-t+zPosition}, (1.0f)*hTimes,2.0f-0.4f,main, 'W'}));
             
-            drawSquare({xPosition,0.0, (hTimes/2)-0.5f+zPosition},shadow,0.2f,hTimes-0.1f);
-            drawSquare({xPosition+1.8f,0.0, (hTimes/2)-0.5f+zPosition},light,0.2f,hTimes-0.1f);
+        glPushMatrix();
+            drawSquare({xi     ,0.0, (h/2)+yi-1},shadow,0.2f,h-0.1f);
+            drawSquare({xi+1.8f,0.0, (h/2)+yi-1},light ,0.2f,h-0.1f);
 
-            drawTriangle({xPosition+2.0f-0.4f+0.2f,0.0,zP+0.5f},light,1,zT);
-            drawTriangle({xPosition+0.2f,0.0,zP+0.5f},shadow,-1,zT);
+            drawTriangle({xi+2.0f-0.4f+0.2f,0.0,yP+0.5f},light , 1,yT);
+            drawTriangle({xi+0.2f          ,0.0,yP+0.5f},shadow,-1,yT);
         glPopMatrix();
     }
-*/
+
+    void drawColumn(float xi, float yi, float h,char dir){
+        vec3 main   = {0.42745098039215684,0.47843137254901963,0.5686274509803921};
+
+        float yT = -1;
+
+        if( dir == 'U'){
+            yT = 0;
+        }
+
+        glPushMatrix();
+
+            meshsM.push_back(new RectanglePoints(main,new glm::vec3[4]{
+                                                                    glm::vec3(xi+0.1,0,(yi+yT)),   // i
+                                                                    glm::vec3(xi+0.1,0,(yi+h+yT)),   // a
+                                                                    glm::vec3(xi+1.9,0,(yi+yT  )),   // b
+                                                                    glm::vec3(xi+1.9,0,(yi+h+yT))    // f
+                                                                    },  
+                                                            true,true,true,true ));
+        glPopMatrix();
+    }
+
 
 void drawDetails(){
     drawWallDetails( 49,35,1,'C');           // wdu1
@@ -408,6 +429,14 @@ void drawDetails(){
     drawWallDetails( 36,40,6,'O');           // wdu10
     drawWallDetails( 27,40,8,'O');           // wdu11
 
+    drawColumnDetails( 29, 34,3,'D');         // cdu1
+    drawColumnDetails( 36, 34,3,'D');         // cdu2
+    drawColumnDetails( 43, 34,9,'D');         // cdu3
+    drawColumnDetails( 47, 34,3,'D');         // cdu4
+    drawColumnDetails( 36, 26,1,'U');         // cdu5
+
+    /* ============================================= */
+
     drawWallDetails( 23,35,2,'P');           // wiu5
     drawWallDetails( 20,35,1,'P');           // wiu4
     drawWallDetails( 16,35,1,'P');           // wiu3
@@ -418,6 +447,13 @@ void drawDetails(){
     drawWallDetails(  6,40,7,'S');           // wiu7
     drawWallDetails( 17,40,8,'O');           // wiu8
 
+    drawColumnDetails( 25, 34,9,'D');         // ciu1
+    drawColumnDetails( 21, 34,3,'D');         // ciu2
+    drawColumnDetails( 14, 34,9,'D');         // ciu3
+    drawColumnDetails( 14, 26,1,'U');         // ciu4
+
+    /* ============================================= */
+
     drawWallDetails(  1,15,3,'C');           // wid1
     drawWallDetails(  1, 6,9,'S');           // wid2
     drawWallDetails( 20, 5,5,'P');           // wid3
@@ -425,6 +461,13 @@ void drawDetails(){
     drawWallDetails( 12,17,2,'P');           // wid5
     drawWallDetails( 16,17,5,'P');           // wid6
     drawWallDetails( 21,18,3,'O');           // wid7
+
+    drawColumnDetails( 14, 0,9,'U');         // cid1
+    drawColumnDetails( 25, 0,9,'U');         // cid2
+
+    drawColumnDetails( 14,16,3,'D');         // cid3
+
+    /* ============================================= */
 
     drawWallDetails( 27, 5,5,'P');           // wdd1
     drawWallDetails( 36, 5,3,'P');           // wdd2
@@ -434,6 +477,11 @@ void drawDetails(){
     drawWallDetails( 39, 17,2,'P');          // wdd6
     drawWallDetails( 33, 17,4,'P');          // wdd7
     drawWallDetails( 30, 18,3,'O');          // wdd8
+
+    drawColumnDetails( 43, 0,9,'U');         // cdd1
+    drawColumnDetails( 47, 7,1,'U');         // cdd2
+
+    drawColumnDetails( 37, 16,3,'D');         // cdd3
 }
 
 
@@ -453,12 +501,12 @@ list<Mesh*> drawMap(){
             drawWall( 45,40,8,'C');           // wdu9
             drawWall( 36,40,6,'O');           // wdu10
             drawWall( 27,40,8,'O');           // wdu11
-        /* ===== Columnas ===== 
-            drawColumn( 29.0f, 34.0f,3,'D');         // cdu1
-            drawColumn( 36.0f, 34.0f,3,'D');         // cdu2
-            drawColumn( 43.0f, 34.0f,9,'D');         // cdu3
-            drawColumn( 47.0f, 34.0f,3,'D');         // cdu4
-            drawColumn( 36.0f, 26.0f,1,'U');         // cdu5
+        /* ===== Columnas ===== */
+            drawColumn( 29, 34,3,'D');         // cdu1
+            drawColumn( 36, 34,3,'D');         // cdu2
+            drawColumn( 43, 34,9,'D');         // cdu3
+            drawColumn( 47, 34,3,'D');         // cdu4
+            drawColumn( 36, 25,1,'U');         // cdu5
         /* ===== Techos   ===== */
             drawRoofRowV(53,25,17,'r');   // vdu1
             drawRoofRowV(40,23, 2,'r');   // vdu2
@@ -487,11 +535,11 @@ list<Mesh*> drawMap(){
             drawWall(  1,40,4,'C');           // wiu6
             drawWall(  6,40,7,'S');           // wiu7
             drawWall( 17,40,8,'O');           // wiu8
-        /* ===== Columnas ===== 
-            drawColumn( 25.0f, 34.0f,9,'D');         // ciu1
-            drawColumn( 21.0f, 34.0f,3,'D');         // ciu2
-            drawColumn( 14.0f, 34.0f,9,'D');         // ciu3
-            drawColumn( 14.0f, 26.0f,1,'U');         // ciu4
+        /* ===== Columnas ===== */
+            drawColumn( 25, 34,9,'D');         // ciu1
+            drawColumn( 21, 34,3,'D');         // ciu2
+            drawColumn( 14, 34,9,'D');         // ciu3
+            drawColumn( 14, 25,1,'U');         // ciu4
         /* ===== Techos   ===== */
             drawRoofRowV(  0,25,17,'l');    // viu1
             drawRoofRowV( 12,23, 2,'r');   // viu2
@@ -517,11 +565,11 @@ list<Mesh*> drawMap(){
             drawWall( 12,17,2,'P');           // wid5
             drawWall( 16,17,5,'P');           // wid6
             drawWall( 21,18,3,'O');           // wid7
-        /* ===== Columnas ===== 
-            drawColumn( 14.0f, 0.0f,9,'U');         // cid1
-            drawColumn( 25.0f, 0.0f,9,'U');         // cid2
+        /* ===== Columnas ===== */
+            drawColumn( 14, 0,8,'U');         // cid1
+            drawColumn( 25, 0,8,'U');         // cid2
             
-            drawColumn( 14.0f,16.0f,3,'D');         // cid3
+            drawColumn( 14,16,3,'D');         // cid3
         /* ===== Techos   ===== */
             drawRoofRowV(  0, 0,17,'l');    // vid1
             drawRoofRowV(  4,12, 5,'r');     // vid2
@@ -548,9 +596,9 @@ list<Mesh*> drawMap(){
             drawWall( 39, 17,2,'P');          // wdd6
             drawWall( 33, 17,4,'P');          // wdd7
             drawWall( 30, 18,3,'O');          // wdd8
-        /* ===== Columnas ===== 
-            drawColumn( 43, 0,9,'U');         // cdd1
-            drawColumn( 47, 7.8f,1,'U');         // cdd2
+        /* ===== Columnas ===== */
+            drawColumn( 43, 0,8,'U');         // cdd1
+            drawColumn( 47, 7,1,'U');         // cdd2
             
             drawColumn( 37, 16,3,'D');         // cdd3
         /* ===== Techos   ===== */
@@ -574,7 +622,7 @@ list<Mesh*> drawMap(){
     // DOWN
         drawRoofRowH(  0, 0,54,'d');         // hd
         drawRoofRowH( 25,18, 5,'d');        // hcd
-        //drawWall( 24, 17,6,'P');              // wcd
+        drawWall( 24, 17,6,'P');              // wcd
         //drawBebedero(26,15);
     // UP
         drawRoofRowH(  0,41,54,'d');        // hu
