@@ -23,6 +23,10 @@ public:
 	virtual void draw() = 0;
 	virtual void createTriangles(bool top, bool right,bool bottom, bool left) = 0;
 
+	void printPoint(glm::vec3 p, char c){
+		cout<<c<<" "<<p.x<<","<<p.y<<","<<p.z<<endl;
+	}
+
 	/*
 	CUBO
 		Vertex  Triangle    Face
@@ -76,10 +80,6 @@ public:
 		glVertex3f(iX, fY, iZ); //14		
 		glEnd();
 	}	
-
-	void printPoint(glm::vec3 p, char c){
-		cout<<c<<" "<<p.x<<","<<p.y<<","<<p.z<<endl;
-	}
 
 	//Obtiene triangulos de un cubo (type = C)
 	std::list<std::vector<glm::vec3>> getTrianglesCube(){
