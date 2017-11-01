@@ -85,8 +85,7 @@ void Graph::createGameGraph()
     */
 }
 
-/*
-void Graph::createGameGraph()
+void Graph::createGameGraphSquare()
 {
     nodes[1] = Node(1, new vec3[3]{vec3(5,0,25),vec3(14,0,25),vec3(5,0,34)}, set<int>{2,78} );
     nodes[2] = Node(2, new vec3[3]{vec3(5,0,34),vec3(14,0,34),vec3(14,0,25)} );
@@ -174,4 +173,3 @@ void Graph::createGameGraph()
     setDistances();
 
 } 
-*/

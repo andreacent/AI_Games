@@ -11,7 +11,9 @@
 #include "characters/Marlene.h"
 #include "characters/Novich.h"
 
+#include "assets/text.cpp"
 #include "assets/map.h"
+//#include "assets/StateMachine.h"
 #include "graph/graph.cpp"
 
 #include <GL/freeglut.h>
@@ -93,7 +95,7 @@ void initialize(){
 
     meshs = drawMap();
 
-    graph.createGameGraph();
+    graph.createGameGraphSquare();
     glClearColor(0.81960,0.81960,0.81960,1);
 
     /* NOVICH : behaviors and blended */

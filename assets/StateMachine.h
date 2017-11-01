@@ -5,8 +5,16 @@
 
 class Action{};
 
+class Transition(){
+public:
+	State targetState;
+	Action action;
+
+	isTriggered();
+}
+
 class State{
-protected:
+public:
 	Action action;
 	Action entryAction;
 	Action exitAction;
@@ -43,13 +51,13 @@ public:
 				triggeredTransition = (*iter);
 
 				// Find the target state
-				targetState = triggeredTransition.getTargetState();
+				targetState = triggeredTransition.targetState;
 
 				// Add the exit action of the old state, the
 				// transition action and the entry for the new state.
-				actions.push_back(currentState.getExitAction());
-				actions.push_back(triggeredTransition.getAction());
-				actions.push_back(targetState.getEntryAction());
+				actions.push_back(currentState.exitAction;
+				actions.push_back(triggeredTransition.action;
+				actions.push_back(targetState.entryAction;
 
 				// Complete the transition and return the action list
 				currentState = targetState;
@@ -57,7 +65,7 @@ public:
 			}
 		}
 
-		actions.push_back(currentState.getExitAction());
+		actions.push_back(currentState.action);
 		return actions;
 	}
 };
