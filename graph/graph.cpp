@@ -1,3 +1,6 @@
+#ifndef GRAPH_CPP
+#define GRAPH_CPP
+
 #include "graph.h"
 #include "pathfindAStar.h"
 
@@ -173,3 +176,4 @@ void Graph::createGameGraphSquare()
     setDistances();
 
 } 
+#endif

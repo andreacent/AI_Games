@@ -35,7 +35,7 @@ glm::vec3 rotateVectorZ(glm::vec3 v, GLfloat ang){
 }
 
 GLfloat maxSpeed = 6;
-GLfloat maxAcceleration = 10;
+GLfloat maxAcceleration = 8;
 GLfloat maxPrediction = 0.1;
 
 void createMapBaseBehaviors(

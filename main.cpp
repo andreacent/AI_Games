@@ -6,6 +6,7 @@
     sep-dic 2017
 */    
 #include "movements/BlendedSteering.cpp"
+#include "graph/graph.cpp"
 
 #include "characters/Character.h"
 #include "characters/Marlene.h"
@@ -13,8 +14,7 @@
 
 #include "assets/text.cpp"
 #include "assets/map.h"
-#include "assets/StateMachine.h"
-#include "graph/graph.cpp"
+#include "assets/StateMachine.cpp"
 
 #include <GL/freeglut.h>
 #include <GL/gl.h>
@@ -29,7 +29,6 @@ std::list<Mesh*> meshs;
 Graph graph;
 std::list<vec3> path;
 
-GLfloat oldTimeSinceStart = 0.0;
 GLfloat pointSize=1.5;
 
 GLfloat targetRotation = glm::radians(10.0);
@@ -74,6 +73,10 @@ std::map<string,Behavior*> sidekick2Behaviors;
 //flocking (BlendedSteering)
 BlendedSteering sidekick2Flocking = {sidekick2,maxAcceleration,maxRotation,maxSpeed,*new list<BehaviorAndWeight*>()};
 
+
+/* STUDENT */
+Marlene student = {*new Kinematic({20.0f,0.0,30.0f},0.0),'s'};
+
 /* NOVICH */
 Kinematic novich = {{26.0f,0.0,30.0f},0.0};
 //mesh
@@ -88,22 +91,28 @@ std::list<Kinematic*> novichTargets;
 BlendedSteering novichFollowTarget = {novich,maxAcceleration,maxRotation,maxSpeed, *new list<BehaviorAndWeight*>()};
 //follow path with obstacles (BlendedSteering)
 BlendedSteering novichFollowPathWithObs = {novich,maxAcceleration,maxRotation,maxSpeed, *new list<BehaviorAndWeight*>()};
+BlendedSteering novichblendedWander = {novich,10,30,8, *new list<BehaviorAndWeight*>()};
+    
 
 /****************** Initialize **********************/
 void initialize(){
     ini = true;
+
+    student.setStateMachine(StudentStateMachine(student.character,target,collisionDetector,graph));
 
     meshs = drawMap();
 
     graph.createGameGraphSquare();
     glClearColor(0.81960,0.81960,0.81960,1);
 
-    /* NOVICH : behaviors and blended */
-    createMapBaseBehaviors(novich, target, novichTargets, collisionDetector, novichBehaviors);
+    // NOVICH : behaviors and blended 
+    createMapAllBehaviors(novich, target,  collisionDetector,novichTargets, novichBehaviors);
     novichBehaviors["followPath"] = novichFollowPath;
     novichTargets.push_back(&target);   
     followTarget(novichBehaviors, novichFollowTarget);
     followPathWithObstacle(novichBehaviors, novichFollowPathWithObs);
+    wanderWithObs(novichBehaviors,novichblendedWander);
+
 
     /* sidekick1 : behaviors and flocking */
     createMapAllBehaviors(sidekick1, target, collisionDetector, sidekick1Targets, sidekick1Behaviors);
@@ -132,8 +141,8 @@ void controlKey (unsigned char key, int xmouse, int ymouse){
         break;
         case '0': 
             //prueba de calcular el camino
-            path = pathfindAStar(graph, novich.position, target.position);
-            novichFollowPath->setPath(path);   
+            // /path = pathfindAStar(graph, novich.position, target.position);
+            //novichFollowPath->setPath(path);   
         break;
         case 'z':
             activeMap = !activeMap;
@@ -203,6 +212,10 @@ void display(){
     //gluLookAt(x,0,z,x,10,z-1.0f,0,1,0);
     gluLookAt(25,0,22,25,10,22-1.0f,0,1,0);
 
+    GLfloat timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
+    deltaTime = (timeSinceStart - oldTimeSinceStart) * 0.001;
+    oldTimeSinceStart = timeSinceStart;
+
     drawFloor();
     drawDetails();
     //cout<<meshs.size()<<endl;
@@ -211,29 +224,29 @@ void display(){
 
     if(activeTriangles) {
         graph.drawTriangles();
-        if (int(novichFollowPath->getPath().size) > 0) novichFollowPath->getPath().draw();
+        //if (int(novichFollowPath->getPath().size) > 0) novichFollowPath->getPath().draw();
     }
     if(activeMap) for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
 
     //TEST CHARACTER
     marlene.draw();
     novichMesh.draw();
+    student.draw();
+    student.checkStateMachine();
     //sidekick1Mesh.draw();
-    //sidekick2Mesh.draw();
-   
-    GLfloat timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
-    GLfloat deltaTime = (timeSinceStart - oldTimeSinceStart) * 0.001;
-    oldTimeSinceStart = timeSinceStart;
+    //sidekick2Mesh.draw();   
 
     target.updatePosition(deltaTime);
     target.updateOrientation(deltaTime);
+
+    //novichblendedWander.update(maxSpeed,deltaTime); 
 
     //sidekick1Flocking.update(maxSpeed,deltaTime);
     //sidekick2Flocking.update(maxSpeed,deltaTime);
 
     //sidekick2Behaviors["wander"]->update(maxSpeed,deltaTime);
 
-    if (int(novichFollowPath->getPath().size) > 0) novichFollowPathWithObs.update(maxSpeed,deltaTime);
+    //if (int(novichFollowPath->getPath().size) > 0) novichFollowPathWithObs.update(maxSpeed,deltaTime);
     
     glFlush();
     glutPostRedisplay();

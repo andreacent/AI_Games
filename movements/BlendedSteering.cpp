@@ -52,4 +52,16 @@ void followPathWithObstacle(
     }
 }
 
+void wanderWithObs(  
+                    std::map<string,Behavior*> behaviors,
+                    BlendedSteering &blended ){
+
+    if(behaviors.count("wander") > 0 ){
+        blended.addBehavior(new BehaviorAndWeight(behaviors["wander"],0.02));
+    }
+    if(behaviors.count("obstacle") > 0 ){
+        blended.addBehavior(new BehaviorAndWeight(behaviors["obstacle"],1));
+    }
+}
+
 #endif

@@ -69,7 +69,7 @@ public:
     stored goal from the given node
     */
     float estimate(Node node){
-        return distance(node.point,goalNode.point);
+        return glm::distance(node.point,goalNode.point);
     }
 };
 
@@ -125,7 +125,7 @@ public:
             node = (*itNode).second;
             for (set<int>::iterator it = node.adjacent.begin(); it != node.adjacent.end(); ++it ){
                 if ((*it) < node.id) continue;
-                dist = distance(node.point,nodes[(*it)].point);
+                dist = glm::distance(node.point,nodes[(*it)].point);
                 distances[make_pair(node.id,(*it))] = dist;
                 distances[make_pair((*it),node.id)] = dist;
 

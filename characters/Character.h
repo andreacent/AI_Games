@@ -8,19 +8,21 @@ using namespace glm;
 
 class Character{
 protected:
-	Kinematic &character;
-	//StateMachine &stateMachine;
+	StateMachine *stateMachine = NULL;
 
 	char rol;
 
 
 public:
+	Kinematic &character;
 
     float px = 0.125/2;
 
-	//Character(Kinematic &c,char rl,StateMachine &sm)  : character(c),rol(rl),stateMachine(sm) {}
+	Character(Kinematic &c,char rl,StateMachine *sm)  : character(c),rol(rl),stateMachine(sm) {}
 	Character(Kinematic &c,char rl)  : character(c),rol(rl) {}
 
+	void setStateMachine(StateMachine *s){ stateMachine = s; }
+	void checkStateMachine(){ stateMachine->check(); }
 
 	/**************** GUIDES ****************/
 	void drawOrigin(){
