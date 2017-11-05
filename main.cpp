@@ -102,7 +102,8 @@ void initialize(){
 
     meshs = drawMap();
 
-    graph.createGameGraphSquare();
+    //graph.createGameGraphSquare();
+    graph.createGameGraph();
     glClearColor(0.81960,0.81960,0.81960,1);
 
     // NOVICH : behaviors and blended 
