@@ -64,27 +64,31 @@ public:
 	virtual bool test() = 0;
 };
 
-class ConIniToA: public Condition{
-	Kinematic &target;
-public:
-	ConIniToA(Kinematic &t) : Condition(), target(t){}
+	/********************** CONDITION SM_1 **********************/
 
-	bool test(){
-		if( target.position.z < 7 && target.position.x < 13) return false;
-		return true;
-	}
-};
+		/********************** Ini -> A **********************/
+			class ConIniToA: public Condition{
+				Kinematic &target;
+			public:
+				ConIniToA(Kinematic &t) : Condition(), target(t){}
 
-class ConAtoIni: public Condition{
-	Kinematic &character;
-public:
-	ConAtoIni(Kinematic &t) : Condition(), character(t){}
-	
-	bool test(){
-		if( glm::length(character.velocity) == 0.0 ) return true; 
-		return false;
-	}
-};
+				bool test(){
+					if( target.position.z < 7 && target.position.x < 13) return false;
+					return true;
+				}
+			};
+
+		/********************** A -> Ini **********************/
+			class ConAtoIni: public Condition{
+				Kinematic &character;
+			public:
+				ConAtoIni(Kinematic &t) : Condition(), character(t){}
+				
+				bool test(){
+					if( glm::length(character.velocity) == 0.0 ) return true; 
+					return false;
+				}
+			};
 
 /********************** TRANSITION **********************/
 class Transition{

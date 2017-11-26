@@ -102,8 +102,9 @@ void initialize(){
 
     meshs = drawMap();
 
-    //graph.createGameGraphSquare();
-    graph.createGameGraph();
+    graph.createGameGraphSquare();
+    //graph.createGameGraph();
+    //graph.createGameGraphNew();
     glClearColor(0.81960,0.81960,0.81960,1);
 
     // NOVICH : behaviors and blended 
@@ -129,72 +130,72 @@ void initialize(){
 }
 
 /******************************* KEYBOARD *****************************/
-void controlKey (unsigned char key, int xmouse, int ymouse){  
-    switch (key){
-        case 'a': 
-            target.rotation = targetRotation;
-        break;
-        case 'd': 
-            target.rotation = -targetRotation;
-        break;
-        case ' ': 
-            activeTriangles = !activeTriangles;
-        break;
-        case '0': 
-            //prueba de calcular el camino
-            // /path = pathfindAStar(graph, novich.position, target.position);
-            //novichFollowPath->setPath(path);   
-        break;
-        case 'z':
-            activeMap = !activeMap;
-        break;
-        default: break;
-    }  
-}
-
-void controlKeyReleased (unsigned char key, int xmouse, int ymouse){   
-    switch (key){
-        case 'a': 
-        case 'd': 
-            target.rotation = 0.0;
-        break;
-        default: break;
-    } 
-}
-
-void handleSpecialKeypress(int key, int x, int y) {
-    switch (key) {
-        case GLUT_KEY_LEFT:
-            target.velocity = {-targetVelocity,0.0,0.0};
-        break;
-        case GLUT_KEY_RIGHT:
-            target.velocity = {targetVelocity,0.0,0.0};
-        break;
-        case GLUT_KEY_UP:
-            deltaMove = -0.1f;
-            target.velocity = {0.0,0.0,targetVelocity};
-        break;
-        case GLUT_KEY_DOWN:
-            deltaMove = 0.1f;
-            target.velocity = {0.0,0.0,-targetVelocity};
-        break;
-        default: break;
+    void controlKey (unsigned char key, int xmouse, int ymouse){  
+        switch (key){
+            case 'a': 
+                target.rotation = targetRotation;
+            break;
+            case 'd': 
+                target.rotation = -targetRotation;
+            break;
+            case ' ': 
+                activeTriangles = !activeTriangles;
+            break;
+            case '0': 
+                //prueba de calcular el camino
+                // /path = pathfindAStar(graph, novich.position, target.position);
+                //novichFollowPath->setPath(path);   
+            break;
+            case 'z':
+                activeMap = !activeMap;
+            break;
+            default: break;
+        }  
     }
-}
 
-void handleSpecialKeyReleased(int key, int x, int y){
-    switch (key) {
-        case GLUT_KEY_LEFT:
-        case GLUT_KEY_RIGHT:
-        case GLUT_KEY_UP:
-            deltaMove = 0.0f;
-        case GLUT_KEY_DOWN:
-            deltaMove = 0.0f;
-            target.velocity = {0.0,0.0,0.0};
-        break;
-        default: break;
+    void controlKeyReleased (unsigned char key, int xmouse, int ymouse){   
+        switch (key){
+            case 'a': 
+            case 'd': 
+                target.rotation = 0.0;
+            break;
+            default: break;
+        } 
     }
-}
+
+    void handleSpecialKeypress(int key, int x, int y) {
+        switch (key) {
+            case GLUT_KEY_LEFT:
+                target.velocity = {-targetVelocity,0.0,0.0};
+            break;
+            case GLUT_KEY_RIGHT:
+                target.velocity = {targetVelocity,0.0,0.0};
+            break;
+            case GLUT_KEY_UP:
+                deltaMove = -0.1f;
+                target.velocity = {0.0,0.0,targetVelocity};
+            break;
+            case GLUT_KEY_DOWN:
+                deltaMove = 0.1f;
+                target.velocity = {0.0,0.0,-targetVelocity};
+            break;
+            default: break;
+        }
+    }
+
+    void handleSpecialKeyReleased(int key, int x, int y){
+        switch (key) {
+            case GLUT_KEY_LEFT:
+            case GLUT_KEY_RIGHT:
+            case GLUT_KEY_UP:
+                deltaMove = 0.0f;
+            case GLUT_KEY_DOWN:
+                deltaMove = 0.0f;
+                target.velocity = {0.0,0.0,0.0};
+            break;
+            default: break;
+        }
+    }
 
 /************************** Display **************************/
 void display(){
