@@ -9,7 +9,7 @@ StateMachine* StudentStateMachine(	Kinematic &character,
 							CollisionDetector &collisionDetector,
 							Graph &graph ){
 
-	Bezier *path = new Bezier();
+	Bezier *path = new Bezier(); //camino que se genera del A*
 	std::map<string,Behavior*> behaviors; 
 	//(character,maxAcceleration,collisionDetector,avoidDistance,lookahead) 	
 	behaviors["obstacle"] = new ObstacleAvoidance(character,16,collisionDetector,4.5,3);

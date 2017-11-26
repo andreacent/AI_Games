@@ -70,7 +70,7 @@ public:
 	ConIniToA(Kinematic &t) : Condition(), target(t){}
 
 	bool test(){
-		if( target.position.z < 7 && target.position.x < 13) return false;
+		if( target.position.z < 8 && target.position.x < 13) return false;
 		return true;
 	}
 };

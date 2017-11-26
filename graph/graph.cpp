@@ -13,7 +13,7 @@ using namespace std;
 void Graph::createGameGraph()
 {
     int i = 0;
-    nodes[0] = Node(i++, new vec3[3]{vec3(16,0,16),vec3(12,0,18),vec3(5,0,17)} );
+    nodes[0] = Node(i++, new vec3[3]{vec3(16,0,16),vec3(12,0,18),vec3(5,0,17)} , set<int>{1,90});
     nodes[1] = Node(i++, new vec3[3]{vec3(5,0,17),vec3(5,0,25),vec3(12,0,18)}, set<int>{2} );
     nodes[2] = Node(i++, new vec3[3]{vec3(12,0,23),vec3(5,0,25),vec3(12,0,18)}, set<int>{3,52} );
     nodes[3] = Node(i++, new vec3[3]{vec3(5,0,34),vec3(5,0,25),vec3(12,0,23)}, set<int>{4} );
@@ -76,8 +76,40 @@ void Graph::createGameGraph()
     nodes[57] = Node(i++, new vec3[3]{vec3(41,0,12),vec3(43,0,8),vec3(32,0,7)}, set<int>{58,60} );
     nodes[58] = Node(i++, new vec3[3]{vec3(43,0,7),vec3(43,0,8),vec3(32,0,7)},false );
     nodes[59] = Node(i++, new vec3[3]{vec3(41,0,12),vec3(41,0,16),vec3(33,0,16)} );
-    nodes[60] = Node(i++, new vec3[3]{vec3(33,0,16),vec3(32,0,7),vec3(41,0,12)}, false);
+    nodes[60] = Node(i++, new vec3[3]{vec3(33,0,16),vec3(32,0,7),vec3(41,0,12)} );
 
+    
+    /* --------- SERGIO --------- */
+    nodes[61] = Node(i++, new vec3[3]{vec3(30,0,16),vec3(32,0, 7),vec3(33,0,16)}, set<int>{64,62});
+    nodes[62] = Node(i++, new vec3[3]{vec3(30,0,16),vec3(33,0,16),vec3(30,0,17)} );
+    nodes[63] = Node(i++, new vec3[3]{vec3(33,0,17),vec3(33,0,16),vec3(30,0,17)}, false);
+    nodes[64] = Node(i++, new vec3[3]{vec3(30,0,16),vec3(29,0,11),vec3(32,0, 7)}, set<int>{65,66});
+    nodes[65] = Node(i++, new vec3[3]{vec3(30,0,16),vec3(29,0,11),vec3(27,0,14)}, set<int>{69,70});
+    nodes[66] = Node(i++, new vec3[3]{vec3(32,0, 7),vec3(29,0,11),vec3(27,0, 8)}, set<int>{67,68});
+    nodes[67] = Node(i++, new vec3[3]{vec3(32,0, 7),vec3(27,0, 7),vec3(27,0, 8)}, false);
+    nodes[68] = Node(i++, new vec3[3]{vec3(29,0,11),vec3(25,0,11),vec3(27,0, 8)}, set<int>{66,69,76} );
+    nodes[69] = Node(i++, new vec3[3]{vec3(29,0,11),vec3(25,0,11),vec3(27,0,14)}, set<int>{65,72,68} );
+    nodes[70] = Node(i++, new vec3[3]{vec3(30,0,16),vec3(24,0,16),vec3(27,0,14)}, set<int>{65,71} );
+    nodes[71] = Node(i++, new vec3[3]{vec3(22,0,14),vec3(24,0,16),vec3(27,0,14)}, set<int>{77,72,70} );
+    nodes[72] = Node(i++, new vec3[3]{vec3(22,0,14),vec3(25,0,11),vec3(27,0,14)}, set<int>{69,71,73} );
+    nodes[73] = Node(i++, new vec3[3]{vec3(22,0,14),vec3(25,0,11),vec3(25,0, 8)}, set<int>{74,72,76} );
+    nodes[74] = Node(i++, new vec3[3]{vec3(22,0,14),vec3(20,0, 7),vec3(25,0, 8)}, set<int>{75,79} );
+    nodes[75] = Node(i++, new vec3[3]{vec3(25,0, 7),vec3(20,0, 7),vec3(25,0, 8)} );
+    nodes[76] = Node(i++, new vec3[3]{vec3(27,0, 8),vec3(25,0,11),vec3(25,0, 8)}, set<int>{73,68} );
+    nodes[77] = Node(i++, new vec3[3]{vec3(20,0,16),vec3(22,0,14),vec3(24,0,16)}, set<int>{71,74,78} );
+    nodes[78] = Node(i++, new vec3[3]{vec3(20,0,16),vec3(22,0,14),vec3(16,0,16)});
+    nodes[79] = Node(i++, new vec3[3]{vec3(20,0, 7),vec3(22,0,14),vec3(16,0,16)});
+    nodes[80] = Node(i++, new vec3[3]{vec3(20,0, 7),vec3(16,0, 7),vec3(16,0,16)});
+    nodes[81] = Node(i++, new vec3[3]{vec3(16,0,15),vec3(16,0, 8),vec3(14,0,15)});
+    nodes[82] = Node(i++, new vec3[3]{vec3(10,0,12),vec3(16,0, 8),vec3(14,0,15)}, set<int>{81,84,85} );
+    nodes[83] = Node(i++, new vec3[3]{vec3(14,0,15),vec3( 8,0,16),vec3(14,0,16)}, set<int>{81,85,90} );
+    nodes[84] = Node(i++, new vec3[3]{vec3(10,0,12),vec3(16,0, 8),vec3( 7,0, 8)}, set<int>{82,87} );
+    nodes[85] = Node(i++, new vec3[3]{vec3(10,0,12),vec3( 8,0,16),vec3(14,0,15)}) ;
+    nodes[86] = Node(i++, new vec3[3]{vec3(10,0,12),vec3( 8,0,16),vec3( 5,0,12)}, set<int>{85,89,87} );
+    nodes[87] = Node(i++, new vec3[3]{vec3(10,0,12),vec3( 7,0, 8),vec3( 5,0,12)});
+    nodes[88] = Node(i++, new vec3[3]{vec3( 7,0, 8),vec3( 5,0, 8),vec3( 5,0,12)}, false);
+    nodes[89] = Node(i++, new vec3[3]{vec3( 5,0,17),vec3( 8,0,16),vec3( 5,0,12)}, set<int>{90} );
+    nodes[90] = Node(i++, new vec3[3]{vec3( 5,0,17),vec3( 8,0,16),vec3(16,0,16)}, set<int>{89,83} );
 
     setDistances();
 

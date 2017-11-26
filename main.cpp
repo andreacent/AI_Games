@@ -102,7 +102,8 @@ void initialize(){
 
     meshs = drawMap();
 
-    graph.createGameGraphSquare();
+    graph.createGameGraph();
+    //graph.createGameGraphSquare();
     glClearColor(0.81960,0.81960,0.81960,1);
 
     // NOVICH : behaviors and blended 
@@ -112,7 +113,6 @@ void initialize(){
     followTarget(novichBehaviors, novichFollowTarget);
     followPathWithObstacle(novichBehaviors, novichFollowPathWithObs);
     wanderWithObs(novichBehaviors,novichblendedWander);
-
 
     /* sidekick1 : behaviors and flocking */
     createMapAllBehaviors(sidekick1, target, collisionDetector, sidekick1Targets, sidekick1Behaviors);

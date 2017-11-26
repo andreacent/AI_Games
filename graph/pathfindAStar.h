@@ -29,7 +29,7 @@ std::list<glm::vec3> pathfindAStar(Graph graph, glm::vec3 posStart, glm::vec3 po
     //get start and goal nodes 
     std::list<glm::vec3> path;
     Node start,goal;
-    if (!graph.getNode(posStart, start) || !graph.getNode(posEnd, goal)) return path;
+    if (!graph.getNode(posStart, start) || !graph.getNode(posEnd, goal)) return path; 
     Heuristic heuristic = {goal};
         
     // Initialize the record for the start node
