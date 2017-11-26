@@ -1,7 +1,8 @@
-#ifndef MESH_H
-#define MESH_H
+#ifndef TEXT_CPP
+#define TEXT_CPP
 #include <string.h>
 #include <GL/glut.h>
+#include <glm/glm.hpp>
 
 typedef enum { MODE_BITMAP } mode_type;
 
@@ -22,36 +23,63 @@ void my_init(){
    font_index = 0;
 }
 
-void drawText(int n) {
+void drawTextBox(glm::vec3 pIni, GLfloat h, GLfloat w){     
+    glm::vec3 pF = {pIni.x+w, pIni.y, pIni.z-h};   
+    GLfloat trianW = 1.2;
+    GLfloat trianH = trianW/2;
+
+    glColor3f(1,1,1);
+    glBegin(GL_QUADS);  
+        glVertex3f(pIni.x, pIni.y, pIni.z); 
+        glVertex3f(pIni.x, pIni.y, pIni.z-h); 
+        glVertex3f(pF.x, pF.y, pF.z); 
+        glVertex3f(pIni.x+w, pIni.y, pIni.z); 
+    glEnd();
+
+    glBegin(GL_TRIANGLES);
+        glVertex3f(pF.x, pF.y, pF.z); 
+        glVertex3f(pF.x-trianW, pF.y, pF.z); 
+        glVertex3f(pF.x-trianH, pF.y, pF.z-trianH);
+    glEnd();
+    glColor3f(0,0,0);
+}
+
+void drawText(int n, glm::vec3 pos) {
+  if (n > 4) return; //depende de tamano de bitmap_font_names
+
   void* bitmap_fonts[2] = {
     GLUT_BITMAP_9_BY_15,
     GLUT_BITMAP_HELVETICA_10,   
   };
 
-  const char* bitmap_font_names[4] = {
+  const char* bitmap_font_names[5] = {
+    "Hola!",
+    "Hola! Como estas?",
+    "Bien! y tu?",
     "¡FELICIDADES!",
-    "PERDISTE",  
-    "Cambio de estado",
+    "PERDISTE",
   };
 
-  glColor3f(0.0,0.0,1.0);
-
-  switch (n) {
-    case 0:
-      glRasterPos2f(-2,-9.0);
-      print_bitmap_string(bitmap_fonts[0], bitmap_font_names[n]);   
+  switch(n) //donde opción es la variable a comparar
+  {
+    case 0:   
+      drawTextBox(pos, 1.2f, 2.1f); 
     break;
-    case 1:
-      glRasterPos2f(-1.5,-9.0);
-      print_bitmap_string(bitmap_fonts[0], bitmap_font_names[n]);
+    case 1:     
+      drawTextBox(pos, 1.2f, 7.0f);
     break;
-    case 2:
+    case 2:     
+      drawTextBox(pos, 1.2f, 4.0f); 
+    break;
     case 3:
-      glRasterPos2f(-5.5,8);
-      print_bitmap_string(bitmap_fonts[0], bitmap_font_names[n]);
+    case 4:   
+      drawTextBox(pos, 1.2f, 7.0f); 
     break;
     default: break;
   }
 
+  glRasterPos3f(pos.x+0.2,pos.y,pos.z-0.8);
+  print_bitmap_string(bitmap_fonts[1], bitmap_font_names[n]);
 }
+
 #endif

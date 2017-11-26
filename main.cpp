@@ -21,7 +21,6 @@
 #include <glm/glm.hpp>
 //#include <GL/glew.h>
 
-
 #include "mesh/Mesh.cpp"
 
 std::list<Mesh*> meshs;
@@ -32,7 +31,7 @@ std::list<vec3> path;
 GLfloat pointSize=1.5;
 
 GLfloat targetRotation = glm::radians(10.0);
-GLfloat targetVelocity =5;
+GLfloat targetVelocity = 3;
 
 GLfloat maxRotation = 30;
 
@@ -76,6 +75,8 @@ BlendedSteering sidekick2Flocking = {sidekick2,maxAcceleration,maxRotation,maxSp
 
 /* STUDENT */
 Marlene student = {*new Kinematic({20.0f,0.0,30.0f},0.0),'s'};
+/* STUDENT HELLO */
+Marlene studentHello = {*new Kinematic({24.0f,0.0,33.0f},0.0),'s'};
 
 /* NOVICH */
 Kinematic novich = {{26.0f,0.0,30.0f},0.0};
@@ -99,6 +100,11 @@ void initialize(){
     ini = true;
 
     student.setStateMachine(StudentStateMachine(student.character,target,collisionDetector,graph));
+   
+    std::list<Kinematic*> studentHelloTargets;
+    studentHelloTargets.push_back(&target);   
+    studentHelloTargets.push_back(&student.character);   
+    studentHello.setStateMachine(HelloStateMachine(studentHello.character,studentHelloTargets));
 
     meshs = drawMap();
 
@@ -136,16 +142,19 @@ void controlKey (unsigned char key, int xmouse, int ymouse){
         case 'd': 
             target.rotation = -targetRotation;
         break;
-        case ' ': 
+        case 'x': 
             activeTriangles = !activeTriangles;
+        break;
+        case 'z':
+            activeMap = !activeMap;
         break;
         case '0': 
             //prueba de calcular el camino
             // /path = pathfindAStar(graph, novich.position, target.position);
             //novichFollowPath->setPath(path);   
         break;
-        case 'z':
-            activeMap = !activeMap;
+        case ' ': //mover en y (saltar)
+            target.velocity.y = targetVelocity;
         break;
         default: break;
     }  
@@ -157,6 +166,9 @@ void controlKeyReleased (unsigned char key, int xmouse, int ymouse){
         case 'd': 
             target.rotation = 0.0;
         break;
+        case ' ': //dejar de mover en y (saltar)
+            target.velocity.y = 0.0;
+        break;
         default: break;
     } 
 }
@@ -164,18 +176,18 @@ void controlKeyReleased (unsigned char key, int xmouse, int ymouse){
 void handleSpecialKeypress(int key, int x, int y) {
     switch (key) {
         case GLUT_KEY_LEFT:
-            target.velocity = {-targetVelocity,0.0,0.0};
+            target.velocity.x = -targetVelocity;
         break;
         case GLUT_KEY_RIGHT:
-            target.velocity = {targetVelocity,0.0,0.0};
+            target.velocity.x = targetVelocity;
         break;
         case GLUT_KEY_UP:
             deltaMove = -0.1f;
-            target.velocity = {0.0,0.0,targetVelocity};
+            target.velocity.z = targetVelocity;
         break;
         case GLUT_KEY_DOWN:
             deltaMove = 0.1f;
-            target.velocity = {0.0,0.0,-targetVelocity};
+            target.velocity.z =  -targetVelocity;
         break;
         default: break;
     }
@@ -185,11 +197,12 @@ void handleSpecialKeyReleased(int key, int x, int y){
     switch (key) {
         case GLUT_KEY_LEFT:
         case GLUT_KEY_RIGHT:
+            target.velocity.x = 0.0;
+        break;
         case GLUT_KEY_UP:
-            deltaMove = 0.0f;
         case GLUT_KEY_DOWN:
             deltaMove = 0.0f;
-            target.velocity = {0.0,0.0,0.0};
+            target.velocity.z = 0.0;
         break;
         default: break;
     }
@@ -229,8 +242,9 @@ void display(){
     if(activeMap) for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
 
     //TEST CHARACTER
+    studentHello.draw();
+    studentHello.checkStateMachine();
     marlene.draw();
-    novichMesh.draw();
     student.draw();
     student.checkStateMachine();
     //sidekick1Mesh.draw();
@@ -248,6 +262,9 @@ void display(){
 
     //if (int(novichFollowPath->getPath().size) > 0) novichFollowPathWithObs.update(maxSpeed,deltaTime);
     
+    //TEXTO
+    //drawText(2,glm::vec3(2,0.0,10));
+
     glFlush();
     glutPostRedisplay();
 }

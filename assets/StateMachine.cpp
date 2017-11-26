@@ -50,4 +50,36 @@ StateMachine* StudentStateMachine(	Kinematic &character,
 	return stateMachine;
 }
 
+/*
+character le dice hola a target cuando esta cerca
+*/
+StateMachine* HelloStateMachine(Kinematic &character, list<Kinematic*> &targets ){
+
+	/* INI STATE */
+	Action *nothingAct = new ActNothing(character);
+	State *stIni = new State(nothingAct);
+	StateMachine *stateMachine = new StateMachine(stIni);
+
+	Action *actText = new ActText(0,character);
+
+	// Loop through each target
+	for (list<Kinematic*>::iterator target=targets.begin(); target != targets.end(); ++target){
+		/* HELLO STATE */
+	    //(character,target, maxAngularAcceleration,maxRotation,slowRadius,targetRadius)
+		Action *actFace = new ActBehavior(new Face(character,**target,10,30,5,2));
+		State *stText = new State(actText,actFace);
+
+		// ini -> hello
+		Transition iniToHello = {stText, new ConNextTo(character,**target)};
+		stIni->addTransition(iniToHello);
+
+		//  hello -> ini
+		Transition helloToIni = {stIni,new ConFarFrom(character,**target)};
+		stText->addTransition(helloToIni);
+
+		stateMachine->addState(stText);
+	}	
+
+	return stateMachine;
+}
 #endif

@@ -4,6 +4,7 @@
 #include "../movements/Behaviors.cpp"
 #include "../movements/BlendedSteering.cpp"
 #include "../graph/graph.cpp"
+#include "../assets/text.cpp"
 
 #include <GL/freeglut.h>
 #include <list>
@@ -58,6 +59,30 @@ public:
 	}
 };
 
+class ActText: public Action{
+public:
+	int typeText = 0;
+	Kinematic &character;
+
+	ActText(int n, Kinematic &c) : Action(), typeText(n), character(c) {}
+
+	void execute(){ 
+		glm::vec3 newPos = {character.position.x-1.2,0.0,character.position.z+2.4};
+		drawText(typeText,newPos); 
+	}
+};
+
+class ActNothing: public Action{
+public:
+	Kinematic &character;
+
+	ActNothing(Kinematic &c) : Action(), character(c) {}
+
+	void execute(){ 
+		character.velocity = {0.0,0.0,0.0}; 
+	}
+};
+
 /********************** CONDITION **********************/
 class Condition{
 public:
@@ -82,6 +107,30 @@ public:
 	
 	bool test(){
 		if( glm::length(character.velocity) == 0.0 ) return true; 
+		return false;
+	}
+};
+
+class ConNextTo: public Condition{
+	Kinematic &character;
+	Kinematic &target;
+public:
+	ConNextTo(Kinematic &t,Kinematic &c) : Condition(), character(c), target(t){}
+	
+	bool test(){
+		if( glm::distance(character.position,target.position) <= 3 ) return true; 
+		return false;
+	}
+};
+
+class ConFarFrom: public Condition{
+	Kinematic &character;
+	Kinematic &target;
+public:
+	ConFarFrom(Kinematic &t,Kinematic &c) : Condition(), character(c), target(t){}
+	
+	bool test(){
+		if( glm::distance(character.position,target.position) > 3 ) return true; 
 		return false;
 	}
 };
