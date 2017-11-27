@@ -80,6 +80,7 @@ public:
 
 	void execute(){ 
 		character.velocity = {0.0,0.0,0.0}; 
+		character.orientation =0.0;
 	}
 };
 
@@ -118,7 +119,7 @@ public:
 	ConNextTo(Kinematic &t,Kinematic &c) : Condition(), character(c), target(t){}
 	
 	bool test(){
-		if( glm::distance(character.position,target.position) <= 3 ) return true; 
+		if( glm::distance(character.position,target.position) <= 2.5 ) return true; 
 		return false;
 	}
 };
@@ -130,7 +131,7 @@ public:
 	ConFarFrom(Kinematic &t,Kinematic &c) : Condition(), character(c), target(t){}
 	
 	bool test(){
-		if( glm::distance(character.position,target.position) > 3 ) return true; 
+		if( glm::distance(character.position,target.position) > 2.5 ) return true; 
 		return false;
 	}
 };

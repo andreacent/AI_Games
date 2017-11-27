@@ -1,6 +1,16 @@
 class Novich : public Character{
 public:
-	Novich(Kinematic &character,char rl) : Character(character,rl) {}
+	Novich(Kinematic &character,char rl) : Character(character,rl) {		
+	    switch(rol){
+	        case 'p':
+	        shirt = { 0.4705, 0.03921, 0.42745};
+	        break;
+	        case 'e':
+	        shirt = { 1, 0, 0};
+	        break;
+	        default:break;
+	    }
+	}
 
     // Colors
     vec3 line =  {     0,     0,     0};    
@@ -38,36 +48,19 @@ public:
 
 	void draw(){
 
-	    float x = character.position.x;
-	    float z = character.position.z;
-	    //float px = 0.125;
-	    double deg = glm::degrees(-character.rotation);//radianes a grados
-
-	    switch(rol){
-	        case 'p':
-	        shirt = { 0.4705, 0.03921, 0.42745};
-	        break;
-	        case 'e':
-	        shirt = { 1, 0, 0};
-	        break;
-	        default:break;
-	    }
-
-	    // Draw
-	    glPushMatrix();
+		glPushMatrix();
 			glPointSize(px);
-	        glTranslatef(x,0.0,z);
-	        glRotatef(deg,0,1,0);
+			glTranslatef(character.position.x,character.position.y,character.position.z);
 
-	        //drawGuide(7,9);
+			double deg = setOrientation(); /* orientacion del dibujo */
+			glRotatef(deg,0,1,0);
 
-	        //head
-	        drawHead({0*px,0,4*px},line,skin,skinS);
-
-	        //cabello
-	        //drawHair({0*px,0,8*px});
-
-	    glPopMatrix();
+			//cabeza
+			drawHead({0*px,0,4*px},line,skin,skinS);
+			//vestido
+			//drawDress({0*px,0,-3*px});	        
+			//cabello
+			//drawHair({0*px,0,8*px});
 	}
 	
 };

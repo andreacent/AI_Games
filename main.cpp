@@ -48,7 +48,7 @@ CollisionDetector collisionDetector = {meshs};
 
 /******************** CHARACTERES *******************/
 Kinematic target = {{2.0f,0.0f,2.0f}};
-Marlene marlene = {target,'p'};
+Marlene marlene = {target,'t'};
 
 /* sidekick1 */
 Kinematic sidekick1 = {{30.0f,0,26.0f},0.0};
@@ -137,10 +137,10 @@ void initialize(){
 void controlKey (unsigned char key, int xmouse, int ymouse){  
     switch (key){
         case 'a': 
-            target.rotation = targetRotation;
+            target.rotation = -targetRotation;
         break;
         case 'd': 
-            target.rotation = -targetRotation;
+            target.rotation = targetRotation;
         break;
         case 'x': 
             activeTriangles = !activeTriangles;
@@ -241,21 +241,22 @@ void display(){
     }
     if(activeMap) for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
 
-    //TEST CHARACTER
-    studentHello.draw();
-    studentHello.checkStateMachine();
-    marlene.draw();
-    student.draw();
-    student.checkStateMachine();
-    //sidekick1Mesh.draw();
-    //sidekick2Mesh.draw();   
-
     target.updatePosition(deltaTime);
     target.updateOrientation(deltaTime);
+
+    //TEST CHARACTER
+    studentHello.checkStateMachine();
+    studentHello.draw();
+    student.checkStateMachine();
+    student.draw();
+    //sidekick2Mesh.draw();   
+
+    marlene.draw();
 
     //novichblendedWander.update(maxSpeed,deltaTime); 
 
     //sidekick1Flocking.update(maxSpeed,deltaTime);
+    //sidekick1Mesh.draw();
     //sidekick2Flocking.update(maxSpeed,deltaTime);
 
     //sidekick2Behaviors["wander"]->update(maxSpeed,deltaTime);
