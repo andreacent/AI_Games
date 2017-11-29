@@ -1,6 +1,8 @@
 #ifndef WANDER_H
 #define WANDER_H
 
+//#include <iostream>
+
 class Wander: public Face{
 	// Holds the radius and forward offset of the wander
 	// circle.
@@ -26,6 +28,8 @@ public:
 
 	bool getSteering(SteeringOutput &steering){
 		GLfloat targetOrientation;
+
+		//cout<<"wander"<<endl;
 		
 		// Update the wander orientation
 		wanderOrientation += randomBinomial() * wanderRate;

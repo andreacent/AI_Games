@@ -3,6 +3,9 @@
 
 #include <GL/gl.h>
 #include <glm/glm.hpp>
+#include "../mesh/Mesh.cpp"
+
+#include <list>
 
 struct SteeringOutput {
 	glm::vec3 linear;
@@ -20,8 +23,21 @@ struct Kinematic{
 	Kinematic(glm::vec3 p={0.0,0.0,0.0}, GLfloat o=0.0, glm::vec3 v={0.0,0.0,0.0}, GLfloat r=0.0) 
 		: position(p), orientation(o), velocity(v), rotation(r) {}
 
-	void updatePosition(GLfloat deltaTime){
-		position += velocity * deltaTime;
+	/*
+	cambia la posicion del personaje si es valida, es decir,
+	no sale del mapa
+	*/
+	bool setNewPosition(glm::vec3 newPos){
+		if( newPos.z > 1.5 && newPos.z < 39) position.z = newPos.z;	
+		if (newPos.x > 0.4 && newPos.x < 53.6 ) position.x = newPos.x; 
+	}
+
+	void updatePosition(GLfloat deltaTime, std::list<Mesh*> meshs){	 //
+		glm::vec3 nesPos = position + (velocity * deltaTime);
+		for (std::list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m){
+			if ((*m)->insideMesh(nesPos)) return;
+		}	
+		setNewPosition(nesPos);
 	}
 
 	void updateOrientation(GLfloat deltaTime){
@@ -30,7 +46,7 @@ struct Kinematic{
 
 	void update(SteeringOutput steering,GLfloat maxSpeed,GLfloat deltaTime){
 		// Update the position and orientation
-		position += velocity * deltaTime;
+		setNewPosition(position + (velocity * deltaTime));
 		orientation += rotation * deltaTime;
 
 		// and the velocity and rotation
@@ -52,7 +68,7 @@ struct Kinematic{
 
 	void update(glm::vec3 linear,GLfloat maxSpeed,GLfloat deltaTime){
 		// Update the position and orientation
-		position += velocity * deltaTime;
+		setNewPosition(position + (velocity * deltaTime));
 
 		// and the velocity and rotation
 		velocity += linear * deltaTime;

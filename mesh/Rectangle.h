@@ -60,22 +60,24 @@ public:
 		triangles.clear();
 		
 		if(right){
-			triangles.push_back(vector<glm::vec3> {e, h, c});
-			triangles.push_back(vector<glm::vec3> {c, d, e});
+			triangles.push_back(std::vector<glm::vec3> {e, h, c});
+			triangles.push_back(std::vector<glm::vec3> {c, d, e});
 		}
 		if(left){
-			triangles.push_back(vector<glm::vec3> {f, b, g});
-			triangles.push_back(vector<glm::vec3> {a, g, b});
+			triangles.push_back(std::vector<glm::vec3> {f, b, g});
+			triangles.push_back(std::vector<glm::vec3> {a, g, b});
 		}
 		if(top){
-			triangles.push_back(vector<glm::vec3> {f, g, e});
-			triangles.push_back(vector<glm::vec3> {e, g, h});
+			triangles.push_back(std::vector<glm::vec3> {f, g, e});
+			triangles.push_back(std::vector<glm::vec3> {e, g, h});
 		}
 		if(bottom){
-			triangles.push_back(vector<glm::vec3> {a, b, c});
-			triangles.push_back(vector<glm::vec3> {c, b, d});
+			triangles.push_back(std::vector<glm::vec3> {a, b, c});
+			triangles.push_back(std::vector<glm::vec3> {c, b, d});
 		}
 	}
+
+	bool insideMesh(glm::vec3 point){ return false; }
 };
 
 #endif

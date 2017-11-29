@@ -34,7 +34,18 @@ public:
 				glVertex3f(v.x, v.y, v.z); 
 			}	
 		glEnd();
-	}	
+	}
+
+	bool insideMesh(glm::vec3 point){
+		int j = 3;
+		float offset = 0.4;
+		
+		if( point.x + offset  >= vectices[0].x && point.x - offset <= vectices[3].x
+			&& point.z + offset >= vectices[0].z && point.z - offset <= vectices[1].z ) 
+			return true;
+
+		return false;
+	}
 
 	void createTriangles(bool top, bool right,bool bottom, bool left){
 		GLfloat iY,fY;
@@ -51,20 +62,20 @@ public:
 		glm::vec3 h = {vectices[3].x, fY, vectices[3].z};
 
 		if(left){
-			triangles.push_back(vector<glm::vec3> {f, b, g});
-			triangles.push_back(vector<glm::vec3> {a, g, b});
+			triangles.push_back(std::vector<glm::vec3> {f, b, g});
+			triangles.push_back(std::vector<glm::vec3> {a, g, b});
 		}
 		if(right){
-			triangles.push_back(vector<glm::vec3> {e, h, c});
-			triangles.push_back(vector<glm::vec3> {c, d, e});
+			triangles.push_back(std::vector<glm::vec3> {e, h, c});
+			triangles.push_back(std::vector<glm::vec3> {c, d, e});
 		}
 		if(bottom){
-			triangles.push_back(vector<glm::vec3> {a, b, c});
-			triangles.push_back(vector<glm::vec3> {c, b, d});
+			triangles.push_back(std::vector<glm::vec3> {a, b, c});
+			triangles.push_back(std::vector<glm::vec3> {c, b, d});
 		}
 		if(top){
-			triangles.push_back(vector<glm::vec3> {f, g, e});
-			triangles.push_back(vector<glm::vec3> {e, g, h});
+			triangles.push_back(std::vector<glm::vec3> {f, g, e});
+			triangles.push_back(std::vector<glm::vec3> {e, g, h});
 		}
 	}
 };

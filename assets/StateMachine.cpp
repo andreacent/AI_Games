@@ -12,12 +12,12 @@ StateMachine* StudentStateMachine(	Kinematic &character,
 	Bezier *path = new Bezier(); //camino que se genera del A*
 	std::map<string,Behavior*> behaviors; 
 	//(character,maxAcceleration,collisionDetector,avoidDistance,lookahead) 	
-	behaviors["obstacle"] = new ObstacleAvoidance(character,16,collisionDetector,4.5,3);
+	behaviors["obstacle"] = new ObstacleAvoidance(character,16,collisionDetector,3,2);
 	//character,maxAcceleration
-	behaviors["followPath"] =new FollowPath(character,*path,10);
+	behaviors["followPath"] =new FollowPath(character,*path,8);
 	//(character,maxAngularAcceleration,maxRotation,slowRadius,targetRadius,
 	//wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration)
-	behaviors["wander"] = new Wander(character,10,30,5,2, 0,4,2,50,8);
+	behaviors["wander"] = new Wander(character,8,20,5,2,0,4,2,30,10);
 
 	/* INI STATE */
 	//character,maxAcceleration,maxRotation,maxSpeed, list<BehaviorAndWeight*>
@@ -41,11 +41,18 @@ StateMachine* StudentStateMachine(	Kinematic &character,
 	ini->addTransition(iniToAStart);
 
 	//  a* -> ini
-	Transition aStartToIni = {ini,new ConAtoIni(character)};
+	Transition aStartToIni = {ini,new ConAtoIni(character,*path)};
 	aStart->addTransition(aStartToIni);
+
+	//  a* -> nothing
+	Action *actNothing = new ActNothing(character);
+	State *stNothing = new State(actNothing);
+	Transition aStartToNothing = {stNothing, new ConNextTo(character,target)};
+	aStart->addTransition(aStartToNothing);
 
 	StateMachine *stateMachine = new StateMachine(ini);
 	stateMachine->addState(aStart);
+	stateMachine->addState(stNothing);
 
 	return stateMachine;
 }

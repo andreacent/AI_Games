@@ -46,15 +46,17 @@ public:
 
 		Seek::getSteering(steering);
 
-
-		path.draw();
+		//path.draw();
 		return true;
 	}
 
 	void update(GLfloat maxSpeed,GLfloat deltaTime){
 		SteeringOutput steering;
 	    if (getSteering(steering)) character.update(steering.linear,maxSpeed,deltaTime);
-	    else character.velocity = {0.0,0.0,0.0}; //puede que no se deba hacer
+	    else {
+		    character.velocity = {0.0,0.0,0.0}; //puede que no se deba hacer
+		    cout<<"path 0"<<endl;
+		}
 	}
 };
 

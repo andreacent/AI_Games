@@ -37,6 +37,7 @@ public:
 		glm::vec3 rayVector,rayVectorL,rayVectorR;
 		Collision collision;
 
+		//cout<<"evadir"<<endl;
 		// 1. Calculate the target to delegate to seek
 
 		// Calculate the collision ray vector
@@ -57,14 +58,13 @@ public:
 		// Otherwise create a target
 		target.position = collision.position + collision.normal * avoidDistance;
 
-		/*
-		drawRay(character.position, rayVectorR);
-		drawRay(character.position, rayVectorL);
-		drawRay(character.position, rayVector);
-		cout<<"-- Collision position "<<collision.position.x<<","<<collision.position.z<<endl;
-		cout<<"Collision normal "<<collision.normal.x<<","<<collision.normal.z<<endl;
-		cout<<"target position "<<target.position.x<<","<<target.position.z<<endl;
-		*/
+		//drawRay(character.position, rayVectorR);
+		//drawRay(character.position, rayVectorL);
+		//drawRay(character.position, rayVector);
+		//cout<<"-- Collision position "<<collision.position.x<<","<<collision.position.z<<endl;
+		//cout<<"Collision normal "<<collision.normal.x<<","<<collision.normal.z<<endl;
+		//cout<<"target position "<<target.position.x<<","<<target.position.z<<endl;
+		
 
 		// 2. Delegate to seek
 		Seek::getSteering(steering);

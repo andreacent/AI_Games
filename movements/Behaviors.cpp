@@ -34,8 +34,8 @@ glm::vec3 rotateVectorZ(glm::vec3 v, GLfloat ang){
 	return glm::vec3(v.x * cos(ang) + v.z * sin(ang), v.y, v.z * cos(ang) - v.x * sin(ang) );
 }
 
-GLfloat maxSpeed = 6;
-GLfloat maxAcceleration = 8;
+GLfloat maxSpeed = 4;
+GLfloat maxAcceleration = 6;
 GLfloat maxPrediction = 0.1;
 
 void createMapBaseBehaviors(
@@ -48,13 +48,13 @@ void createMapBaseBehaviors(
 	//(character,target, targetRadius,slowRadius, maxAcceleration,maxSpeed) 
 	behaviors["arrive"] = new Arrive(character,target,2,4,maxAcceleration,maxSpeed);
 	//(character,targets,threshold,decayCoefficient,maxAcceleration) 
-    behaviors["separation"] = new Separation(character,targets,6,10,30);
+    behaviors["separation"] = new Separation(character,targets,1.6,4,30);
 	//(character,target,maxAcceleration, maxPrediction)
     behaviors["pursue"] = new Pursue(character,target,maxAcceleration,maxPrediction);
     //(character,target, maxAngularAcceleration,maxRotation,slowRadius,targetRadius)
 	behaviors["lwyg"] = new LookWhereYoureGoing(character,target,10,30,5,2); 
 	//(character,maxAcceleration,collisionDetector,avoidDistance,lookahead) 	
-	behaviors["obstacle"] = new ObstacleAvoidance(character,16,collisionDetector,4.5,3);
+	behaviors["obstacle"] = new ObstacleAvoidance(character,16,collisionDetector,3,2);
 }
 
 void createMapAllBehaviors(
@@ -87,9 +87,9 @@ void createMapAllBehaviors(
 	//wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration)
     behaviors["wander"] = new Wander(character,20,maxRotation,5,2, 0,4,2,50,maxAcceleration);
 	//(character,targets,threshold,decayCoefficient,maxAcceleration) 
-    behaviors["separation"] = new Separation(character,targets,3,6,maxAcceleration);  
+    behaviors["separation"] = new Separation(character,targets,1.6,4,maxAcceleration);  
 	//(character,maxAcceleration,collisionDetector,avoidDistance,lookahead) 	
-	behaviors["obstacle"] = new ObstacleAvoidance(character,16,collisionDetector,4.5,3);
+	behaviors["obstacle"] = new ObstacleAvoidance(character,16,collisionDetector,3,2);
 }
 
 #endif

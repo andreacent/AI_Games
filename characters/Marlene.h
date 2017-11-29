@@ -2,7 +2,7 @@ class Marlene : public Character{
 public:
 	Marlene(Kinematic &character,char rl) : Character(character,rl) {		
 		switch(rol){
-			case 't'://player 
+			case 't'://player / target
 			case 'p':
 				dress = { 0.4705, 0.03921, 0.42745};
 				break;
@@ -51,7 +51,7 @@ public:
 		if(dir == 'u'){	
 
 			drawMirrorX(positionH,0,-12,line,4, 1);
-			drawSquare({ 2*(positionH.x+0*px),positionH.y,2*(positionH.z+ -1*px) },hair, 2*3, 2* 1);
+			drawSquare({ 2*(positionH.x ),positionH.y,2*(positionH.z+ -1*px) },hair, 2*3, 2* 1);
 			
 			// shadow
 			drawSquare({ 2*(positionH.x+-3*px),positionH.y,2*(positionH.z+ -1*px) },hairS, 2*3, 2* 1);
@@ -64,7 +64,7 @@ public:
 			drawMirrorX(positionH,0,-11,hairS,4, 1);
 
 			//hair
-			drawSquare({ 2*(positionH.x+-0*px),positionH.y,2*(positionH.z+ -1*px) },hair, 2*4, 2* -9);
+			drawSquare({ 2*(positionH.x ),positionH.y,2*(positionH.z+ -1*px) },hair, 2*4, 2* -9);
 			drawSquare({ 2*(positionH.x+-3*px),positionH.y,2*(positionH.z+ -3*px) },hair, 2*4, 2* -7);
 			drawSquare({ 2*(positionH.x+ 4*px),positionH.y,2*(positionH.z+ -5*px) },hair, 2*1, 2* 1);
 			drawSquare({ 2*(positionH.x+ 4*px),positionH.y,2*(positionH.z+ -5*px) },hair, 2*2, 2* -4);
@@ -85,14 +85,14 @@ public:
 		if( dir == 'r'){w = -1;t = -2;tc=2;}
 
 		// Hair
-		drawSquare({   2*(x+-( 5+t        )*px),y,2*(z+  0*px) },hair, 2*8, 2* -3);
+		drawSquare({   2*(x+-( 5+t        )*px),y,2*(z ) },hair, 2*8, 2* -3);
 		drawSquare({ w*2*(x+-(-3+t+ (tc/2))*px),y,2*(z+ -3*px) },hair, 2*1, 2* -3);
 		drawSquare({ w*2*(x+-(-4+t+ (tc/2))*px),y,2*(z+ -5*px) },hair, 2*1, 2* -4);
 		drawSquare({ w*2*(x+-(-3+t+ (tc/2))*px),y,2*(z+ -8*px) },hair, 2*1, 2* -2);
 		drawSquare({ w*2*(x+-(-2+t+ (tc/2))*px),y,2*(z+ -9*px) },hair, 2*1, 2* -1);
 
 		// Lines
-		drawSquare({   2*(x+-(4+t)*px),y,2*(z+ 0*px) },line, 2*6, 2* 1);
+		drawSquare({   2*(x+-(4+t)*px),y,2*(z ) },line, 2*6, 2* 1);
 		
 		drawSquare({ w*2*(x+-( 5+(t/2))*px),y,2*(z+ -1*px) },line, 2*1, 2* 1);
 		drawSquare({ w*2*(x+-( 6+(t/2))*px),y,2*(z+ -1*px) },line, 2*1, 2* -2);
@@ -107,7 +107,7 @@ public:
 		drawSquare({ w*2*(x+-(-1+(t+(t/2)))*px),y,2*(z+ -10*px) },line, 2*3, 2* -1);
 
 		// Shadow
-		drawSquare({ w*2*(x+-( 4+(t+(t/2)))        *px),y,2*(z+  0*px) },hairS, 2*3, 2* -1);
+		drawSquare({ w*2*(x+-( 4+(t+(t/2)))        *px),y,2*(z ) },hairS, 2*3, 2* -1);
 		drawSquare({ w*2*(x+-( 5+(t+(t/2)+ (tc/2)))*px),y,2*(z+ -1*px) },hairS, 2*2, 2* -2);
 		drawSquare({ w*2*(x+-( 4+(t+(t/2)+-(tc*2)))*px),y,2*(z+ -3*px) },hairS, 2*7, 2* -1);
 		drawSquare({ w*2*(x+-(-2+(t+(t/2)+  tc   ))*px),y,2*(z+ -4*px) },hairS, 2*1, 2* -2);
@@ -144,8 +144,8 @@ public:
 
 		if( dir == 'r'){w = -1;t = -2;tc=2;}
 
-		drawSquare({ w*2*(x+-( 2+t+    tc)*px),y,2*(z+  0*px) },line, 2*3*w, 2* 1);
-		drawSquare({ w*2*(x+-( 2+t+(tc/2))*px),y,2*(z+  0*px) },line, 2*1, 2*-1);
+		drawSquare({ w*2*(x+-( 2+t+    tc)*px),y,2*(z ) },line, 2*3*w, 2* 1);
+		drawSquare({ w*2*(x+-( 2+t+(tc/2))*px),y,2*(z ) },line, 2*1, 2*-1);
 		drawSquare({ w*2*(x+-( 3+t+(tc/2))*px),y,2*(z+ -1*px) },line, 2*1, 2*-2);
 		
 		drawSquare({ w*2*(x+-( 3      )*px),y,2*(z+ -2*px) },line, 2*8*w, 2*-1);
@@ -154,7 +154,7 @@ public:
 
 		drawSquare({ w*2*(x+-( 1      )*px),y,2*(z+ -3*px) },line, 2*4*w, 2*-1);
 		
-		drawSquare({ w*2*(x+-( 1      )*px),y,2*(z+ 0*px) },dress, 2*4*w, 2*-1);
+		drawSquare({ w*2*(x+-( 1      )*px),y,2*(z ) },dress, 2*4*w, 2*-1);
 		drawSquare({ w*2*(x+-( 2      )*px),y,2*(z+ -1*px) },dress, 2*6*w, 2*-1);
 	}
 	
@@ -189,15 +189,26 @@ public:
 
 	/**************** MAIN ****************/
 	void draw(){
+		glm::vec3 facing = character.velocity;
+
 		glPushMatrix();
 			glPointSize(px);
 			glTranslatef(character.position.x,character.position.y,character.position.z);
 
-			double deg = setOrientation(); /* orientacion del dibujo */
-			glRotatef(deg,0,1,0);
+			if(rol !='t' && glm::length(facing) > 0){
+				if(facing.x < 0 && abs(facing.x) > abs(facing.z)) orientation = 'l';		
+				else if(facing.x > 0 && abs(facing.x) > abs(facing.z)) orientation = 'r';		
+				else if(facing.z > 0 ) orientation = 'u';		
+				else orientation = 'd';
+				glRotatef(0.0,0,1,0);
+			}
+			else{
+			//double deg = setOrientation(); /* orientacion del dibujo */
+				glRotatef(this->deg,0,1,0);
+			}			
 
 			//cabeza
-			drawHead({0*px,0,4*px},line,skin,skinS);
+			drawHead({0,0,4*px},line,skin,skinS);
 			//vestido
 			drawDress({0*px,0,-3*px});	        
 			//cabello

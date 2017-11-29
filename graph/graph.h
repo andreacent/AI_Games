@@ -105,13 +105,13 @@ public:
     Obtiene el nodo del grafo dada una point en el mapa
     */
     bool getNode(glm::vec3 pt, Node &node){
-        cout<<"Buscar punto "<< pt.x<<","<<pt.y<<","<<pt.z<<endl;
+        //cout<<"Buscar punto "<< pt.x<<","<<pt.y<<","<<pt.z<<endl;
         for (map<int,Node>::iterator it = nodes.begin(); it != nodes.end(); ++it ){
             //cout<<"buscando triangulo en nodo "<<(*it).second.id<<endl;
             if( pointInTriangle(pt,(*it).second) ) {
                 node = (*it).second;
-                cout<<"-> encontrado "<<endl;
-                node.printNodeInfo();
+                //cout<<"-> encontrado "<<endl;
+                //node.printNodeInfo();
                 return true;
             }
         }

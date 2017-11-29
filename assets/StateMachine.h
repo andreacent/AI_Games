@@ -103,11 +103,12 @@ public:
 
 class ConAtoIni: public Condition{
 	Kinematic &character;
+	Bezier &path;
 public:
-	ConAtoIni(Kinematic &t) : Condition(), character(t){}
+	ConAtoIni(Kinematic &t, Bezier &p) : Condition(), character(t), path(p){}
 	
 	bool test(){
-		if( glm::length(character.velocity) == 0.0 ) return true; 
+		if( path.size < 1 ) return true; 
 		return false;
 	}
 };
@@ -119,7 +120,7 @@ public:
 	ConNextTo(Kinematic &t,Kinematic &c) : Condition(), character(c), target(t){}
 	
 	bool test(){
-		if( glm::distance(character.position,target.position) <= 2.5 ) return true; 
+		if( glm::distance(character.position,target.position) <= 2 ) return true; 
 		return false;
 	}
 };
@@ -131,7 +132,7 @@ public:
 	ConFarFrom(Kinematic &t,Kinematic &c) : Condition(), character(c), target(t){}
 	
 	bool test(){
-		if( glm::distance(character.position,target.position) > 2.5 ) return true; 
+		if( glm::distance(character.position,target.position) > 2 ) return true; 
 		return false;
 	}
 };

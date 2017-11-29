@@ -31,13 +31,15 @@ std::list<vec3> path;
 GLfloat pointSize=1.5;
 
 GLfloat targetRotation = glm::radians(10.0);
-GLfloat targetVelocity = 3;
+GLfloat targetVelocity = 2.4;
 
 GLfloat maxRotation = 30;
 
 bool activeTriangles = true;
 bool activeMap = true;
 bool ini = false;
+
+int WinId;
 
 /******************** Camera *******************/
 // actual vector representing the camera's direction
@@ -47,11 +49,11 @@ float deltaMove = 0;
 CollisionDetector collisionDetector = {meshs};
 
 /******************** CHARACTERES *******************/
-Kinematic target = {{2.0f,0.0f,2.0f}};
+Kinematic target = {{3.5f,0.0f,3.5f}};//{{26.0f,0,26.0f},0.0};
 Marlene marlene = {target,'t'};
 
 /* sidekick1 */
-Kinematic sidekick1 = {{30.0f,0,26.0f},0.0};
+Kinematic sidekick1 = {{2.0f,0.0f,2.0f},0.0};
 //mesh
 Marlene sidekick1Mesh = {sidekick1,'s'};
 //target list (separation)
@@ -74,7 +76,7 @@ BlendedSteering sidekick2Flocking = {sidekick2,maxAcceleration,maxRotation,maxSp
 
 
 /* STUDENT */
-Marlene student = {*new Kinematic({20.0f,0.0,30.0f},0.0),'s'};
+Marlene student = {*new Kinematic({26.0f,0.0,30.0f},0.0),'s'};
 /* STUDENT HELLO */
 Marlene studentHello = {*new Kinematic({24.0f,0.0,33.0f},0.0),'s'};
 
@@ -149,12 +151,17 @@ void controlKey (unsigned char key, int xmouse, int ymouse){
             activeMap = !activeMap;
         break;
         case '0': 
+            cout<<"pos target "<< target.position.x<<","<<target.position.y<<","<<target.position.z<<endl;
             //prueba de calcular el camino
             // /path = pathfindAStar(graph, novich.position, target.position);
             //novichFollowPath->setPath(path);   
         break;
         case ' ': //mover en y (saltar)
             target.velocity.y = targetVelocity;
+        break;
+        case 27: // Escape key
+            glutDestroyWindow ( WinId );
+            exit (0);
         break;
         default: break;
     }  
@@ -177,17 +184,21 @@ void handleSpecialKeypress(int key, int x, int y) {
     switch (key) {
         case GLUT_KEY_LEFT:
             target.velocity.x = -targetVelocity;
+            marlene.setOrientation();
         break;
         case GLUT_KEY_RIGHT:
             target.velocity.x = targetVelocity;
+            marlene.setOrientation();
         break;
         case GLUT_KEY_UP:
             deltaMove = -0.1f;
             target.velocity.z = targetVelocity;
+            marlene.setOrientation();
         break;
         case GLUT_KEY_DOWN:
             deltaMove = 0.1f;
             target.velocity.z =  -targetVelocity;
+            marlene.setOrientation();
         break;
         default: break;
     }
@@ -198,11 +209,13 @@ void handleSpecialKeyReleased(int key, int x, int y){
         case GLUT_KEY_LEFT:
         case GLUT_KEY_RIGHT:
             target.velocity.x = 0.0;
+            marlene.setOrientation();
         break;
         case GLUT_KEY_UP:
         case GLUT_KEY_DOWN:
             deltaMove = 0.0f;
             target.velocity.z = 0.0;
+            marlene.setOrientation();
         break;
         default: break;
     }
@@ -223,7 +236,7 @@ void display(){
     float z = target.position.z;
     float x = target.position.x;
     //gluLookAt(x,0,z,x,10,z-1.0f,0,1,0);
-    gluLookAt(25,0,22,25,10,22-1.0f,0,1,0);
+    gluLookAt(25,0,21,25,10,21-1.0f,0,1,0);
 
     GLfloat timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
     deltaTime = (timeSinceStart - oldTimeSinceStart) * 0.001;
@@ -241,7 +254,7 @@ void display(){
     }
     if(activeMap) for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
 
-    target.updatePosition(deltaTime);
+    target.updatePosition(deltaTime,meshs);
     target.updateOrientation(deltaTime);
 
     //TEST CHARACTER
@@ -280,8 +293,8 @@ void reshape(GLsizei w, GLsizei h) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    GLfloat widthVP  = 22.0;
-    GLfloat heightVP = 22.0;
+    GLfloat widthVP  = 21.0;
+    GLfloat heightVP = 21.0;
     GLfloat deepVP = 40.0;
     
     if (w < h){
@@ -299,7 +312,8 @@ int main (int argc, char** argv) {
     // glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE | GLUT_DEPTH);
     glutInitWindowSize(1000,600);
-    glutCreateWindow("AI Game");
+    WinId = glutCreateWindow("AI Game");
+    //glutFullScreen();
 
     if(!ini) initialize();
 

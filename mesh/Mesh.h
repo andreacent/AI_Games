@@ -22,10 +22,12 @@ public:
 
 	virtual void draw() = 0;
 	virtual void createTriangles(bool top, bool right,bool bottom, bool left) = 0;
+	virtual bool insideMesh(glm::vec3 point) = 0;
 
 	void printPoint(glm::vec3 p, char c){
-		cout<<c<<" "<<p.x<<","<<p.y<<","<<p.z<<endl;
+		std::cout<<c<<" "<<p.x<<","<<p.y<<","<<p.z<<std::endl;
 	}
+
 
 	/*
 	CUBO

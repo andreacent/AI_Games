@@ -1,3 +1,6 @@
+#ifndef MAP_H
+#define MAP_H
+
 #include "../mesh/Mesh.cpp"
 
 float px = 0.2;
@@ -630,3 +633,5 @@ list<Mesh*> drawMap(){
     for (list<Mesh*>::iterator m=meshsM.begin(); m != meshsM.end(); ++m) (*m)->draw();
     return meshsM;
 }
+
+#endif

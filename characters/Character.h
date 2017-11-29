@@ -12,12 +12,13 @@ protected:
 
 	char rol;
 	char orientation = 'd';
+	double deg = 0.0;
 
 
 public:
 	Kinematic &character;
 
-	float px = 0.125/2;
+	float px = 0.038;
 
 	Character(Kinematic &c,char rl,StateMachine *sm)  : character(c),rol(rl),stateMachine(sm) {}
 	Character(Kinematic &c,char rl)  : character(c),rol(rl) {}
@@ -117,17 +118,17 @@ public:
 
 		//piel
 		drawSquare({   w*2*(x+-(-2+t+tc)*px),y,2*(z+ -3*px) },colorSkin, 2*1, 2* 1);
-		drawSquare({   w*2*(x+-(3+t-tc)*px),y,2*(z+ 0*px) },colorSkin, 2*5, 2* -5);
+		drawSquare({   w*2*(x+-(3+t-tc)*px),y,2*(z ) },colorSkin, 2*5, 2* -5);
 
 		//head
-		drawSquare({   2*(x+-(4+t)*px),y,2*(z+ 0*px) },colorLine, 2*7, 2* 1);
-		drawSquare({ w*2*(x+- 4   *px),y,2*(z+ 0*px) },colorLine, 2*1, 2*-4);
+		drawSquare({   2*(x+-(4+t)*px),y,2*(z) },colorLine, 2*7, 2* 1);
+		drawSquare({ w*2*(x+- 4   *px),y,2*(z) },colorLine, 2*1, 2*-4);
 		drawSquare({ w*2*(x+- 3   *px),y,2*(z+-5*px) },colorLine, 2*1, 2* 1);
 		drawSquare({ w*2*(x+-(2+(t+(t/2)))*px),y,2*(z+-6*px) },colorLine, 2*4, 2* 1);
 		drawSquare({ w*2*(x+  1   *px),y,2*(z+-5*px) },colorLine, 2*1, 2* 1);
 		drawSquare({ w*2*(x+  2   *px),y,2*(z+-4*px) },colorLine, 2*1, 2* 1);
 		drawSquare({ w*2*(x+  3   *px),y,2*(z+-2*px) },colorLine, 2*1, 2*-2);
-		drawSquare({ w*2*(x+  2   *px),y,2*(z+ 0*px) },colorLine, 2*1, 2*-2);
+		drawSquare({ w*2*(x+  2   *px),y,2*(z) },colorLine, 2*1, 2*-2);
 		
 		drawSquare({ w*2*(x+ -1*px),y,2*(z+ -2*px) },colorLine, 2*1, 2*-2);
 	}
@@ -168,26 +169,17 @@ public:
 		}
 	}
 
-	double setOrientation(){
-		glm::vec3 facing = character.velocity;
+	double getOrientation(){
 		double deg;
 
-		if(rol !='t' && glm::length(facing) > 0){				
-			if(facing.x < 0 && abs(facing.x) > abs(facing.z)) orientation = 'l';		
-			else if(facing.x > 0 && abs(facing.x) > abs(facing.z)) orientation = 'r';		
-			else if(facing.z > 0 ) orientation = 'u';		
-			else orientation = 'd';
-			return 0.0;	
-		}
-
-		if(character.orientation != 0 && glm::length(facing) == 0) { //no tiene velocidad
+		if(character.orientation != 0 && glm::length(character.velocity) == 0) { //no tiene velocidad
 			deg = glm::degrees(character.orientation);
 		}
-		else if (glm::length(facing) > 0) { //tiene velocidad			
-			deg = glm::degrees(atan2(facing.x, facing.z)) + 180;
+		else if (glm::length(character.velocity) > 0) { //tiene velocidad			
+			deg = glm::degrees(atan2(character.velocity.x, character.velocity.z)) + 180;
 		}
 		else { //orientacion = 0 y no tiene velocidad 	
-			orientation='d';
+			//orientation='d';
 			return 0.0;	
 		}
 
@@ -246,4 +238,7 @@ public:
 		return 0.0;
 	}
 
+	double setOrientation(){
+		deg = getOrientation();
+	}
 };
