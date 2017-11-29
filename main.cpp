@@ -14,7 +14,7 @@
 
 #include "assets/text.cpp"
 #include "assets/map.h"
-#include "assets/StateMachine.cpp"
+#include "assets/StateMachineS.cpp"
 
 #include <GL/freeglut.h>
 #include <GL/gl.h>
@@ -48,7 +48,7 @@ float deltaMove = 0;
 CollisionDetector collisionDetector = {meshs};
 
 /******************** CHARACTERES *******************/
-Kinematic target = {{2.0f,0.0f,2.0f}};
+Kinematic target = {{11.0f,0.0f,2.0f}};
 Marlene marlene = {target,'p'};
 
 /* sidekick1 */
@@ -74,8 +74,13 @@ std::map<string,Behavior*> sidekick2Behaviors;
 BlendedSteering sidekick2Flocking = {sidekick2,maxAcceleration,maxRotation,maxSpeed,*new list<BehaviorAndWeight*>()};
 
 
-/* STUDENT */
-Marlene student = {*new Kinematic({20.0f,0.0,30.0f},0.0),'s'};
+/* STUDENT IN ROOMS*/
+Marlene student_ldc = {*new Kinematic({3.0f,0.0,38.0f},0.0),'s'};
+Marlene student_chang = {*new Kinematic({48.0f,0.0,2.0f},0.0),'s'};
+
+/* STUDENT ALERTS*/
+Marlene student_alert_1 = {*new Kinematic({8.0f,0.0,19.0f},0.0),'a'};
+Marlene student_alert_2 = {*new Kinematic({22.0f,0.0,8.0f},0.0),'a'};
 
 /* NOVICH */
 Kinematic novich = {{26.0f,0.0,30.0f},0.0};
@@ -98,13 +103,15 @@ BlendedSteering novichblendedWander = {novich,10,30,8, *new list<BehaviorAndWeig
 void initialize(){
     ini = true;
 
-    student.setStateMachine(StudentStateMachine(student.character,target,collisionDetector,graph));
+    student_ldc.setStateMachine(StudentStateMachine(student_ldc.character,target,student_alert_1.character,collisionDetector,graph));
+    student_chang.setStateMachine(StudentStateMachine(student_chang.character,target,student_alert_2.character,collisionDetector,graph));
+    
+    student_alert_1.setStateMachine(AlertStateMachine(student_alert_1.character,target,student_ldc.character,collisionDetector,graph));
+    student_alert_2.setStateMachine(AlertStateMachine(student_alert_2.character,target,student_chang.character,collisionDetector,graph));
 
     meshs = drawMap();
 
-    graph.createGameGraphSquare();
-    //graph.createGameGraph();
-    //graph.createGameGraphNew();
+    graph.createGameGraphNew();
     glClearColor(0.81960,0.81960,0.81960,1);
 
     // NOVICH : behaviors and blended 
@@ -220,7 +227,6 @@ void display(){
 
     drawFloor();
     drawDetails();
-    //cout<<meshs.size()<<endl;
 
     glLineWidth(pointSize);
 
@@ -230,13 +236,21 @@ void display(){
     }
     if(activeMap) for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
 
-    //TEST CHARACTER
+    // CHARACTER
     marlene.draw();
     novichMesh.draw();
-    student.draw();
-    student.checkStateMachine();
-    //sidekick1Mesh.draw();
-    //sidekick2Mesh.draw();   
+    
+    student_ldc.draw();
+    student_chang.draw();
+    
+    student_alert_1.draw();
+    student_alert_2.draw();
+
+    student_ldc.checkStateMachine();
+    student_chang.checkStateMachine();
+    
+    student_alert_1.checkStateMachine();
+    student_alert_2.checkStateMachine();
 
     target.updatePosition(deltaTime);
     target.updateOrientation(deltaTime);

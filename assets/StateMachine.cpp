@@ -22,33 +22,34 @@ StateMachine* StudentStateMachine(	Kinematic &character,
 	//wanderOffset,wanderRadius,wanderRate,wanderOrientation,maxAcceleration)
 	behaviors["wander"] = new Wander(character,10,30,5,2, 0,4,2,50,8);
 
-	/*********************** INI STATE ***********************/
+	/*********************** wander_s STATE ***********************/
 	//character,maxAcceleration,maxRotation,maxSpeed, list<BehaviorAndWeight*>
 	BlendedSteering *blendedWander = new BlendedSteering(character,10,30,8, *new list<BehaviorAndWeight*>());
 	wanderWithObs(behaviors,*blendedWander);
 
 	Action *wanderAct = new ActBlended(blendedWander);
-	State *ini = new State(wanderAct);
+	Action *wanderActEntry = new ActBlended(blendedWander);
+	State *wander_s = new State(wanderAct,wanderActEntry);
 
 	/*********************** A* STATE ***********************/
 	//novich,maxAcceleration,maxRotation,maxSpeed, list<BehaviorAndWeight*>
 	BlendedSteering *blendedPath = new BlendedSteering(character,10,30,8, *new list<BehaviorAndWeight*>());
     followPathWithObstacle(behaviors, *blendedPath);
 
-	Action *aStartAct = new ActBlended(blendedPath);
-	Action *aStartEntryAct= new ActPath(graph,*path,target,character);
-	State *aStart = new State(aStartAct,aStartEntryAct);
+	Action *alert_Act = new ActBlended(blendedPath);
+	Action *alert_EntryAct= new ActPath(graph,*path,target,character);
+	State *alert_s = new State(alert_Act,alert_EntryAct);
 
-	/********************** ini -> A* **********************/
-	Transition in_To_AStart = {aStart, new ConIniToA(target)};
-	ini->addTransition(in_To_AStart);
+	/********************** wander_s -> A* **********************/
+	Transition w_To_a = {alert_s, new ConIniToA(target)};
+	wander_s->addTransition(w_To_a);
 
-	/**********************  A* -> ini **********************/
-	Transition aStart_To_Ini = {ini,new ConAtoIni(character)};
-	aStart->addTransition(aStart_To_Ini);
+	/**********************  A* -> wander_s **********************/
+	Transition alert_s_To_wander_s = {wander_s,new ConAtoIni(target)};
+	alert_s->addTransition(alert_s_To_wander_s);
 
-	StateMachine *stateMachine = new StateMachine(ini);
-	stateMachine->addState(aStart);
+	StateMachine *stateMachine = new StateMachine(wander_s);
+	stateMachine->addState(alert_s);
 
 	return stateMachine;
 }
