@@ -18,9 +18,9 @@ void followTarget(  std::map<string,Behavior*> behaviors,
     if(behaviors.count("arrive") > 0 ){
         blended.addBehavior(new BehaviorAndWeight(behaviors["arrive"],0.1));
     }
-    if(behaviors.count("lwyg") > 0 ){
-        blended.addBehavior(new BehaviorAndWeight(behaviors["lwyg"],3));
-    }
+    //if(behaviors.count("lwyg") > 0 ){
+    //    blended.addBehavior(new BehaviorAndWeight(behaviors["lwyg"],3));
+    //}
 }
 
 void flocking(  std::map<string,Behavior*> behaviors,

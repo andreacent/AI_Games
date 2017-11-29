@@ -75,13 +75,12 @@ std::map<string,Behavior*> sidekick2Behaviors;
 //flocking (BlendedSteering)
 BlendedSteering sidekick2Flocking = {sidekick2,maxAcceleration,maxRotation,maxSpeed,*new list<BehaviorAndWeight*>()};
 
-
 /* STUDENT IN ROOMS*/
 Marlene student_ldc = {*new Kinematic({3.0f,0.0,38.0f},0.0),'s'};
 Marlene student_chang = {*new Kinematic({48.0f,0.0,2.0f},0.0),'s'};
 
 /* STUDENT ALERTS*/
-Marlene student_alert_1 = {*new Kinematic({8.0f,0.0,19.0f},0.0),'a'};
+Marlene student_alert_1 = {*new Kinematic({8.0f,0.0,24.0f},0.0),'a'};
 Marlene student_alert_2 = {*new Kinematic({22.0f,0.0,8.0f},0.0),'a'};
 
 /* STUDENT */
@@ -110,10 +109,30 @@ BlendedSteering novichblendedWander = {novich,10,30,8, *new list<BehaviorAndWeig
 void initialize(){
     ini = true;
 
+    /*
+    std::list<Kinematic*> studentHelloTargets;
+    studentHelloTargets.push_back(&target);   
+    studentHelloTargets.push_back(&student.character);   
+    studentHelloTargets.push_back(&student_alert_1.character);    
+    studentHelloTargets.push_back(&student_alert_2.character);  
+
+    studentHello.setStateMachine(HelloStateMachine(studentHello.character,studentHelloTargets));
+
+
+    student_ldc.setStateMachine(StudentStateMachineS(student_ldc.character,
+                                                    student_alert_1.character,
+                                                    studentHelloTargets,
+                                                    collisionDetector,graph));
+    student_chang.setStateMachine(StudentStateMachineS(student_chang.character,
+                                                    student_alert_2.character,
+                                                    studentHelloTargets,
+                                                    collisionDetector,graph));
+    */
 
     student_ldc.setStateMachine(StudentStateMachineS(student_ldc.character,target,student_alert_1.character,collisionDetector,graph));
     student_chang.setStateMachine(StudentStateMachineS(student_chang.character,target,student_alert_2.character,collisionDetector,graph));
     
+
     student_alert_1.setStateMachine(AlertStateMachine(student_alert_1.character,target,student_ldc.character,collisionDetector,graph));
     student_alert_2.setStateMachine(AlertStateMachine(student_alert_2.character,target,student_chang.character,collisionDetector,graph));
 
@@ -283,17 +302,15 @@ void display(){
     student.draw();
     //sidekick2Mesh.draw(); 
 
-    student_ldc.draw();
-    student_chang.draw();
-    
+    student_alert_1.checkStateMachine();
     student_alert_1.draw();
+    student_alert_2.checkStateMachine();
     student_alert_2.draw();
 
     student_ldc.checkStateMachine();
+    student_ldc.draw();
     student_chang.checkStateMachine();
-    
-    student_alert_1.checkStateMachine();
-    student_alert_2.checkStateMachine();  
+    student_chang.draw();     
 
     marlene.draw();
 

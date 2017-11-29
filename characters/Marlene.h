@@ -7,8 +7,6 @@ public:
 				dress = { 0.4705, 0.03921, 0.42745};
 				break;
 			case 'e':
-				dress = { 1, 0, 0};
-				break;
 			case 'a':
 				dress = { 1, 0, 0};
 				break;
