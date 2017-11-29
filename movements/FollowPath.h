@@ -46,7 +46,7 @@ public:
 
 		Seek::getSteering(steering);
 
-		//path.draw();
+		path.draw();
 		return true;
 	}
 

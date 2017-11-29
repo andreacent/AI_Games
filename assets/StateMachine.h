@@ -84,6 +84,22 @@ public:
 	}
 };
 
+
+class ActPathPos: public Action{
+public:
+	Graph &graph;
+	Bezier &path;
+	vec3 &positionT;
+	vec3 &positionC;
+
+	ActPathPos(Graph &g,Bezier &p,vec3 &t,vec3 &c) 
+		: Action(), graph(g), path(p), positionT(t), positionC(c) {}
+
+	void execute(){
+        path = {pathfindAStar(graph, positionC, positionT)};
+	}
+};
+
 /********************** CONDITION **********************/
 class Condition{
 public:
@@ -135,6 +151,70 @@ public:
 		if( glm::distance(character.position,target.position) > 2 ) return true; 
 		return false;
 	}
+};
+
+/********************** CONDITION SM_1 **********************/
+
+/********************** Marlene out of Coord **********************/
+	class Con_MarleneOutCoord: public Condition{
+		Kinematic &target;
+	public:
+		Con_MarleneOutCoord(Kinematic &t) : Condition(), target(t){}
+
+		bool test(){
+			if( target.position.z >= 7 || target.position.x >= 13){
+			 	return false;
+			 }
+			return true;
+		}
+	};
+
+/********************** Marlene in Coord **********************/
+	class Con_MarleneInCoord: public Condition{
+		Kinematic &target;
+	public:
+		Con_MarleneInCoord(Kinematic &t) : Condition(), target(t){}
+
+		bool test(){
+			if( target.position.z < 7 && target.position.x < 13){
+			 	return true;
+			 }
+			return false;
+		}
+	};
+
+/********************** Marlene out of Coord **********************/
+	class Con_XinY: public Condition{
+		vec3 &zone;
+		Kinematic &target;
+		float perimeter;
+	public:
+		Con_XinY(vec3 &z,Kinematic &t,float p) : Condition(), zone(z), target(t), perimeter(p){}
+
+		bool test(){
+			bool ZinPerimeter = target.position.z < zone.z+perimeter && target.position.z >= zone.z-perimeter;
+			bool XinPerimeter = target.position.x < zone.x+perimeter && target.position.x >= zone.x-perimeter;
+			if( ZinPerimeter && XinPerimeter){
+			 	return true;
+			 }
+			//cout << ZinPerimeter << ',' << XinPerimeter << endl;
+			return false;
+		}
+	};
+
+/********************** Character Stop **********************/
+	class Con_Stop: public Condition{
+		Kinematic &character;
+	public:
+		Con_Stop(Kinematic &c) : Condition(),character(c){}
+
+		bool test(){
+			if( glm::length(character.velocity) == 0.0){
+			 	return true;
+			 }
+			//cout << ZinPerimeter << ',' << XinPerimeter << endl;
+			return false;
+		}
 };
 
 /********************** TRANSITION **********************/

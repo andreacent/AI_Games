@@ -9,6 +9,12 @@ public:
 			case 'e':
 				dress = { 1, 0, 0};
 				break;
+			case 'a':
+				dress = { 1, 0, 0};
+				break;
+			case 's':
+			    dress = { 0, 1, 0};
+				break;
 			default:break;
 		}
 	}

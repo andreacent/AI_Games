@@ -161,6 +161,7 @@ public:
     /* Crea el grafo del juego */
     void createGameGraph();
     void createGameGraphSquare();
+    void createGameGraphNew();
 };
 
 #endif

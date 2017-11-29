@@ -15,6 +15,7 @@
 #include "assets/text.cpp"
 #include "assets/map.h"
 #include "assets/StateMachine.cpp"
+#include "assets/StateMachineS.cpp"
 
 #include <GL/freeglut.h>
 #include <GL/gl.h>
@@ -31,7 +32,7 @@ std::list<vec3> path;
 GLfloat pointSize=1.5;
 
 GLfloat targetRotation = glm::radians(10.0);
-GLfloat targetVelocity = 2.4;
+GLfloat targetVelocity = 4;
 
 GLfloat maxRotation = 30;
 
@@ -75,6 +76,14 @@ std::map<string,Behavior*> sidekick2Behaviors;
 BlendedSteering sidekick2Flocking = {sidekick2,maxAcceleration,maxRotation,maxSpeed,*new list<BehaviorAndWeight*>()};
 
 
+/* STUDENT IN ROOMS*/
+Marlene student_ldc = {*new Kinematic({3.0f,0.0,38.0f},0.0),'s'};
+Marlene student_chang = {*new Kinematic({48.0f,0.0,2.0f},0.0),'s'};
+
+/* STUDENT ALERTS*/
+Marlene student_alert_1 = {*new Kinematic({8.0f,0.0,19.0f},0.0),'a'};
+Marlene student_alert_2 = {*new Kinematic({22.0f,0.0,8.0f},0.0),'a'};
+
 /* STUDENT */
 Marlene student = {*new Kinematic({26.0f,0.0,30.0f},0.0),'s'};
 /* STUDENT HELLO */
@@ -101,6 +110,13 @@ BlendedSteering novichblendedWander = {novich,10,30,8, *new list<BehaviorAndWeig
 void initialize(){
     ini = true;
 
+
+    student_ldc.setStateMachine(StudentStateMachineS(student_ldc.character,target,student_alert_1.character,collisionDetector,graph));
+    student_chang.setStateMachine(StudentStateMachineS(student_chang.character,target,student_alert_2.character,collisionDetector,graph));
+    
+    student_alert_1.setStateMachine(AlertStateMachine(student_alert_1.character,target,student_ldc.character,collisionDetector,graph));
+    student_alert_2.setStateMachine(AlertStateMachine(student_alert_2.character,target,student_chang.character,collisionDetector,graph));
+
     student.setStateMachine(StudentStateMachine(student.character,target,collisionDetector,graph));
    
     std::list<Kinematic*> studentHelloTargets;
@@ -110,7 +126,7 @@ void initialize(){
 
     meshs = drawMap();
 
-    graph.createGameGraph();
+    graph.createGameGraphNew();
     //graph.createGameGraphSquare();
     glClearColor(0.81960,0.81960,0.81960,1);
 
@@ -262,7 +278,19 @@ void display(){
     studentHello.draw();
     student.checkStateMachine();
     student.draw();
-    //sidekick2Mesh.draw();   
+    //sidekick2Mesh.draw(); 
+
+    student_ldc.draw();
+    student_chang.draw();
+    
+    student_alert_1.draw();
+    student_alert_2.draw();
+
+    student_ldc.checkStateMachine();
+    student_chang.checkStateMachine();
+    
+    student_alert_1.checkStateMachine();
+    student_alert_2.checkStateMachine();  
 
     marlene.draw();
 
