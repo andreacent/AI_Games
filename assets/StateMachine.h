@@ -117,11 +117,11 @@ public:
 	}
 };
 
-class ConAtoIni: public Condition{
+class ConPathZero: public Condition{
 	Kinematic &character;
 	Bezier &path;
 public:
-	ConAtoIni(Kinematic &t, Bezier &p) : Condition(), character(t), path(p){}
+	ConPathZero(Kinematic &t, Bezier &p) : Condition(), character(t), path(p){}
 	
 	bool test(){
 		if( path.size < 1 ) return true; 
@@ -177,8 +177,8 @@ public:
 
 		bool test(){
 			if( target.position.z < 7 && target.position.x < 13){
-			 	return true;
-			 }
+				return true;
+			}
 			return false;
 		}
 	};

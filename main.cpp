@@ -36,7 +36,7 @@ GLfloat targetVelocity = 4;
 
 GLfloat maxRotation = 30;
 
-bool activeTriangles = true;
+bool activeTriangles = false;
 bool activeMap = true;
 bool ini = false;
 
@@ -122,6 +122,9 @@ void initialize(){
     std::list<Kinematic*> studentHelloTargets;
     studentHelloTargets.push_back(&target);   
     studentHelloTargets.push_back(&student.character);   
+    studentHelloTargets.push_back(&student_alert_1.character);    
+    studentHelloTargets.push_back(&student_alert_2.character);  
+
     studentHello.setStateMachine(HelloStateMachine(studentHello.character,studentHelloTargets));
 
     meshs = drawMap();

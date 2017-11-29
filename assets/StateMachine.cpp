@@ -25,7 +25,7 @@ StateMachine* StudentStateMachine(	Kinematic &character,
 	wanderWithObs(behaviors,*blendedWander);
 
 	Action *wanderAct = new ActBlended(blendedWander);
-	State *ini = new State(wanderAct);
+	State *stWander = new State(wanderAct);
 
 	/* A* STATE */
 	//novich,maxAcceleration,maxRotation,maxSpeed, list<BehaviorAndWeight*>
@@ -33,25 +33,33 @@ StateMachine* StudentStateMachine(	Kinematic &character,
     followPathWithObstacle(behaviors, *blendedPath);
 
 	Action *aStartAct = new ActBlended(blendedPath);
+	State *stAStart = new State(aStartAct);
+
+	// wander -> a*
+	//la transicion tiene una accion que es calcular el camino
 	Action *aStartEntryAct= new ActPath(graph,*path,target,character);
-	State *aStart = new State(aStartAct,aStartEntryAct);
+	Transition iniToAStart = {stAStart, new ConIniToA(target), aStartEntryAct};
+	stWander->addTransition(iniToAStart);
 
-	// ini -> a*
-	Transition iniToAStart = {aStart, new ConIniToA(target)};
-	ini->addTransition(iniToAStart);
-
-	//  a* -> ini
-	Transition aStartToIni = {ini,new ConAtoIni(character,*path)};
-	aStart->addTransition(aStartToIni);
+	//  a* -> a*
+	//cuando el path es 0 (llego al final), vuelve a calcular un path
+	Transition aStartToIni = {stAStart,new ConPathZero(character,*path), aStartEntryAct};
+	stAStart->addTransition(aStartToIni);
 
 	//  a* -> nothing
 	Action *actNothing = new ActNothing(character);
 	State *stNothing = new State(actNothing);
 	Transition aStartToNothing = {stNothing, new ConNextTo(character,target)};
-	aStart->addTransition(aStartToNothing);
+	stAStart->addTransition(aStartToNothing);
 
-	StateMachine *stateMachine = new StateMachine(ini);
-	stateMachine->addState(aStart);
+	// a* -> wander , nothing -> wander 
+	// marlene entra a la coordinacion
+	Transition outCoordToInCoord = {stWander, new Con_MarleneInCoord(target)};
+	stAStart->addTransition( outCoordToInCoord );
+	stNothing->addTransition(outCoordToInCoord);
+
+	StateMachine *stateMachine = new StateMachine(stWander);
+	stateMachine->addState(stAStart);
 	stateMachine->addState(stNothing);
 
 	return stateMachine;
