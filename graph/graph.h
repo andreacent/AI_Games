@@ -1,3 +1,7 @@
+/* 
+    Andrea Centeno
+    sep-dic 2017
+*/
 #ifndef GRAPH_H
 #define GRAPH_H
 
@@ -78,6 +82,7 @@ class Graph{
 public:
     map<int,Node> nodes;
     map<pair<int,int>, float> distances;
+    map<pair<int,int>, int> weight;
   
     float sign (glm::vec3 p1, glm::vec3 p2, glm::vec3 p3)
     {
@@ -118,6 +123,26 @@ public:
     }
 
     /*
+    Aumenta el peso de un camino
+    */
+    bool changeWeight(std::list<int> nodesID, int weight){   
+        int i,j;
+
+        std::list<int>::iterator it = nodesID.begin();
+        i = (*it);
+
+        ++it;
+
+        while (it != nodesID.end()){
+            j = (*it);
+
+            this->weight[make_pair(i,j)] += weight;
+            i = j;
+            ++it;
+        }
+    }
+
+    /*
     Itera sobre los nodos y calcula las distancias entre los adyacentes
     */
     void setDistances(){
@@ -128,8 +153,12 @@ public:
             for (set<int>::iterator it = node.adjacent.begin(); it != node.adjacent.end(); ++it ){
                 if ((*it) < node.id) continue;
                 dist = glm::distance(node.point,nodes[(*it)].point);
-                distances[make_pair(node.id,(*it))] = dist;
-                distances[make_pair((*it),node.id)] = dist;
+                this->distances[make_pair(node.id,(*it))] = dist;
+                this->distances[make_pair((*it),node.id)] = dist;
+
+                //costo
+                this->weight[make_pair(node.id,(*it))] = 1;
+                this->weight[make_pair((*it),node.id)] = 1;
 
                 //inserto el nodo actual entre los adyacentes del otro
                 nodes[(*it)].adjacent.insert(node.id);
@@ -158,9 +187,18 @@ public:
         }
     }
 
+     /*
+    Imprime todos los nodos
+    */
+    void printGraph(){
+        cout<<"----------------PESOS ---------------"<<endl;
+        for (map<pair<int,int>, int>::iterator it = weight.begin(); it != weight.end(); ++it ){
+            if ((*it).second > 1)
+                cout<<(*it).first.first<<","<<(*it).first.second<<" "<<(*it).second<<endl;
+        }
+    }
+
     /* Crea el grafo del juego */
-    void createGameGraph();
-    void createGameGraphSquare();
     void createGameGraphNew();
 };
 

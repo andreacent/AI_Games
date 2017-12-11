@@ -1,3 +1,8 @@
+/* 
+    Andrea Centeno
+    carnet USB: 10-10138
+    sep-dic 2017
+*/
 #ifndef VELOCITYMATCH_H
 #define VELOCITYMATCH_H
 

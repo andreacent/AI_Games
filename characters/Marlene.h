@@ -1,3 +1,5 @@
+#include "Character.h"
+
 class Marlene : public Character{
 public:
 	Marlene(Kinematic &character,char rl) : Character(character,rl) {		

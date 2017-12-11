@@ -1,3 +1,7 @@
+/* 
+    Andrea Centeno
+    sep-dic 2017
+*/
 #ifndef ASTART_H
 #define ASTART_H
 
@@ -9,7 +13,7 @@
 
 #include "graph.h"
 
-std::list<glm::vec3> pathfindAStar(Graph graph, glm::vec3 posStart, glm::vec3 posEnd){ 
+std::list<glm::vec3> pathfindAStar(Graph graph, glm::vec3 posStart, glm::vec3 posEnd, std::list<int> &nodesId){ 
     //This structure is used to keep track of the information we need for each node
     struct NodeRecord{
         NodeRecord* father = NULL;
@@ -66,7 +70,9 @@ std::list<glm::vec3> pathfindAStar(Graph graph, glm::vec3 posStart, glm::vec3 po
             // Get the cost estimate for the end node
             Node endNode = graph.nodes[(*itAdj)];
 
-            float endNodeCost = current.costSoFar + graph.distances[make_pair(current.node.id,endNode.id)];
+            float endNodeCost = current.costSoFar 
+                                + (graph.distances[make_pair(current.node.id,endNode.id)] 
+                                *  graph.weight[make_pair(current.node.id,endNode.id)] );
 
             float endNodeHeuristic;
             NodeRecord endNodeRecord;
@@ -158,10 +164,16 @@ std::list<glm::vec3> pathfindAStar(Graph graph, glm::vec3 posStart, glm::vec3 po
         // Work back along the path, accumulating
         // connections
 
+        //nodesId es usado luego para cambiar los pesos
+        //solucion ineficiente
+        nodesId.clear();
+
         path.push_front(current.node.point);
         NodeRecord *father = current.father;
+        nodesId.push_back(current.node.id);
 
-        while (father != NULL){              
+        while (father != NULL){          
+            nodesId.push_back(father->node.id);    
             path.push_front(father->node.point);
             father = father->father;
         }

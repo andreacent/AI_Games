@@ -1,6 +1,4 @@
 /* 
-    Andrea Centeno
-    10-10138
     Sergio Teran
     11-11020
     sep-dic 2017

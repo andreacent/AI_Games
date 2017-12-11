@@ -2,7 +2,6 @@
     Andrea Centeno
     sep-dic 2017
 */
-
 void drawCircle(float px, float pz, float radio, float pointSize) {
     float x,z;
     glPointSize(pointSize);
@@ -18,7 +17,7 @@ void drawCircle(float px, float pz, float radio, float pointSize) {
 void drawPaper(vec3 position,float rot, float pointSize) {
     float x = position.x;
     float z = position.z;
-    double deg = glm::degrees(-rot);//radianes a grados
+    double deg = glm::degrees(rot);//radianes a grados
 
     glPushMatrix();
         glTranslatef(x,0.0,z);

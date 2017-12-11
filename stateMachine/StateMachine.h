@@ -1,3 +1,7 @@
+/* 
+    Andrea Centeno
+    sep-dic 2017
+*/
 #ifndef STATEMACHINE_H
 #define STATEMACHINE_H
 
@@ -50,12 +54,32 @@ public:
 	Bezier &path;
 	Kinematic &target;
 	Kinematic &character;
+	std::list<int> &nodes;
 
-	ActPath(Graph &g,Bezier &p,Kinematic &t,Kinematic &c) 
-		: Action(), graph(g), path(p), target(t), character(c) {}
+	ActPath(Graph &g,Bezier &p,Kinematic &t,Kinematic &c,std::list<int> &n) 
+		: Action(), graph(g), path(p), target(t), character(c), nodes(n) {}
 
 	void execute(){
-        path = {pathfindAStar(graph, character.position, target.position)};
+		nodes.clear();
+		path.points.clear();
+
+		std::list<glm::vec3> pathAux1;
+		std::list<glm::vec3> pathAux2;
+
+		pathAux1 = pathfindAStar(graph, character.position, target.position,nodes);
+
+		if( pathAux1.size() > 10 ){
+		    pathAux2.splice( pathAux2.begin(), 
+		                 pathAux1, 
+		                 pathAux1.begin(), 
+		                 std::next( pathAux1.begin(), 10 ) );
+
+	        path = {pathAux2};
+		}
+		else{
+			path = {pathAux1};
+		}
+        
 	}
 };
 
@@ -84,19 +108,17 @@ public:
 	}
 };
 
-
-class ActPathPos: public Action{
+class ActPathWeight: public Action{
 public:
 	Graph &graph;
-	Bezier &path;
-	vec3 &positionT;
-	vec3 &positionC;
+	std::list<int> &nodes;
+	int cost = 1;
 
-	ActPathPos(Graph &g,Bezier &p,vec3 &t,vec3 &c) 
-		: Action(), graph(g), path(p), positionT(t), positionC(c) {}
+	ActPathWeight(Graph &g,std::list<int> &p, float c) 
+		: Action(), graph(g), nodes(p), cost(c) {}
 
 	void execute(){
-        path = {pathfindAStar(graph, positionC, positionT)};
+		graph.changeWeight(nodes, cost);
 	}
 };
 
@@ -153,68 +175,17 @@ public:
 	}
 };
 
-/********************** CONDITION SM_1 **********************/
+class ConOutCoord: public Condition{
+	Kinematic &target;
+public:
+	ConOutCoord(Kinematic &t) : Condition(), target(t){}
 
-/********************** Marlene out of Coord **********************/
-	class Con_MarleneOutCoord: public Condition{
-		Kinematic &target;
-	public:
-		Con_MarleneOutCoord(Kinematic &t) : Condition(), target(t){}
-
-		bool test(){
-			if( target.position.z >= 7 || target.position.x >= 13){
-			 	return false;
-			 }
-			return true;
+	bool test(){
+		if( target.position.z >= 8 || target.position.x >= 13){
+		 	return false;
 		}
-	};
-
-/********************** Marlene in Coord **********************/
-	class Con_MarleneInCoord: public Condition{
-		Kinematic &target;
-	public:
-		Con_MarleneInCoord(Kinematic &t) : Condition(), target(t){}
-
-		bool test(){
-			if( target.position.z < 7 && target.position.x < 13){
-				return true;
-			}
-			return false;
-		}
-	};
-
-/********************** Marlene out of Coord **********************/
-	class Con_XinY: public Condition{
-		vec3 &zone;
-		Kinematic &target;
-		float perimeter;
-	public:
-		Con_XinY(vec3 &z,Kinematic &t,float p) : Condition(), zone(z), target(t), perimeter(p){}
-
-		bool test(){
-			bool ZinPerimeter = target.position.z < zone.z+perimeter && target.position.z >= zone.z-perimeter;
-			bool XinPerimeter = target.position.x < zone.x+perimeter && target.position.x >= zone.x-perimeter;
-			if( ZinPerimeter && XinPerimeter){
-			 	return true;
-			 }
-			//cout << ZinPerimeter << ',' << XinPerimeter << endl;
-			return false;
-		}
-	};
-
-/********************** Character Stop **********************/
-	class Con_Stop: public Condition{
-		Kinematic &character;
-	public:
-		Con_Stop(Kinematic &c) : Condition(),character(c){}
-
-		bool test(){
-			if( glm::length(character.velocity) == 0.0){
-			 	return true;
-			 }
-			//cout << ZinPerimeter << ',' << XinPerimeter << endl;
-			return false;
-		}
+		return true;
+	}
 };
 
 /********************** TRANSITION **********************/

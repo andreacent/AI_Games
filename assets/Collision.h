@@ -1,3 +1,8 @@
+/* 
+    Andrea Centeno
+    carnet USB: 10-10138
+    sep-dic 2017
+*/
 #ifndef COLLISION_H
 #define COLLISION_H
 

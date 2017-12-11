@@ -1,3 +1,8 @@
+/* 
+    Andrea Centeno
+    carnet USB: 10-10138
+    sep-dic 2017
+*/
 #ifndef BLENDED_H
 #define BLENDED_H
 
@@ -45,6 +50,8 @@ public:
 	// Returns the acceleration required.
 	SteeringOutput getSteering(){
 
+		bool change = false;
+
 		// Create the steering structure for accumulation
 		SteeringOutput steering;
 
@@ -56,12 +63,19 @@ public:
 			if((*behaviorI)->behavior->getSteering(so)){
 				steering.linear  += w * so.linear;
 				steering.angular += w * so.angular;
+				change = true;
 			}
 		};
 
-		// Crop the result and return
-		if(glm::length(steering.linear) > maxAcceleration) steering.linear = glm::normalize(steering.linear) * maxAcceleration;
-		if( steering.angular > maxRotation ) steering.angular  = maxRotation;
+		if (!change) {
+			steering.linear = {0,0,0};
+			steering.angular = 0;
+		}
+		else{
+			// Crop the result and return
+			if(glm::length(steering.linear) > maxAcceleration) steering.linear = glm::normalize(steering.linear) * maxAcceleration;
+			if( steering.angular > maxRotation ) steering.angular  = maxRotation;
+		}
 
 		return steering;
 	};

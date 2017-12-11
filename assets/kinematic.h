@@ -1,3 +1,7 @@
+/* 
+    Andrea Centeno
+    sep-dic 2017
+*/
 #ifndef KINEMATIC_H
 #define KINEMATIC_H
 
@@ -30,6 +34,7 @@ struct Kinematic{
 	bool setNewPosition(glm::vec3 newPos){
 		if( newPos.z > 1.5 && newPos.z < 39) position.z = newPos.z;	
 		if (newPos.x > 0.4 && newPos.x < 53.6 ) position.x = newPos.x; 
+		position.y = newPos.y;
 	}
 
 	void updatePosition(GLfloat deltaTime, std::list<Mesh*> meshs){	 //

@@ -1,3 +1,7 @@
+/* 
+    Sergio Teran
+    sep-dic 2017
+*/
 #ifndef MAP_H
 #define MAP_H
 

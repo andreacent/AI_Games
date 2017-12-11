@@ -1,3 +1,8 @@
+/* 
+    Andrea Centeno
+    carnet USB: 10-10138
+    sep-dic 2017
+*/
 #ifndef OBSAVOIDANCE_H
 #define OBSAVOIDANCE_H
 

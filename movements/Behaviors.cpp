@@ -1,3 +1,8 @@
+/* 
+    Andrea Centeno
+    carnet USB: 10-10138
+    sep-dic 2017
+*/
 #ifndef BEHAVIORS_CPP
 #define BEHAVIORS_CPP
 
@@ -65,7 +70,7 @@ void createMapAllBehaviors(
 		std::map<string,Behavior*> &behaviors ){
 	
 	GLfloat maxRotation = 30;
-	//GLfloat maxAngularAcceleration = 20;
+	GLfloat maxAngularAcceleration = 20;
 
     behaviors["seek"] = new Seek(character,target,maxAcceleration);
     behaviors["flee"] = new Flee(character,target,maxAcceleration); 

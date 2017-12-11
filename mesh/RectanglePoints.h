@@ -1,3 +1,8 @@
+/* 
+    Andrea Centeno
+    carnet USB: 10-10138
+    sep-dic 2017
+*/
 #ifndef M_RECTANGLE_P_H
 #define M_RECTANGLE_P_H
 

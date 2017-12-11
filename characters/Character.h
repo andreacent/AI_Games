@@ -3,7 +3,7 @@
 	11-11020
 	sep-dic 2017
 */
-#include "../assets/StateMachine.h"
+#include "../stateMachine/StateMachine.h"
 using namespace glm;
 
 class Character{
@@ -58,13 +58,13 @@ public:
 	void drawGuide(int x, int z){
 			
 		for(int i = 0; i <= x; i++){
-			drawLineV(-i*1.0);
-			drawLineV(i*1.0);
+			drawLineV(-i);
+			drawLineV(i);
 		}
 		
 		for(int j = 0; j <= z; j++){
-			drawLineH(-j*1.0);
-			drawLineH(j*1.0);
+			drawLineH(-j);
+			drawLineH(j);
 		}
 
 		drawOrigin();
@@ -74,6 +74,7 @@ public:
 	void drawSquare(vec3 position,vec3 colorSqr,float timesX,float timesZ){
 		float x = position.x;
 		float z = position.z;
+		float y = position.y;
 		float pxX = px*timesX;
 		float pxZ = px*timesZ;
 
@@ -107,30 +108,30 @@ public:
 
 		float x = positionH.x;
 		float y = positionH.y;
-		float z = positionH.z-1*px;
+		float z = positionH.z-px;
 
 		float w = 1;
 		float t = 0;
 		float tc = 0;
 
-		if( dir == 'l'){x -=1*px;}
+		if( dir == 'l'){x -=px;}
 		if( dir == 'r'){w = -1;t = -2;tc=2;}
 
 		//piel
-		drawSquare({   w*2*(x+-(-2+t+tc)*px),y,2*(z+ -3*px) },colorSkin, 2*1, 2* 1);
+		drawSquare({   w*2*(x+-(-2+t+tc)*px),y,2*(z+ -3*px) },colorSkin, 2, 2);
 		drawSquare({   w*2*(x+-(3+t-tc)*px),y,2*(z ) },colorSkin, 2*5, 2* -5);
 
 		//head
-		drawSquare({   2*(x+-(4+t)*px),y,2*(z) },colorLine, 2*7, 2* 1);
-		drawSquare({ w*2*(x+- 4   *px),y,2*(z) },colorLine, 2*1, 2*-4);
-		drawSquare({ w*2*(x+- 3   *px),y,2*(z+-5*px) },colorLine, 2*1, 2* 1);
-		drawSquare({ w*2*(x+-(2+(t+(t/2)))*px),y,2*(z+-6*px) },colorLine, 2*4, 2* 1);
-		drawSquare({ w*2*(x+  1   *px),y,2*(z+-5*px) },colorLine, 2*1, 2* 1);
-		drawSquare({ w*2*(x+  2   *px),y,2*(z+-4*px) },colorLine, 2*1, 2* 1);
-		drawSquare({ w*2*(x+  3   *px),y,2*(z+-2*px) },colorLine, 2*1, 2*-2);
-		drawSquare({ w*2*(x+  2   *px),y,2*(z) },colorLine, 2*1, 2*-2);
+		drawSquare({   2*(x -(4+t)*px),y,2*(z) },colorLine, 2*7, 2);
+		drawSquare({ w*2*(x - 4   *px),y,2*(z) },colorLine, 2, 2*-4);
+		drawSquare({ w*2*(x - 3   *px),y,2*(z-5*px) },colorLine, 2, 2);
+		drawSquare({ w*2*(x -(2+(t+(t/2)))*px),y,2*(z-6*px) },colorLine, 2*4, 2);
+		drawSquare({ w*2*(x+  1   *px),y,2*(z-5*px) },colorLine, 2, 2);
+		drawSquare({ w*2*(x+  2   *px),y,2*(z-4*px) },colorLine, 2, 2);
+		drawSquare({ w*2*(x+  3   *px),y,2*(z-2*px) },colorLine, 2, 2*-2);
+		drawSquare({ w*2*(x+  2   *px),y,2*(z) },colorLine, 2, 2*-2);
 		
-		drawSquare({ w*2*(x+ -1*px),y,2*(z+ -2*px) },colorLine, 2*1, 2*-2);
+		drawSquare({ w*2*(x - px),y,2*(z -2*px) },colorLine, 2, 2*-2);
 	}
 
 	void drawFullHead(vec3 positionH,vec3 colorLine,vec3 colorSkin,vec3 colorSkinS, char dir){
