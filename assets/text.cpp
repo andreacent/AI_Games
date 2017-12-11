@@ -57,29 +57,40 @@ void drawText(int n, glm::vec3 pos) {
     GLUT_BITMAP_HELVETICA_10,   
   };
 
-  const char* bitmap_font_names[5] = {
+  const char* bitmap_font_names[6] = {
     "Hola!",
     "Hola! Como estas?",
     "Bien! y tu?",
-    "¡FELICIDADES!",
+    "Volver a empezar? s/n",
     "PERDISTE",
+    "GANASTE"
   };
 
   switch(n) //donde opción es la variable a comparar
   {
     case 0:   
       drawTextBox(pos, 1.2f, 2.1f); 
-    break;
+      break;
     case 1:     
       drawTextBox(pos, 1.2f, 7.0f);
-    break;
+      break;
     case 2:     
       drawTextBox(pos, 1.2f, 4.0f); 
-    break;
-    case 3:
+      break;
     case 4:   
-      drawTextBox(pos, 1.2f, 7.0f); 
-    break;
+      drawTextBox(pos, 3.0f, 16.0f); 
+      glRasterPos3f(pos.x+1,pos.y,pos.z-1);
+      print_bitmap_string(bitmap_fonts[0], bitmap_font_names[n]);
+      glRasterPos3f(pos.x+1,pos.y,pos.z-2);
+      print_bitmap_string(bitmap_fonts[0], bitmap_font_names[3]);
+      return;
+    case 3:
+      drawTextBox(pos, 3.0f, 16.0f); 
+      glRasterPos3f(pos.x+1,pos.y,pos.z-1);
+      print_bitmap_string(bitmap_fonts[0], bitmap_font_names[5]);
+      glRasterPos3f(pos.x+1,pos.y,pos.z-2);
+      print_bitmap_string(bitmap_fonts[0], bitmap_font_names[n]);
+      return;
     default: break;
   }
 

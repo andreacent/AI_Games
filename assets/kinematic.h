@@ -33,7 +33,7 @@ struct Kinematic{
 	*/
 	bool setNewPosition(glm::vec3 newPos){
 		if( newPos.z > 1.5 && newPos.z < 39) position.z = newPos.z;	
-		if (newPos.x > 0.4 && newPos.x < 53.6 ) position.x = newPos.x; 
+		if (newPos.x > 1 && newPos.x < 53 ) position.x = newPos.x; 
 		position.y = newPos.y;
 	}
 
@@ -45,6 +45,13 @@ struct Kinematic{
 		setNewPosition(nesPos);
 	}
 
+	void reset(glm::vec3 position){	 //
+		this->position = position;
+		this->orientation = 0;
+		this->velocity = {0,0,0};
+		this->rotation = 0;
+	}
+
 	void updateOrientation(GLfloat deltaTime){
 		orientation += rotation * deltaTime;
 	}
@@ -52,6 +59,7 @@ struct Kinematic{
 	void update(SteeringOutput steering,GLfloat maxSpeed,GLfloat deltaTime){
 		// Update the position and orientation
 		setNewPosition(position + (velocity * deltaTime));
+		//updatePosition(deltaTime, meshs);
 		orientation += rotation * deltaTime;
 
 		// and the velocity and rotation

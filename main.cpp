@@ -4,7 +4,11 @@
     Sergio Teran
     carnet USB: 11-11020
     sep-dic 2017
-*/    
+*/  
+
+#include "mesh/Mesh.cpp"
+std::list<Mesh*> meshs;
+
 #include "movements/BlendedSteering.cpp"
 #include "graph/graph.cpp"
 
@@ -15,16 +19,10 @@
 
 #include "stateMachine/StateMachine.cpp"
 #include "senseManager/RegionalSenseManager.h"
-//#include "assets/StateMachineS.cpp"
 
 #include <GL/freeglut.h>
 #include <GL/gl.h>
 #include <glm/glm.hpp>
-//#include <GL/glew.h>
-
-#include "mesh/Mesh.cpp"
-
-std::list<Mesh*> meshs;
 
 Graph graph;
 std::list<vec3> path;
@@ -36,7 +34,7 @@ GLfloat targetVelocity = 4;
 
 GLfloat maxRotation = 30;
 
-bool activeTriangles = true;
+bool activeTriangles = false;
 bool activeMap = true;
 bool ini = false;
 
@@ -50,132 +48,84 @@ float deltaMove = 0;
 CollisionDetector collisionDetector = {meshs};
 
 /******************** CHARACTERES *******************/
+Marlene marleneAux = {*new Kinematic({33.4,0.0,20.5},0.0),'p'};
+
 Kinematic target = {{3.5f,0.0f,3.5f}};//{{26.0f,0,26.0f},0.0};
 Marlene marlene = {target,'t'};
 
-/* sidekick1 */
-Kinematic sidekick1 = {{2.0f,0.0f,2.0f},0.0};
-//mesh
-Marlene sidekick1Mesh = {sidekick1,'s'};
-//target list (separation)
-std::list<Kinematic*> sidekick1Targets;
-//behavior list
-std::map<string,Behavior*> sidekick1Behaviors;
-//flocking (BlendedSteering)
-BlendedSteering sidekick1Flocking = {sidekick1,maxAcceleration,maxRotation,maxSpeed,*new list<BehaviorAndWeight*>()};
-
-/* sidekick2 */
-Kinematic sidekick2 = {{36.0f,0,30.0f},0.0};
-//mesh
-Marlene sidekick2Mesh = {sidekick2,'s'};
-//target list (separation)
-std::list<Kinematic*> sidekick2Targets;
-//behavior list
-std::map<string,Behavior*> sidekick2Behaviors;
-//flocking (BlendedSteering)
-BlendedSteering sidekick2Flocking = {sidekick2,maxAcceleration,maxRotation,maxSpeed,*new list<BehaviorAndWeight*>()};
-
-/* STUDENT ALERTS*/
-Marlene student_alert_1 = {*new Kinematic({40.0f,0.0,35.0f},0.0),'a'};
-Marlene student_alert_2 = {*new Kinematic({22.0f,0.0,8.0f},0.0),'a'};
-
 /* STUDENT HELLO */
-Marlene studentHello = {*new Kinematic({24.0f,0.0,33.0f},0.0),'s'};
+Marlene studentHello = {*new Kinematic({27.0f,0.0,15.5f},0.0),'e'};
 /* STUDENT */
-Marlene student = {*new Kinematic({26.0f,0.0,30.0f},0.0),'s'};
+Marlene student = {*new Kinematic({40.0f,0.0,30.0f},0.0),'a'};
+std::list<Kinematic*> studentTargets;
 /* STUDENT IN ROOMS*/
-Marlene student_ldc = {*new Kinematic({6.0f,0.0,38.0f},0.0),'s'};
-Marlene student_chang = {*new Kinematic({48.0f,0.0,2.0f},0.0),'s'};
-
-
-Marlene profesor = {*new Kinematic({52.0f,0.0,30.0f},0.0),'s'};
-std::list<Kinematic*> profesorTargets;
-
-/* NOVICH */
-Kinematic novich = {{26.0f,0.0,30.0f},0.0};
-//mesh
-Marlene novichMesh = {novich,'s'};
-//behavior list
-std::map<string,Behavior*> novichBehaviors;
-//follow path
-FollowPath* novichFollowPath = new FollowPath(novich,maxAcceleration);
-//target list (separation)
-std::list<Kinematic*> novichTargets;
-//follow target (BlendedSteering)
-BlendedSteering novichFollowTarget = {novich,maxAcceleration,maxRotation,maxSpeed, *new list<BehaviorAndWeight*>()};
-//follow path with obstacles (BlendedSteering)
-BlendedSteering novichFollowPathWithObs = {novich,maxAcceleration,maxRotation,maxSpeed, *new list<BehaviorAndWeight*>()};
-BlendedSteering novichblendedWander = {novich,10,30,8, *new list<BehaviorAndWeight*>()};
-    
-//otrooo
+Marlene studentLDC = {*new Kinematic({7.0f,0.0,38.0f},0.0),'a'};
+std::list<Kinematic*> studentLDCTargets;
+Marlene studentChang = {*new Kinematic({48.0f,0.0,2.0f},0.0),'a'};
+std::list<Kinematic*> studentChangTargets;
+/* PROFESOR */
+Marlene profesor1 = {*new Kinematic({52.0f,0.0,30.0f},0.0),'s'};
+std::list<Kinematic*> profesor1Targets;
+Marlene profesor2 = {*new Kinematic({3.0f,0.0,35.0f},0.0),'s'};
+std::list<Kinematic*> profesor2Targets;
 
 /****************** Initialize **********************/
 void initialize(){
     ini = true;
 
-    std::list<Kinematic*> studentHelloTargets;
-    studentHelloTargets.push_back(&target);   
-    studentHelloTargets.push_back(&student.character);   
-    studentHelloTargets.push_back(&student_alert_1.character);    
-    studentHelloTargets.push_back(&student_alert_2.character);  
-    studentHelloTargets.push_back(&student_ldc.character);    
-    studentHelloTargets.push_back(&student_chang.character);
-    studentHello.setStateMachine(HelloStateMachine(studentHello.character,studentHelloTargets));
-
-
-    student.setStateMachine(StudentStateMachine(student.character,target,collisionDetector,graph));
-    student_ldc.setStateMachine(StudentStateMachine(student_ldc.character,target,collisionDetector,graph));
-    student_chang.setStateMachine(StudentStateMachine(student_chang.character,target,collisionDetector,graph));
-
-    profesorTargets.push_back(&target); 
-    profesor.setStateMachine(PursueStateMachine(profesor.character,target,profesorTargets,collisionDetector ));
-
-    /*
-    student_ldc.setStateMachine(StudentStateMachineS(student_ldc.character,
-                                                    student_alert_1.character,
-                                                    studentHelloTargets,
-                                                    collisionDetector,graph));
-    student_chang.setStateMachine(StudentStateMachineS(student_chang.character,
-                                                    student_alert_2.character,
-                                                    studentHelloTargets,
-                                                    collisionDetector,graph));
-   
-    student_ldc.setStateMachine(StudentStateMachineS(student_ldc.character,target,student_alert_1.character,collisionDetector,graph));
-    student_chang.setStateMachine(StudentStateMachineS(student_chang.character,target,student_alert_2.character,collisionDetector,graph));
-    
-
-    student_alert_1.setStateMachine(AlertStateMachine(student_alert_1.character,target,student_ldc.character,collisionDetector,graph));
-    student_alert_2.setStateMachine(AlertStateMachine(student_alert_2.character,target,student_chang.character,collisionDetector,graph));
-
- */
-    //student_alert_1.setStateMachine(StudentStateMachine(student_alert_1.character,target,collisionDetector,graph));
-    //student_alert_2.setStateMachine(StudentStateMachine(student_alert_2.character,target,collisionDetector,graph));
-
-
+    /*MAP*/
     meshs = drawMap();
 
+    /*STATE MACHINES*/
+    std::list<Kinematic*> studentHelloTargets;
+    studentHelloTargets.push_back(&target);   
+    studentHelloTargets.push_back(&student.character); 
+    studentHelloTargets.push_back(&studentLDC.character);    
+    studentHelloTargets.push_back(&studentChang.character);
+    studentHello.setStateMachine(HelloStateMachine(studentHello.character,studentHelloTargets));
+
+    studentTargets.push_back(&studentLDC.character);    
+    studentTargets.push_back(&studentChang.character);
+    student.setStateMachine(StudentStateMachine(student.character,target,collisionDetector,studentTargets,graph));
+
+    studentLDCTargets.push_back(&student.character);   
+    studentLDCTargets.push_back(&studentChang.character);
+    studentLDC.setStateMachine(StudentStateMachine(studentLDC.character,target,collisionDetector,studentLDCTargets,graph));
+
+    studentChangTargets.push_back(&student.character); 
+    studentChangTargets.push_back(&studentLDC.character);
+    studentChang.setStateMachine(StudentStateMachine(studentChang.character,target,collisionDetector,studentChangTargets,graph));
+
+    profesor1Targets.push_back(&profesor2.character); 
+    profesor1.setStateMachine(FollowStateMachine(profesor1.character,target,profesor1Targets,collisionDetector ));
+    profesor2Targets.push_back(&profesor1.character); 
+    profesor2.setStateMachine(FollowStateMachine(profesor2.character,target,profesor2Targets,collisionDetector ));
+
+    /*GRAPH*/
     graph.createGameGraphNew();
+
     glClearColor(0.81960,0.81960,0.81960,1);
+}
 
-    // NOVICH : behaviors and blended 
-    createMapAllBehaviors(novich, target,  collisionDetector,novichTargets, novichBehaviors);
-    novichBehaviors["followPath"] = novichFollowPath;
-    novichTargets.push_back(&target);   
-    followTarget(novichBehaviors, novichFollowTarget);
-    followPathWithObstacle(novichBehaviors, novichFollowPathWithObs);
-    wanderWithObs(novichBehaviors,novichblendedWander);
+void reset(){
+    target.position = {3.5f,0.0f,3.5f};
+    student.character.reset({35.0f,0.0,30.0f});
+    studentLDC.character.reset({7.0f,0.0,38.0f});
+    studentChang.character.reset({48.0f,0.0,2.0f});
+    profesor1.character.reset({52.0f,0.0,30.0f});
+    profesor2.character.reset({3.0f,0.0,30.0f});
 
-    /* sidekick1 : behaviors and flocking */
-    createMapAllBehaviors(sidekick1, target, collisionDetector, sidekick1Targets, sidekick1Behaviors);
-    flocking( sidekick1Behaviors, sidekick1Flocking );
-    sidekick1Targets.push_back(&sidekick2);
-    sidekick1Targets.push_back(&target);
+    /*STATE MACHINES*/
+    student.setStateMachine(StudentStateMachine(student.character,target,collisionDetector,studentTargets,graph));
+    studentLDC.setStateMachine(StudentStateMachine(studentLDC.character,target,collisionDetector,studentLDCTargets,graph));
+    studentChang.setStateMachine(StudentStateMachine(studentChang.character,target,collisionDetector,studentChangTargets,graph));
+    profesor1.setStateMachine(FollowStateMachine(profesor1.character,target,profesor1Targets,collisionDetector ));
+    profesor2.setStateMachine(FollowStateMachine(profesor2.character,target,profesor2Targets,collisionDetector ));
 
-    /* sidekick2 : behaviors and flocking */
-    createMapAllBehaviors(sidekick2, target, collisionDetector, sidekick2Targets, sidekick2Behaviors);
-    flocking( sidekick2Behaviors, sidekick2Flocking );
-    sidekick2Targets.push_back(&sidekick1);
-    sidekick2Targets.push_back(&target);
+    /*GRAPH*/
+    graph.createGameGraphNew();
+
+    stopGame = false;
 }
 
 /******************************* KEYBOARD *****************************/
@@ -191,21 +141,21 @@ void controlKey (unsigned char key, int xmouse, int ymouse){
             activeTriangles = !activeTriangles;
         break;
         case 'z':
-            activeMap = !activeMap;
-        break;
-        case '0': 
-            //prueba de calcular el camino
-            //path = pathfindAStar(graph, novich.position, target.position, *(new std::list<int>{}));
-            //novichFollowPath->setPath(path);   
+            showPath = !showPath;
         break;
         case ' ': //mover en y (saltar)
             target.velocity.y = targetVelocity;
             cout<<"pos target "<< target.position.x<<","<<target.position.y<<","<<target.position.z<<endl;
         break;
+        case 'n':
+            if(!stopGame) break;
         case 27: // Escape key
             graph.printGraph();
             glutDestroyWindow ( WinId );
             exit (0);
+        break;
+        case 's':
+            if(stopGame) reset();
         break;
         default: break;
     }  
@@ -283,62 +233,62 @@ void display(){
     //gluLookAt(x,0,z,x,10,z-1.0f,0,1,0);
     gluLookAt(25,0,21,25,10,21-1.0f,0,1,0);
 
-    GLfloat timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
-    deltaTime = (timeSinceStart - oldTimeSinceStart) * 0.001;
-    oldTimeSinceStart = timeSinceStart;
-
     drawFloor();
     drawDetails();
-    //cout<<meshs.size()<<endl;
-
     glLineWidth(pointSize);
 
-    if(activeTriangles) {
-        graph.drawTriangles();
-        //if (int(novichFollowPath->getPath().size) > 0) novichFollowPath->getPath().draw();
-    }
+    if(activeTriangles) graph.drawTriangles(); 
     if(activeMap) for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
 
-    target.updatePosition(deltaTime,meshs);
-    target.updateOrientation(deltaTime);
+    if (!stopGame){
+        GLfloat timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
+        deltaTime = (timeSinceStart - oldTimeSinceStart) * 0.001;
+        oldTimeSinceStart = timeSinceStart;
 
-    //TEST CHARACTER
-    studentHello.checkStateMachine();
-    studentHello.draw();
-    student.checkStateMachine();
-    student.draw();
-    profesor.checkStateMachine();
-    profesor.draw();
+        target.updatePosition(deltaTime,meshs);
+        target.updateOrientation(deltaTime);
 
-    /*
-    student_alert_1.checkStateMachine();
-    student_alert_1.draw();
-    student_alert_2.checkStateMachine();
-    student_alert_2.draw();
-   */ 
-    student_ldc.checkStateMachine();
-    student_ldc.draw();
-    student_chang.checkStateMachine();
-    student_chang.draw();    
- 
+        //STUDENTS
+        studentHello.checkStateMachine();
 
-    //novichMesh.draw();
-    marlene.draw();
+        student.checkStateMachine();
 
-    //sidekick2Mesh.draw(); 
-    //novichFollowTarget.update(maxSpeed,deltaTime); 
-    //novichMesh.draw();
+        studentLDC.checkStateMachine();
 
-    //sidekick1Flocking.update(maxSpeed,deltaTime);
-    //sidekick1Mesh.draw();
-    //sidekick2Flocking.update(maxSpeed,deltaTime);
-
-    //sidekick2Behaviors["wander"]->update(maxSpeed,deltaTime);
-
-    //if (int(novichFollowPath->getPath().size) > 0) novichFollowPathWithObs.update(maxSpeed,deltaTime);
+        studentChang.checkStateMachine();  
+     
+        profesor1.checkStateMachine();
+        profesor2.checkStateMachine();
     
-    //TEXTO
-    //drawText(2,glm::vec3(2,0.0,10));
+        /*
+        se detiene el juego cuando los personajes rojos estan en la coordinacion
+        */
+        if( profesor1.character.position.z < 6 && profesor1.character.position.x < 13
+            && profesor2.character.position.z < 6 && profesor2.character.position.x < 13 ){
+            stopGame = true;
+            win = true;
+        }
+    }
+    else if (win){        
+        drawText(3,glm::vec3(19,0.0,24));
+        marleneAux.draw();
+    }
+    else{
+        drawText(4,glm::vec3(19,0.0,24));
+        marleneAux.draw();
+    }
+
+    /* PERSONAJES */
+    studentHello.draw();
+
+    student.draw();
+    studentLDC.draw();
+    studentChang.draw();
+
+    profesor1.draw();
+    profesor2.draw();
+
+    marlene.draw();
 
     glFlush();
     glutPostRedisplay();

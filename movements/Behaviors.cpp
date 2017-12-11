@@ -39,7 +39,7 @@ glm::vec3 rotateVectorZ(glm::vec3 v, GLfloat ang){
 	return glm::vec3(v.x * cos(ang) + v.z * sin(ang), v.y, v.z * cos(ang) - v.x * sin(ang) );
 }
 
-GLfloat maxSpeed = 4;
+GLfloat maxSpeed = 4.5;
 GLfloat maxAcceleration = 6;
 GLfloat maxPrediction = 0.1;
 

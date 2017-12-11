@@ -9,11 +9,13 @@ public:
 				dress = { 0.4705, 0.03921, 0.42745};
 				break;
 			case 'e':
+			    dress = { 0, 1, 0};
+			    break;
 			case 'a':
 				dress = { 1, 0, 0};
 				break;
 			case 's':
-			    dress = { 0, 1, 0};
+			    dress = { 0, 0, 1};
 				break;
 			default:break;
 		}

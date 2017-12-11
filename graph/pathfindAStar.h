@@ -71,8 +71,8 @@ std::list<glm::vec3> pathfindAStar(Graph graph, glm::vec3 posStart, glm::vec3 po
             Node endNode = graph.nodes[(*itAdj)];
 
             float endNodeCost = current.costSoFar 
-                                + (graph.distances[make_pair(current.node.id,endNode.id)] 
-                                *  graph.weight[make_pair(current.node.id,endNode.id)] );
+                                + graph.distances[make_pair(current.node.id,endNode.id)] 
+                                *  graph.weight[make_pair(current.node.id,endNode.id)] ;
 
             float endNodeHeuristic;
             NodeRecord endNodeRecord;

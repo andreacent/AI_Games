@@ -11,6 +11,8 @@
 #include <list>
 #include <glm/glm.hpp>
 
+bool showPath = false;
+
 class FollowPath: public Seek{
 protected:
 	//Holds the path to follow
@@ -51,7 +53,7 @@ public:
 
 		Seek::getSteering(steering);
 
-		path.draw();
+		if(showPath) path.draw();
 		return true;
 	}
 

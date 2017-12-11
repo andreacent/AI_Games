@@ -18,6 +18,9 @@
 GLfloat oldTimeSinceStart = 0.0;
 GLfloat deltaTime = 0.0;
 
+bool stopGame = false;
+bool win = false;
+
 class State;
 
 /********************** ACTION **********************/
@@ -66,6 +69,8 @@ public:
 		std::list<glm::vec3> pathAux1;
 		std::list<glm::vec3> pathAux2;
 
+		std::list<int> nodesAux;
+
 		pathAux1 = pathfindAStar(graph, character.position, target.position,nodes);
 
 		if( pathAux1.size() > 10 ){
@@ -73,7 +78,12 @@ public:
 		                 pathAux1, 
 		                 pathAux1.begin(), 
 		                 std::next( pathAux1.begin(), 10 ) );
-
+		    /*
+		    nodes.splice( nodes.begin(), 
+		                 nodesAux, 
+		                 nodesAux.begin(), 
+		                 std::next( nodesAux.begin(), 10 ) );
+			*/
 	        path = {pathAux2};
 		}
 		else{
@@ -122,6 +132,20 @@ public:
 	}
 };
 
+/*
+detiene el juego
+stopGame y win son variables globales
+*/
+class ActStopGame: public Action{
+public:
+	ActStopGame() : Action() {}
+
+	void execute(){ 
+		stopGame = true;
+		win = false;
+	}
+};
+
 /********************** CONDITION **********************/
 class Condition{
 public:
@@ -151,14 +175,16 @@ public:
 	}
 };
 
-class ConNextTo: public Condition{
+class ConCloseTo: public Condition{
 	Kinematic &character;
 	Kinematic &target;
+	float dist;
 public:
-	ConNextTo(Kinematic &t,Kinematic &c) : Condition(), character(c), target(t){}
+	ConCloseTo(Kinematic &t,Kinematic &c, float d = 1.5) 
+		: Condition(), character(c), target(t), dist(d){}
 	
 	bool test(){
-		if( glm::distance(character.position,target.position) <= 2 ) return true; 
+		if( glm::distance(character.position,target.position) <= dist ) return true; 
 		return false;
 	}
 };
@@ -181,9 +207,7 @@ public:
 	ConOutCoord(Kinematic &t) : Condition(), target(t){}
 
 	bool test(){
-		if( target.position.z >= 8 || target.position.x >= 13){
-		 	return false;
-		}
+		if( target.position.z >= 8 || target.position.x >= 13) return false;
 		return true;
 	}
 };

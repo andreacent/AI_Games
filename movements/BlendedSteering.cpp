@@ -15,7 +15,7 @@ void followTarget(  std::map<string,Behavior*> behaviors,
                     BlendedSteering &blended ){
 
     if(behaviors.count("obstacle") > 0 ){
-        blended.addBehavior(new BehaviorAndWeight(behaviors["obstacle"],2));
+        blended.addBehavior(new BehaviorAndWeight(behaviors["obstacle"],4));
     }
     if(behaviors.count("separation") > 0 ){
         blended.addBehavior(new BehaviorAndWeight(behaviors["separation"],0.2));
@@ -54,6 +54,9 @@ void followPathWithObstacle(
     }
     if(behaviors.count("followPath") > 0 ){
         blended.addBehavior(new BehaviorAndWeight(behaviors["followPath"],0.6));
+    }
+    if(behaviors.count("separation") > 0 ){
+        blended.addBehavior(new BehaviorAndWeight(behaviors["separation"],0.6));
     }
 }
 
