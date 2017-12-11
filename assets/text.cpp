@@ -78,14 +78,14 @@ void drawText(int n, glm::vec3 pos) {
       drawTextBox(pos, 1.2f, 4.0f); 
       break;
     case 4:   
-      drawTextBox(pos, 3.0f, 16.0f); 
+      drawTextBox(pos, 3.0f, 7.0f);//16.0f); 
       glRasterPos3f(pos.x+1,pos.y,pos.z-1);
       print_bitmap_string(bitmap_fonts[0], bitmap_font_names[n]);
       glRasterPos3f(pos.x+1,pos.y,pos.z-2);
       print_bitmap_string(bitmap_fonts[0], bitmap_font_names[3]);
       return;
     case 3:
-      drawTextBox(pos, 3.0f, 16.0f); 
+      drawTextBox(pos, 3.0f, 7.0f);//16.0f); 
       glRasterPos3f(pos.x+1,pos.y,pos.z-1);
       print_bitmap_string(bitmap_fonts[0], bitmap_font_names[5]);
       glRasterPos3f(pos.x+1,pos.y,pos.z-2);

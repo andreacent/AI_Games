@@ -230,8 +230,8 @@ void display(){
 
     float z = target.position.z;
     float x = target.position.x;
-    //gluLookAt(x,0,z,x,10,z-1.0f,0,1,0);
-    gluLookAt(25,0,21,25,10,21-1.0f,0,1,0);
+    gluLookAt(x,0,z,x,10,z-1.0f,0,1,0);
+    //gluLookAt(25,0,21,25,10,21-1.0f,0,1,0);
 
     drawFloor();
     drawDetails();
@@ -239,6 +239,18 @@ void display(){
 
     if(activeTriangles) graph.drawTriangles(); 
     if(activeMap) for (list<Mesh*>::iterator m=meshs.begin(); m != meshs.end(); ++m) (*m)->draw();
+
+    /* PERSONAJES */
+    studentHello.draw();
+
+    student.draw();
+    studentLDC.draw();
+    studentChang.draw();
+
+    profesor1.draw();
+    profesor2.draw();
+
+    marlene.draw();
 
     if (!stopGame){
         GLfloat timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
@@ -269,6 +281,7 @@ void display(){
             win = true;
         }
     }
+    /*
     else if (win){        
         drawText(3,glm::vec3(19,0.0,24));
         marleneAux.draw();
@@ -277,18 +290,13 @@ void display(){
         drawText(4,glm::vec3(19,0.0,24));
         marleneAux.draw();
     }
-
-    /* PERSONAJES */
-    studentHello.draw();
-
-    student.draw();
-    studentLDC.draw();
-    studentChang.draw();
-
-    profesor1.draw();
-    profesor2.draw();
-
-    marlene.draw();
+    */
+    else if (win){ 
+        drawText(3,{target.position.x-6,target.position.y,target.position.z+3.5});
+    }
+    else{
+        drawText(4,{target.position.x-6,target.position.y,target.position.z+3.5});        
+    }
 
     glFlush();
     glutPostRedisplay();
@@ -304,8 +312,11 @@ void reshape(GLsizei w, GLsizei h) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    GLfloat widthVP  = 21.0;
-    GLfloat heightVP = 21.0;
+    //GLfloat widthVP  = 21.0;
+    //GLfloat heightVP = 21.0;
+    GLfloat widthVP  = 8.0;
+    GLfloat heightVP = 8.0;
+
     GLfloat deepVP = 40.0;
     
     if (w < h){
